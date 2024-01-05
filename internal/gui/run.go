@@ -8,12 +8,13 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-func RunDoom() {
-	if SelectedWad == "" {
+var Runner gzrun.Pars
+
+func (ui *ui) RunDoom() {
+	if Runner.IWad == "" {
 		zenity.Error("Select a wad first!")
 		return
 	}
-	newRunner := gzrun.Pars{}
 	if settings.GZDir == "" {
 		gzdir := GZDir()
 		settings.GZDir = gzdir
@@ -24,15 +25,24 @@ func RunDoom() {
 		}
 	}
 	gzrun.GZDir = settings.GZDir
-	newRunner.IWad = SelectedWad
 	mods := enabledPaths()
 	if len(mods) > 0 {
-		newRunner.Mods.Enabled = true
-		newRunner.Mods.List = mods
+		Runner.Mods.Enabled = true
+		Runner.Mods.List = mods
 	}
-	err := newRunner.Start()
+	if CloseOnStart {
+		ui.MainWindow.Hide()
+		err := Runner.Run()
+		if err != nil {
+			zenity.Error(err.Error())
+		}
+		ui.MainWindow.Show()
+		return
+	}
+	err := Runner.Start()
 	if err != nil {
 		zenity.Error(err.Error())
+		return
 	}
 }
 

@@ -19,8 +19,8 @@ type ui struct {
 }
 
 var (
-	SelectedWad string
-	settings    = &config.Settings
+	settings     = &config.Settings
+	CloseOnStart bool
 )
 
 func Init() *Gui {

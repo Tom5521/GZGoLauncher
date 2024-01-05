@@ -2,7 +2,6 @@ package gzrun
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -27,6 +26,7 @@ type Pars struct {
 		Enabled bool
 		List    []string
 	}
+	NoSFX     bool
 	NoMusic   bool
 	NoSound   bool
 	NoStartup bool
@@ -59,6 +59,9 @@ func (p Pars) FormatCmd() *exec.Cmd {
 	if p.NoSound {
 		cmd.Args = append(cmd.Args, "-nosound")
 	}
+	if p.NoSFX {
+		cmd.Args = append(cmd.Args, "-nosfx")
+	}
 	if p.NoStartup {
 		cmd.Args = append(cmd.Args, "-nostartup")
 	}
@@ -79,7 +82,6 @@ func (p Pars) check() error {
 }
 
 func (p Pars) Run() error {
-	fmt.Println("--", GZDir)
 	err := p.check()
 	if err != nil {
 		return err
