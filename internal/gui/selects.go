@@ -1,8 +1,6 @@
 package gui
 
 import (
-	"slices"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -56,7 +54,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 		if selected == -1 {
 			return
 		}
-		config.Settings.Wads = slices.Delete(settings.Wads, selected, selected+1)
+		settings.Wads = deleteSlice(settings.Wads, selected)
 		err := config.Settings.Write()
 		if err != nil {
 			messages.Error(err)
@@ -111,7 +109,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 	remove := func() {
 		for index, i := range settings.Mods {
 			if i.Enabled {
-				settings.Mods = slices.Delete(settings.Mods, index, index+1)
+				settings.Mods = deleteSlice(settings.Mods, index)
 			}
 		}
 		err := settings.Write()
@@ -142,6 +140,16 @@ func enabledPaths() []string {
 		paths = append(paths, i.Path)
 	}
 	return paths
+}
+
+func deleteSlice[S ~[]E, E any](slice S, index int) S {
+	if index < 0 || index >= len(slice) {
+		return slice
+	}
+
+	newSlice := append(slice[:index], slice[index+1:]...)
+
+	return newSlice
 }
 
 func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {
