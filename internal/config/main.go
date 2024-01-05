@@ -27,9 +27,11 @@ func (w *Wad) IsValid() bool {
 }
 
 type Config struct {
-	GZDir string `json:"gzdir"`
-	Mods  []Mod  `json:"mods"`
-	Wads  []Wad  `json:"wads"`
+	GZDoomDir string `json:"gzdoom-dir"`
+	ZDoomDir  string `json:"zdoom-dir"`
+	GZDir     string `json:"gzdir"`
+	Mods      []Mod  `json:"mods"`
+	Wads      []Wad  `json:"wads"`
 }
 
 func (c *Config) Write() error {
