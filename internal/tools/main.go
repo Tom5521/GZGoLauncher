@@ -2,6 +2,7 @@ package tools
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/ncruces/zenity"
 )
@@ -25,4 +26,15 @@ func WadFilePicker() string {
 
 func PK3FilePicker() string {
 	return FilePicker([]string{"*.pk3", "*.wad"}, "pk3 or wad files")
+}
+
+func ImageFilePicker() string {
+	return FilePicker([]string{"*.png", "*.gif", "*.ico", "*.jpg", "*.webp"}, "Images")
+}
+
+func ExeFilePicker() string {
+	if runtime.GOOS == "windows" {
+		return FilePicker([]string{"*.exe"}, ".exe files")
+	}
+	return FilePicker([]string{}, "Executable files")
 }

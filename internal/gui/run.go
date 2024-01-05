@@ -4,7 +4,6 @@ import (
 	"runtime"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
-	"github.com/Tom5521/GoNotes/pkg/messages"
 	"github.com/ncruces/zenity"
 )
 
@@ -14,15 +13,6 @@ func (ui *ui) RunDoom() {
 	if Runner.IWad == "" {
 		zenity.Error("Select a wad first!")
 		return
-	}
-	if settings.GZDir == "" {
-		gzdir := GZDir()
-		settings.GZDir = gzdir
-		gzrun.GZDir = gzdir
-		err := settings.Write()
-		if err != nil {
-			messages.Error(err)
-		}
 	}
 	gzrun.GZDir = settings.GZDir
 	mods := enabledPaths()
@@ -39,6 +29,7 @@ func (ui *ui) RunDoom() {
 		ui.MainWindow.Show()
 		return
 	}
+	gzrun.GZDir = settings.GZDir
 	err := Runner.Start()
 	if err != nil {
 		zenity.Error(err.Error())
