@@ -7,74 +7,166 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZGoLauncher/internal/tools"
+	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
-func (ui *ui) InitMainWindow() {
-	ui.MainWindow = ui.App.NewWindow(ProyectName)
-	ui.MainWindow.SetContent(ui.SelectContainer())
+func (ui *ui) StartMainWindow() {
+	ui.MainWindow = ui.App.NewWindow(ui.App.Metadata().Name)
+	ui.MainWindow.SetContent(ui.MainContent())
 	ui.MainWindow.ShowAndRun()
 }
 
-func (ui *ui) SelectContainer() *container.Split {
-	wadSelect := ui.WadSelect()
-	modSelect := ui.ModSelect()
-	split := container.NewVSplit(wadSelect, modSelect)
-	return split
+func (ui *ui) MainContent() *fyne.Container {
+	selectConts := ui.SelectCont()
+	runButton := &widget.Button{Text: "Run", Importance: widget.HighImportance, OnTapped: func() { RunDoom() }}
+	rightContent := container.NewVBox(widget.NewLabel("TEST"))
+	downContent := container.NewBorder(nil, nil, nil, runButton)
+	content := container.NewBorder(nil, downContent, nil, rightContent, selectConts)
+	return content
 }
 
-func (ui *ui) WadSelect() *fyne.Container {
-	selectWadLabel := widget.NewRichTextFromMarkdown("**IWADs**")
-	var selectedID = -1
-	ui.WadList = GetList(&IWADs)
-	ui.WadList.OnSelected = func(id widget.ListItemID) {
-		selectedID = id
-	}
-	wadEditToolbar := widget.NewToolbar(
-		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.ContentAddIcon(), func() {
-			newItem, err := selectWadFile()
-			IWADs = append(IWADs)
-			settings.SetStringList(IWADsID, IWADs)
-			ui.WadList.Refresh()
-		}),
-		widget.NewToolbarAction(theme.ContentRemoveIcon(), func() {
-			if selectedID == -1 {
-				return
-			}
-			IWADs = slices.Delete(IWADs, selectedID, selectedID+1)
-			settings.SetStringList(IWADsID, IWADs)
-			ui.WadList.UnselectAll()
-			selectedID = -1
-		}),
-	)
-	wadTopContainter := container.NewBorder(nil, nil, selectWadLabel, nil, wadEditToolbar)
-	wadContainer := container.NewBorder(wadTopContainter, nil, nil, nil, ui.WadList)
-	return wadContainer
+func (ui *ui) SelectCont() *container.Split {
+	content := container.NewVSplit(ui.IwadsCont(), ui.ModsCont())
+	return content
 }
 
-func (ui *ui) ModSelect() *fyne.Container {
-	selectModLabel := widget.NewRichTextFromMarkdown("**Select mods**")
-	ui.ModList = GetList(&MODs)
-	modEditToolbar := widget.NewToolbar(
-		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.ContentAddIcon(), func() {}),
-		widget.NewToolbarAction(theme.ContentRemoveIcon(), func() {}),
-	)
-	modTopContainer := container.NewBorder(nil, nil, selectModLabel, nil, modEditToolbar)
-	modContainer := container.NewBorder(modTopContainer, nil, nil, nil, ui.ModList)
-	return modContainer
-}
-
-func GetList(list *[]string) *widget.List {
-	l := widget.NewList(
+func (ui *ui) IwadsCont() *fyne.Container {
+	var selected = -1
+	selectLabel := widget.NewRichTextFromMarkdown("**Select wad**")
+	ui.WadList = widget.NewList(
 		func() int {
-			return len(*list)
+			return len(settings.Wads)
 		},
-		func() fyne.CanvasObject { return &widget.Label{} },
+		func() fyne.CanvasObject {
+			return &widget.Label{}
+		},
 		func(lii widget.ListItemID, co fyne.CanvasObject) {
-			l := *list
-			co.(*widget.Label).SetText(l[lii])
+			co.(*widget.Label).SetText(string(settings.Wads[lii]))
 		},
 	)
-	return l
+	ui.WadList.OnSelected = func(id widget.ListItemID) {
+		SelectedWad = string(settings.Wads[id])
+		selected = id
+	}
+
+	add := func() {
+		file := tools.WadFilePicker()
+		if file == "" {
+			return
+		}
+		newWad := config.Wad(file)
+		if !newWad.IsValid() {
+			return
+		}
+		settings.Wads = append(settings.Wads, newWad)
+		err := settings.Write()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.WadList.Refresh()
+	}
+	remove := func() {
+		if selected == -1 {
+			return
+		}
+		config.Settings.Wads = slices.Delete(settings.Wads, selected, selected+1)
+		err := config.Settings.Write()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.WadList.UnselectAll()
+		selected = -1
+	}
+	toolbar := toolbar(selectLabel, add, remove)
+
+	content := container.NewBorder(toolbar, nil, nil, nil, ui.WadList)
+	return content
+}
+
+func (ui *ui) ModsCont() *fyne.Container {
+	selectModLabel := widget.NewRichTextFromMarkdown("**Select mods to use**")
+	var selected = -1
+	ui.ModsList = widget.NewList(
+		func() int {
+			return len(settings.Mods)
+		},
+		func() fyne.CanvasObject {
+			return container.NewBorder(
+				nil, nil, nil,
+				&widget.Check{},
+				&widget.Label{},
+			)
+		},
+		func(lii widget.ListItemID, co fyne.CanvasObject) {
+			ctr := co.(*fyne.Container)
+			l := ctr.Objects[0].(*widget.Label)
+			c := ctr.Objects[1].(*widget.Check)
+			l.SetText(settings.Mods[lii].Path)
+			c.OnChanged = func(b bool) {
+				settings.Mods[lii].Enabled = b
+			}
+		},
+	)
+	ui.ModsList.OnSelected = func(id widget.ListItemID) {
+		selected = id
+		ui.ModsList.UnselectAll()
+	}
+	add := func() {
+		newMod := tools.PK3FilePicker()
+		if newMod == "" {
+			return
+		}
+		settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
+		err := settings.Write()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.ModsList.Refresh()
+	}
+	remove := func() {
+		if selected == -1 {
+			return
+		}
+		settings.Mods = slices.Delete(settings.Mods, selected, selected+1)
+		err := settings.Write()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.ModsList.UnselectAll()
+		selected = -1
+	}
+	bar := toolbar(selectModLabel, add, remove)
+	content := container.NewBorder(bar, nil, nil, nil, ui.ModsList)
+	return content
+}
+
+func enabledMods() []config.Mod {
+	var enableds []config.Mod
+	for _, i := range settings.Mods {
+		if i.Enabled {
+			enableds = append(enableds, i)
+		}
+	}
+	return enableds
+}
+
+func enabledPaths() []string {
+	mods := enabledMods()
+	var paths []string
+	for _, i := range mods {
+		paths = append(paths, i.Path)
+	}
+	return paths
+}
+
+func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {
+	toolbar := widget.NewToolbar(
+		widget.NewToolbarSpacer(),
+		widget.NewToolbarAction(theme.ContentRemoveIcon(), minus),
+		widget.NewToolbarAction(theme.ContentAddIcon(), plus),
+	)
+	content := container.NewBorder(nil, nil, leftItem, nil, toolbar)
+	return content
 }

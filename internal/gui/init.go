@@ -4,9 +4,10 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Tom5521/GZGoLauncher/internal/config"
 )
 
-type gui struct {
+type Gui struct {
 	ui
 }
 
@@ -14,28 +15,17 @@ type ui struct {
 	App        fyne.App
 	MainWindow fyne.Window
 	WadList    *widget.List
-	ModList    *widget.List
+	ModsList   *widget.List
 }
 
-const (
-	IWADsID     string = "IWADs"
-	MODsID      string = "MODs"
-	ProyectName string = "GZGoLauncher"
-)
-
 var (
-	IWADs    []string
-	MODs     []string
-	settings fyne.Preferences
+	SelectedWad string
+	settings    = &config.Settings
 )
 
-func Init() *ui {
-	newApp := app.NewWithID("com.github.Tom5521.GZGoLauncher.preferences")
-	newUI := &ui{
-		App: newApp,
-	}
-	settings = newApp.Preferences()
-	IWADs = settings.StringList(IWADsID)
-
-	return newUI
+func Init() *Gui {
+	app := app.New()
+	ui := &Gui{}
+	ui.App = app
+	return ui
 }
