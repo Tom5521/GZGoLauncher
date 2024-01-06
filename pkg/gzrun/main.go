@@ -65,6 +65,9 @@ func (p Pars) FormatCmd() *exec.Cmd {
 	if p.NoStartup {
 		cmd.Args = append(cmd.Args, "-nostartup")
 	}
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	return cmd
 }
 
@@ -100,7 +103,7 @@ func (p Pars) Start() error {
 		return err
 	}
 	cmd := p.FormatCmd()
-	err = cmd.Run()
+	err = cmd.Start()
 	if err != nil {
 		return err
 	}
