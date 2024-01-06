@@ -152,7 +152,7 @@ func (Build) Linux() error {
 	if err != nil {
 		return err
 	}
-	err = movefile("GZGoLauncher.tar.xz", "builds/GZGoLauncher.tar.xz")
+	err = movefile("GZGoLauncher.tar.xz", "builds/GZGoLauncher-linux64.tar.xz")
 	if err != nil {
 		return err
 	}
@@ -160,7 +160,7 @@ func (Build) Linux() error {
 }
 
 func setupLinuxMake() error {
-	if _, err := os.Stat("builds/GZGoLauncher.tar.xz"); os.IsNotExist(err) {
+	if _, err := os.Stat("builds/GZGoLauncher-linux64.tar.xz"); os.IsNotExist(err) {
 		err = compile.Linux()
 		if err != nil {
 			return err
@@ -172,7 +172,7 @@ func setupLinuxMake() error {
 	}
 	if _, err = os.Stat("Makefile"); os.IsNotExist(err) {
 		fmt.Println("Extracting tarfile...")
-		err = sh.RunV("tar", "-xvf", "GZGoLauncher.tar.xz")
+		err = sh.RunV("tar", "-xvf", "GZGoLauncher-linux64.tar.xz")
 		if err != nil {
 			return err
 		}
