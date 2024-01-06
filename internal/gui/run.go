@@ -4,14 +4,13 @@ import (
 	"runtime"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
-	"github.com/ncruces/zenity"
 )
 
 var Runner gzrun.Pars
 
 func (ui *ui) RunDoom() {
 	if Runner.IWad == "" {
-		zenity.Error("Select a wad first!")
+		ErrWin("Select a wad first!")
 		return
 	}
 	gzrun.GZDir = settings.GZDir
@@ -25,7 +24,7 @@ func (ui *ui) RunDoom() {
 		ui.MainWindow.Hide()
 		err := Runner.Run()
 		if err != nil {
-			zenity.Error(err.Error())
+			ErrWin(err)
 		}
 		ui.MainWindow.Show()
 		return
@@ -33,7 +32,7 @@ func (ui *ui) RunDoom() {
 	gzrun.GZDir = settings.GZDir
 	err := Runner.Run()
 	if err != nil {
-		zenity.Error(err.Error())
+		ErrWin(err)
 		return
 	}
 }

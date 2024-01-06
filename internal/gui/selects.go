@@ -7,7 +7,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/internal/tools"
-	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 func (ui *ui) SelectCont() *container.Split {
@@ -46,7 +45,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 		settings.Wads = append(settings.Wads, newWad)
 		err := settings.Write()
 		if err != nil {
-			messages.Error(err)
+			ErrWin(err)
 		}
 		ui.WadList.Refresh()
 	}
@@ -55,9 +54,9 @@ func (ui *ui) IwadsCont() *fyne.Container {
 			return
 		}
 		settings.Wads = deleteSlice(settings.Wads, selected)
-		err := config.Settings.Write()
+		err := settings.Write()
 		if err != nil {
-			messages.Error(err)
+			ErrWin(err)
 		}
 		ui.WadList.UnselectAll()
 		selected = -1
@@ -90,7 +89,10 @@ func (ui *ui) ModsCont() *fyne.Container {
 			c.SetChecked(mod.Enabled)
 			c.OnChanged = func(b bool) {
 				mod.Enabled = b
-				settings.Write()
+				err := settings.Write()
+				if err != nil {
+					ErrWin(err)
+				}
 			}
 		},
 	)
@@ -105,7 +107,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 		settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
 		err := settings.Write()
 		if err != nil {
-			messages.Error(err)
+			ErrWin(err)
 		}
 		ui.ModsList.Refresh()
 	}
@@ -117,7 +119,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 		}
 		err := settings.Write()
 		if err != nil {
-			messages.Error(err)
+			ErrWin(err)
 		}
 		ui.ModsList.Refresh()
 	}

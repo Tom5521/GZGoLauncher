@@ -9,7 +9,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
 	"github.com/Tom5521/GZGoLauncher/internal/tools"
-	"github.com/ncruces/zenity"
 )
 
 func (ui *ui) Configuration() *fyne.Container {
@@ -17,7 +16,10 @@ func (ui *ui) Configuration() *fyne.Container {
 	gzdirEntry := widget.NewEntry()
 	gzdirEntry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
-		settings.Write()
+		err := settings.Write()
+		if err != nil {
+			ErrWin(err)
+		}
 	}
 	gzdirEntry.SetText(settings.GZDoomDir)
 	gzdirBt := widget.NewButton("Select path", func() {
@@ -28,7 +30,7 @@ func (ui *ui) Configuration() *fyne.Container {
 		settings.GZDoomDir = newDir
 		err := settings.Write()
 		if err != nil {
-			zenity.Error(err.Error())
+			ErrWin(err)
 		}
 		gzdirEntry.SetText(newDir)
 	})
@@ -39,7 +41,10 @@ func (ui *ui) Configuration() *fyne.Container {
 	zdirEntry.SetText(settings.ZDoomDir)
 	zdirEntry.OnChanged = func(s string) {
 		settings.ZDoomDir = s
-		settings.Write()
+		err := settings.Write()
+		if err != nil {
+			ErrWin(err)
+		}
 	}
 	zdirBt := widget.NewButton("Select path", func() {
 		newDir := tools.ExeFilePicker()
@@ -49,7 +54,7 @@ func (ui *ui) Configuration() *fyne.Container {
 		settings.ZDoomDir = newDir
 		err := settings.Write()
 		if err != nil {
-			zenity.Error(err.Error())
+			ErrWin(err)
 		}
 	})
 
@@ -58,7 +63,7 @@ func (ui *ui) Configuration() *fyne.Container {
 		downGZDoomBt.SetText("Downloading...")
 		err := download.GZDoom()
 		if err != nil {
-			zenity.Error(err.Error())
+			ErrWin(err)
 			return
 		}
 		gzdirEntry.SetText(settings.GZDoomDir)
@@ -71,7 +76,7 @@ func (ui *ui) Configuration() *fyne.Container {
 		downZDoomBt.SetText("Downloading...")
 		err := download.ZDoom()
 		if err != nil {
-			zenity.Error(err.Error())
+			ErrWin(err)
 			if runtime.GOOS == "linux" {
 				downZDoomBt.SetText("Only for windows!")
 				time.Sleep(time.Second * 2)

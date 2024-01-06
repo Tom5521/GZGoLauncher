@@ -4,7 +4,6 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/ncruces/zenity"
 )
 
 func (ui *ui) StartMainWindow() {
@@ -41,7 +40,7 @@ func (ui *ui) MainContent() *fyne.Container {
 			}
 			err := settings.Write()
 			if err != nil {
-				zenity.Error(err.Error())
+				ErrWin(err)
 			}
 		})
 		runnerSelect.SetSelected("GZDoom")
