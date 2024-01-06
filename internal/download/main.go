@@ -3,12 +3,14 @@ package download
 import (
 	"archive/zip"
 	"errors"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 )
@@ -40,37 +42,47 @@ func Download(url, file string) error {
 	return err
 }
 
-func Unzip(zipFile string, destDirectory string) error {
-	archive, err := zip.OpenReader(zipFile)
+func Unzip(src, dest string) error {
+	r, err := zip.OpenReader(src)
 	if err != nil {
 		return err
 	}
-	defer archive.Close()
+	defer r.Close()
 
-	if err = os.MkdirAll(destDirectory, os.ModePerm); err != nil {
-		return err
+	for _, f := range r.File {
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+		defer rc.Close()
+
+		fpath := filepath.Join(dest, f.Name)
+		if f.FileInfo().IsDir() {
+			os.MkdirAll(fpath, f.Mode())
+		} else {
+			var fdir string
+			if lastIndex := strings.LastIndex(fpath, string(os.PathSeparator)); lastIndex > -1 {
+				fdir = fpath[:lastIndex]
+			}
+
+			err = os.MkdirAll(fdir, f.Mode())
+			if err != nil {
+				log.Fatal(err)
+				return err
+			}
+			f, err := os.OpenFile(
+				fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			_, err = io.Copy(f, rc)
+			if err != nil {
+				return err
+			}
+		}
 	}
-
-	for _, file := range archive.File {
-		reader, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer reader.Close()
-
-		destPath := fmt.Sprintf("%s/%s", destDirectory, file.Name)
-		newFile, err := os.Create(destPath)
-		if err != nil {
-			return err
-		}
-		defer newFile.Close()
-
-		_, err = io.Copy(newFile, reader)
-		if err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 
