@@ -82,12 +82,14 @@ func (ui *ui) ModsCont() *fyne.Container {
 			)
 		},
 		func(lii widget.ListItemID, co fyne.CanvasObject) {
+			mod := &settings.Mods[lii]
 			ctr := co.(*fyne.Container)
 			l := ctr.Objects[0].(*widget.Label)
 			c := ctr.Objects[1].(*widget.Check)
 			l.SetText(settings.Mods[lii].Path)
+			c.SetChecked(mod.Enabled)
 			c.OnChanged = func(b bool) {
-				settings.Mods[lii].Enabled = b
+				mod.Enabled = b
 			}
 		},
 	)

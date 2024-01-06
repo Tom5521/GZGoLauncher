@@ -27,6 +27,5 @@ func Init() *Gui {
 	app := app.New()
 	ui := &Gui{}
 	ui.App = app
-
 	return ui
 }

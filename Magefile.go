@@ -184,8 +184,8 @@ func setupLinuxMake() error {
 // Delete temporary directories, compilation files, etc, It leaves it as if it had just been cloned.
 func Clean() {
 	toRemove := []string{
-		"tmp",
-		"builds",
+		"./tmp",
+		"./builds",
 		"./cmd/GZGoLauncher/builds/",
 	}
 
