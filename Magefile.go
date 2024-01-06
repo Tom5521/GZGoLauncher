@@ -186,6 +186,7 @@ func Clean() {
 	toRemove := []string{
 		"tmp",
 		"builds",
+		"./cmd/GZGoLauncher/builds/",
 	}
 
 	for _, f := range toRemove {
