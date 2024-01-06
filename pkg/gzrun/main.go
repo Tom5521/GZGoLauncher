@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrMissingGZDoom = errors.New("gzdoom is not installed")
+	ErrMissingGZDoom = errors.New("gzdoom/zdoom not found")
 	ErrBadIwad       = errors.New("the iwad is incorrect or does not exist")
 )
 

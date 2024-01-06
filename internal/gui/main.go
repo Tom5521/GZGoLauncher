@@ -9,6 +9,7 @@ import (
 
 func (ui *ui) StartMainWindow() {
 	ui.MainWindow = ui.App.NewWindow(ui.App.Metadata().Name)
+	ui.MainWindow.SetIcon(ui.App.Metadata().Icon)
 	appTabs := container.NewAppTabs(
 		container.NewTabItem("Run", ui.MainContent()),
 		container.NewTabItem("Settings", ui.Configuration()),
