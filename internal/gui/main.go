@@ -14,7 +14,7 @@ func (ui *ui) StartMainWindow() {
 		container.NewTabItem("Run", ui.MainContent()),
 		container.NewTabItem("Settings", ui.Configuration()),
 	)
-	ui.MainWindow.Resize(fyne.NewSize(500, 600))
+	ui.MainWindow.Resize(fyne.NewSize(1100, 500))
 	ui.MainWindow.SetContent(appTabs)
 	ui.MainWindow.ShowAndRun()
 }
