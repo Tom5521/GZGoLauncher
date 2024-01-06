@@ -90,6 +90,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 			c.SetChecked(mod.Enabled)
 			c.OnChanged = func(b bool) {
 				mod.Enabled = b
+				settings.Write()
 			}
 		},
 	)
