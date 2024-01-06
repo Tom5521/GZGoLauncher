@@ -27,7 +27,7 @@ func (ui *ui) MainContent() *fyne.Container {
 		OnTapped: func() {
 			ui.RunDoom()
 		}}
-	rightContent := RightCont()
+	rightContent := container.NewHBox(widget.NewSeparator(), RightCont())
 	downContent := container.NewBorder(nil, nil, nil, func() *fyne.Container {
 		runnerSelect := widget.NewSelect([]string{"GZDoom", "ZDoom"}, func(s string) {
 			if s == "" {
