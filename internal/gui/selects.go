@@ -86,7 +86,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 			ctr := co.(*fyne.Container)
 			l := ctr.Objects[0].(*widget.Label)
 			c := ctr.Objects[1].(*widget.Check)
-			l.SetText(settings.Mods[lii].Path)
+			l.SetText(mod.Path)
 			c.SetChecked(mod.Enabled)
 			c.OnChanged = func(b bool) {
 				mod.Enabled = b
@@ -126,21 +126,12 @@ func (ui *ui) ModsCont() *fyne.Container {
 	return content
 }
 
-func enabledMods() []config.Mod {
-	var enableds []config.Mod
+func enabledPaths() []string {
+	var paths []string
 	for _, i := range settings.Mods {
 		if i.Enabled {
-			enableds = append(enableds, i)
+			paths = append(paths, i.Path)
 		}
-	}
-	return enableds
-}
-
-func enabledPaths() []string {
-	mods := enabledMods()
-	var paths []string
-	for _, i := range mods {
-		paths = append(paths, i.Path)
 	}
 	return paths
 }
@@ -149,9 +140,7 @@ func deleteSlice[S ~[]E, E any](slice S, index int) S {
 	if index < 0 || index >= len(slice) {
 		return slice
 	}
-
 	newSlice := append(slice[:index], slice[index+1:]...)
-
 	return newSlice
 }
 

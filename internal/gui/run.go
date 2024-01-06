@@ -16,10 +16,11 @@ func (ui *ui) RunDoom() {
 	}
 	gzrun.GZDir = settings.GZDir
 	mods := enabledPaths()
-	if len(mods) > 0 {
-		Runner.Mods.Enabled = true
-		Runner.Mods.List = mods
-	}
+
+	Runner.Mods.Enabled = len(mods) > 0
+
+	Runner.Mods.List = mods
+
 	if CloseOnStart {
 		ui.MainWindow.Hide()
 		err := Runner.Run()
@@ -30,7 +31,7 @@ func (ui *ui) RunDoom() {
 		return
 	}
 	gzrun.GZDir = settings.GZDir
-	err := Runner.Start()
+	err := Runner.Run()
 	if err != nil {
 		zenity.Error(err.Error())
 		return
