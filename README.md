@@ -56,6 +56,10 @@ or installing with make install in linux
 
 ![screenshot](./screenshots/Screenshot1.png)
 
+
+https://github.com/Tom5521/GZGoLauncher/assets/88908582/d9692c54-9dfa-4f68-b89e-4828cc160daa
+
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
