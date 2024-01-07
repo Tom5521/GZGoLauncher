@@ -1,7 +1,7 @@
 
 # GZGoLauncher
 
-A cross-platform launcher for gzdoom
+A cross-platform launcher for *zdoom
 
 ## Features
 
@@ -46,7 +46,7 @@ git checkout <latest version>
 mage build:windows
 # Go to builds folder and run GZGoLauncher.exe
 # Then run the executable, and done!
-# The windows(and linux executable is fully portable)
+# The windows and linux executable is fully portable
 ```
 
 You can also download the binaries and unzip them, to run them in a portable way
@@ -55,9 +55,7 @@ You can also download the binaries and unzip them, to run them in a portable way
 
 ![screenshot](./screenshots/Screenshot1.png)
 
-
-https://github.com/Tom5521/GZGoLauncher/assets/88908582/d9692c54-9dfa-4f68-b89e-4828cc160daa
-
+<https://github.com/Tom5521/GZGoLauncher/assets/88908582/d9692c54-9dfa-4f68-b89e-4828cc160daa>
 
 ## License
 
