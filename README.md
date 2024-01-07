@@ -49,8 +49,7 @@ mage build:windows
 # The windows(and linux executable is fully portable)
 ```
 
-You can also download the binaries and unzip them, to run them in a portable way,
-or installing with make install in linux
+You can also download the binaries and unzip them, to run them in a portable way
 
 ## Screenshots
 
