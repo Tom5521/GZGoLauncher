@@ -104,7 +104,7 @@ func ZDoom() error {
 	if IsLinux {
 		return ErrOnlyForWindows
 	}
-	path := config.CurrentFilePath + "/zdoom.zip"
+	path := config.CurrentPath + "/zdoom.zip"
 	url := WinZDoomURL
 	err := Download(url, path)
 	if err != nil {
