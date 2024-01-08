@@ -124,7 +124,7 @@ func (Build) All() error {
 	return nil
 }
 
-// Compile the program to be distributed on windows, NOTE: This will only return an .exe of the program, the installation in windows can only be done through the installer.
+// Compile the program to be distributed on windows
 func (Build) Windows() error {
 	if err := checkdir(); err != nil {
 		return err
@@ -271,7 +271,6 @@ func (Install) Go() error {
 	return err
 }
 
-// NOTE: Only works in linux, in windows you will have to use the installer.
 func (Install) Root() error {
 	err := setupLinuxMake()
 	if err != nil {
@@ -289,7 +288,6 @@ func (Install) Root() error {
 	return nil
 }
 
-// NOTE: Only works in linux, in windows you will have to use the installer.
 func (Install) User() error {
 	err := setupLinuxMake()
 	if err != nil {
