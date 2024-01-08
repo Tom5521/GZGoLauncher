@@ -24,9 +24,7 @@ You can compile it, you need:
 - C compiler
 - Go compiler
 - Mage
-- wget
-- xz (on linux)
-- winrar/7zip (on windows)
+- 7z (for windows packaging)
 - Git
 - Fyne Package (Optionally)
 

@@ -7,11 +7,13 @@ require (
 	github.com/Tom5521/GoNotes v1.1.0
 	github.com/magefile/mage v1.15.0
 	github.com/ncruces/zenity v0.10.10
+	github.com/yi-ge/unxz v1.0.3
 )
 
 require (
 	fyne.io/systray v1.10.1-0.20231115130155-104f5ef7839e // indirect
 	github.com/akavel/rsrc v0.10.2 // indirect
+	github.com/artdarek/go-unzip v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect
 	github.com/fredbi/uri v1.0.0 // indirect
@@ -34,6 +36,7 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tevino/abool v1.2.0 // indirect
+	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	github.com/yuin/goldmark v1.5.5 // indirect
 	golang.org/x/image v0.11.0 // indirect

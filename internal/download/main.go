@@ -1,16 +1,12 @@
 package download
 
 import (
-	"archive/zip"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 )
@@ -18,6 +14,11 @@ import (
 var ErrOnlyForWindows = errors.New("only for windows!")
 
 var settings = &config.Settings
+
+var (
+	IsWindows = runtime.GOOS == "windows"
+	IsLinux   = runtime.GOOS == "linux"
+)
 
 const (
 	WinGZDoomURL   = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-4-11-3.a.-Windows-64bit.zip"
@@ -42,62 +43,18 @@ func Download(url, file string) error {
 	return err
 }
 
-func Unzip(src, dest string) error {
-	r, err := zip.OpenReader(src)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	for _, f := range r.File {
-		rc, err := f.Open()
-		if err != nil {
-			return err
-		}
-		defer rc.Close()
-
-		fpath := filepath.Join(dest, f.Name)
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(fpath, f.Mode())
-		} else {
-			var fdir string
-			if lastIndex := strings.LastIndex(fpath, string(os.PathSeparator)); lastIndex > -1 {
-				fdir = fpath[:lastIndex]
-			}
-
-			err = os.MkdirAll(fdir, f.Mode())
-			if err != nil {
-				log.Fatal(err)
-				return err
-			}
-			f, err := os.OpenFile(
-				fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-
-			_, err = io.Copy(f, rc)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
 func GZDoom() error {
 	path := func() string {
-		if runtime.GOOS == "windows" {
+		if IsWindows {
 			return config.CurrentPath + "/gzdoom.zip"
 		}
 		return config.CurrentPath + "/gzdoom.tar.xz"
 	}()
 	url := func() string {
-		if runtime.GOOS == "windows" {
+		if IsWindows {
 			return WinGZDoomURL
 		}
-		if runtime.GOOS == "linux" {
+		if IsLinux {
 			return LinuxGZDoomURL
 		}
 		return ""
@@ -110,27 +67,29 @@ func GZDoom() error {
 	if err != nil {
 		return err
 	}
-
-	if runtime.GOOS == "windows" {
-		err = Unzip("gzdoom.zip", "gzdoom")
-	}
-	if runtime.GOOS == "linux" {
-		if _, err = os.Stat("gzdoom"); os.IsNotExist(err) {
-			err = os.Mkdir("gzdoom", os.ModePerm)
-			if err != nil {
-				return err
-			}
+	if _, err := os.Stat("gzdoom"); os.IsNotExist(err) {
+		err = os.Mkdir("gzdoom", os.ModePerm)
+		if err != nil {
+			return err
 		}
+	}
+	if IsWindows {
+		err = Unzip(path, "gzdoom")
+		if err != nil {
+			return err
+		}
+	}
+	if IsLinux {
 		cmd := exec.Command("tar", "-xf", "gzdoom.tar.xz", "--strip-components=1", "-C", "gzdoom")
 		err = cmd.Run()
 		if err != nil {
 			return err
 		}
 	}
-	if runtime.GOOS == "linux" {
+	if IsLinux {
 		settings.GZDoomDir = config.CurrentPath + "/gzdoom/gzdoom"
 	}
-	if runtime.GOOS == "windows" {
+	if IsWindows {
 		settings.GZDoomDir = config.CurrentPath + "/gzdoom/gzdoom.exe"
 	}
 	err = settings.Write()
@@ -142,7 +101,7 @@ func GZDoom() error {
 
 // Only with windows.
 func ZDoom() error {
-	if runtime.GOOS == "linux" {
+	if IsLinux {
 		return ErrOnlyForWindows
 	}
 	path := config.CurrentFilePath + "/zdoom.zip"
