@@ -73,7 +73,7 @@ func (ui *ui) Configuration() *fyne.Container {
 		downGZDoomBt.SetText("DownloadGZDoom")
 	}
 
-	downZDoomBt := &widget.Button{Text: "Download ZDoom (only for windows)"}
+	downZDoomBt := &widget.Button{Text: "Download ZDoom"}
 	downZDoomBt.OnTapped = func() {
 		downZDoomBt.SetText("Downloading...")
 		err := download.ZDoom()
@@ -91,6 +91,9 @@ func (ui *ui) Configuration() *fyne.Container {
 		downZDoomBt.SetText("Downloaded!")
 		time.Sleep(time.Second * 2)
 		downZDoomBt.SetText("Download ZDoom (only for windows)")
+	}
+	if runtime.GOOS == "linux" {
+		downZDoomBt.Disable()
 	}
 
 	downloadCont := container.NewAdaptiveGrid(2, downGZDoomBt, downZDoomBt)

@@ -14,7 +14,7 @@ func Unzip(src, dest string) error {
 
 func ExtractTarXz(src, destDir string) error {
 	if _, err := os.Stat(destDir); os.IsNotExist(err) {
-		err := os.Mkdir(destDir, os.ModePerm)
+		err = os.Mkdir(destDir, os.ModePerm)
 		if err != nil {
 			return err
 		}
