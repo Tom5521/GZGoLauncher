@@ -28,7 +28,6 @@ func MakeWindowsZip() error {
 	nowtime := time.Now()
 	var zipDir = MakeWindowsZipTmpDir
 	if _, err := os.Stat(zipDir); os.IsNotExist(err) {
-		fmt.Println("Making temporal dir...")
 		err = mkdir(zipDir)
 		if err != nil {
 			return err
