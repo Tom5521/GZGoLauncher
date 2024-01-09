@@ -28,7 +28,7 @@ func (ui *ui) MainContent() *fyne.Container {
 		}}
 	rightContent := container.NewHBox(widget.NewSeparator(), RightCont())
 	downContent := container.NewBorder(nil, nil, nil, func() *fyne.Container {
-		runnerSelect := widget.NewSelect([]string{"GZDoom", "ZDoom"}, func(s string) {
+		ui.ZRunnerSelect = widget.NewSelect([]string{"GZDoom", "ZDoom"}, func(s string) {
 			if s == "" {
 				return
 			}
@@ -43,8 +43,13 @@ func (ui *ui) MainContent() *fyne.Container {
 				ErrWin(err)
 			}
 		})
-		runnerSelect.SetSelected("GZDoom")
-		c := container.NewHBox(runnerSelect, runButton)
+		if settings.GZDir == settings.GZDoomDir {
+			ui.ZRunnerSelect.SetSelected("GZDoom")
+		} else {
+			ui.ZRunnerSelect.SetSelected("ZDoom")
+		}
+		ui.ZRunnerSelect.PlaceHolder = "Select a Runner"
+		c := container.NewHBox(ui.ZRunnerSelect, runButton)
 		return c
 	}())
 	content := container.NewBorder(nil, downContent, nil, rightContent, selectConts)

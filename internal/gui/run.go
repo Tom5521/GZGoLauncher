@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
@@ -11,6 +12,10 @@ var Runner gzrun.Pars
 func (ui *ui) RunDoom() {
 	if Runner.IWad == "" {
 		ErrWin("Select a wad first!")
+		return
+	}
+	if ui.ZRunnerSelect.Selected == "" {
+		ErrWin("Select a runner first!")
 		return
 	}
 	gzrun.GZDir = settings.GZDir
@@ -29,6 +34,8 @@ func (ui *ui) RunDoom() {
 		ui.MainWindow.Show()
 		return
 	}
+	fmt.Println(Runner.FormatCmd())
+	return
 	gzrun.GZDir = settings.GZDir
 	err := Runner.Start()
 	if err != nil {

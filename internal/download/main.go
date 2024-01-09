@@ -118,7 +118,7 @@ func ZDoom() error {
 	if err != nil {
 		return err
 	}
-	settings.ZDoomDir = "zdoom/zdoom.exe"
+	settings.ZDoomDir = config.CurrentPath + "/zdoom/zdoom.exe"
 	err = settings.Write()
 	if err != nil {
 		return err

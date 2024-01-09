@@ -33,7 +33,7 @@ func RightCont() *fyne.Container {
 	gameplayLabel := widget.NewLabel("Gameplay Options")
 	skillLabel := widget.NewLabel("Select skill:")
 	skillList := []string{
-		"No",
+		"Cancel",
 		"I'm too young to die.",
 		"Hey, not too rough.",
 		"Hurt me plenty.",
@@ -46,8 +46,9 @@ func RightCont() *fyne.Container {
 		setSkill := func(level int) {
 			Runner.Skill.Level = level
 		}
-		if s == "No" {
+		if s == "Cancel" {
 			Runner.Skill.Enabled = false
+			selectSkill.ClearSelected()
 			return
 		}
 		if s != "" {

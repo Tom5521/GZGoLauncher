@@ -12,10 +12,11 @@ type Gui struct {
 }
 
 type ui struct {
-	App        fyne.App
-	MainWindow fyne.Window
-	WadList    *widget.List
-	ModsList   *widget.List
+	App           fyne.App
+	MainWindow    fyne.Window
+	WadList       *widget.List
+	ModsList      *widget.List
+	ZRunnerSelect *widget.Select
 }
 
 var (

@@ -67,10 +67,12 @@ func (ui *ui) Configuration() *fyne.Container {
 			return
 		}
 		gzdirEntry.SetText(settings.GZDoomDir)
+		ui.ZRunnerSelect.ClearSelected()
 		downGZDoomBt.SetText("Downloaded!")
 		time.Sleep(time.Second * 2)
 		downGZDoomBt.SetText("DownloadGZDoom")
 	}
+
 	downZDoomBt := &widget.Button{Text: "Download ZDoom (only for windows)"}
 	downZDoomBt.OnTapped = func() {
 		downZDoomBt.SetText("Downloading...")
@@ -85,10 +87,12 @@ func (ui *ui) Configuration() *fyne.Container {
 			return
 		}
 		zdirEntry.SetText(settings.ZDoomDir)
+		ui.ZRunnerSelect.ClearSelected()
 		downZDoomBt.SetText("Downloaded!")
 		time.Sleep(time.Second * 2)
 		downZDoomBt.SetText("Download ZDoom (only for windows)")
 	}
+
 	downloadCont := container.NewAdaptiveGrid(2, downGZDoomBt, downZDoomBt)
 	zdirCont := container.NewBorder(nil, nil, zdirBt, nil, zdirEntry)
 	content := container.NewVBox(
