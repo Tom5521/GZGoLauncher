@@ -117,7 +117,6 @@ func downloadWinFiles() error {
 		}
 	}
 	if _, err := os.Stat(TmpDir + "/opengl32.7z"); os.IsNotExist(err) {
-		fmt.Println("Downloading opengl32.dll...")
 		err = download(Mesa64Url, TmpDir+"/opengl32.7z")
 		if err != nil {
 			return err
