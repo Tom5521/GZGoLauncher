@@ -5,8 +5,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
+
+type Install mg.Namespace
 
 func (Install) Go() error {
 	nowtime := time.Now()

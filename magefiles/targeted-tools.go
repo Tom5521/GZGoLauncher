@@ -6,13 +6,8 @@ import (
 	"time"
 
 	"github.com/Tom5521/GoNotes/pkg/messages"
-	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
-
-type Build mg.Namespace
-type Install mg.Namespace
-type Uninstall mg.Namespace
 
 func Clean() {
 	nowtime := time.Now()

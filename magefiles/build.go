@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
+
+type Build mg.Namespace
 
 func (Build) All() error {
 	nowtime := time.Now()

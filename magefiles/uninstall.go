@@ -7,8 +7,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
+
+type Uninstall mg.Namespace
 
 func (Uninstall) Go() error {
 	nowtime := time.Now()
