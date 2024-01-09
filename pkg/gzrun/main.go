@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+
+	"github.com/Tom5521/GZGoLauncher/internal/config"
 )
 
 var (
@@ -33,7 +35,8 @@ type Pars struct {
 }
 
 var (
-	GZDir string
+	GZDir   string
+	LogFile = config.CurrentPath + "/out.log"
 )
 
 func ExistsGZInPath() bool {
@@ -65,9 +68,6 @@ func (p Pars) FormatCmd() *exec.Cmd {
 	if p.NoStartup {
 		cmd.Args = append(cmd.Args, "-nostartup")
 	}
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 	return cmd
 }
 
@@ -90,10 +90,17 @@ func (p Pars) Run() error {
 		return err
 	}
 	cmd := p.FormatCmd()
-	err = cmd.Run()
+
+	var out []byte
+	out, err = cmd.CombinedOutput()
+	errWrite := writeOut(out)
 	if err != nil {
 		return err
 	}
+	if errWrite != nil {
+		return errWrite
+	}
+
 	return nil
 }
 
@@ -103,9 +110,21 @@ func (p Pars) Start() error {
 		return err
 	}
 	cmd := p.FormatCmd()
-	err = cmd.Start()
-	if err != nil {
-		return err
-	}
-	return nil
+	go func() {
+		var out []byte
+		out, err = cmd.CombinedOutput()
+		errWrite := writeOut(out)
+		if err != nil {
+			return
+		}
+		if errWrite != nil {
+			err = errWrite
+			return
+		}
+	}()
+	return err
+}
+
+func writeOut(b []byte) error {
+	return os.WriteFile(LogFile, b, os.ModePerm)
 }

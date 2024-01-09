@@ -30,7 +30,7 @@ func (ui *ui) RunDoom() {
 		return
 	}
 	gzrun.GZDir = settings.GZDir
-	err := Runner.Run()
+	err := Runner.Start()
 	if err != nil {
 		ErrWin(err)
 		return
