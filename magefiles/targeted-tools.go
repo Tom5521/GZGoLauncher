@@ -87,6 +87,7 @@ func MakeWindowsZip() error {
 }
 
 func Release() error {
+	nowtime := time.Now()
 	err := compile.All()
 	if err != nil {
 		return err
@@ -95,5 +96,7 @@ func Release() error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("[release]Elapsed time: ", time.Since(nowtime).String())
 	return nil
 }
