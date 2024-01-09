@@ -26,6 +26,7 @@ func windowsEnv() map[string]string {
 	env := map[string]string{
 		"CC":          "/usr/bin/x86_64-w64-mingw32-gcc",
 		"CXX":         "/usr/bin/x86_64-w64-mingw32-c++",
+		"GOOS":        "windows",
 		"CGO_ENABLED": "1",
 	}
 	return env

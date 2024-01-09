@@ -75,7 +75,7 @@ var (
 
 const (
 	UnixPath    string = "/.config/GZGoLauncher"
-	WindowsPath string = "/Documents/GZGoLauncher"
+	WindowsPath string = "\\Documents\\GZGoLauncher"
 )
 
 func Read() Config {

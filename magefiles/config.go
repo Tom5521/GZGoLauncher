@@ -7,6 +7,7 @@ const (
 	ProyectName          = "GZGoLauncher"
 	TmpDir               = "tmp/"
 	MainDir              = "./cmd/GZGoLauncher/"
+	MainFile             = MainDir + "main.go"
 	WindowsExeName       = ProyectName + "-win64.exe"
 	MakeWindowsZipTmpDir = "windows-tmp"
 	WindowsZipName       = ProyectName + "-win64.zip"

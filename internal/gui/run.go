@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"fmt"
 	"runtime"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
@@ -34,8 +33,6 @@ func (ui *ui) RunDoom() {
 		ui.MainWindow.Show()
 		return
 	}
-	fmt.Println(Runner.FormatCmd())
-	return
 	gzrun.GZDir = settings.GZDir
 	err := Runner.Start()
 	if err != nil {
