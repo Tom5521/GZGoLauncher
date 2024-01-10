@@ -12,6 +12,6 @@ func ErrWin(text ...any) {
 	messages.Error(txt)
 	err := zenity.Error(txt)
 	if err != nil {
-		fmt.Println(err)
+		messages.FatalError(err)
 	}
 }
