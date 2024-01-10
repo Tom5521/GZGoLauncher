@@ -134,11 +134,7 @@ func (ui *configUI) Download() *fyne.Container {
 		err := download.ZDoom()
 		if err != nil {
 			ErrWin(err)
-			if runtime.GOOS == "linux" {
-				down.zdoom.SetText("Only for windows!")
-				time.Sleep(time.Second * 2)
-			}
-			down.zdoom.SetText("Download ZDoom")
+			down.zdoom.SetText("Retry")
 			return
 		}
 		ui.zdoom.Entry.SetText(settings.ZDoomDir)
