@@ -11,7 +11,7 @@ func (ui *ui) StartMainWindow() {
 	ui.MainWindow.SetIcon(ui.App.Metadata().Icon)
 	appTabs := container.NewAppTabs(
 		container.NewTabItem("Run", ui.MainContent()),
-		container.NewTabItem("Settings", ui.Configuration()),
+		container.NewTabItem("Settings", configuration.Container(ui)),
 	)
 	ui.MainWindow.Resize(fyne.NewSize(1100, 500))
 	ui.MainWindow.SetContent(appTabs)

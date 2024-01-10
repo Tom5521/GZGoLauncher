@@ -11,18 +11,54 @@ import (
 	"github.com/Tom5521/GZGoLauncher/internal/tools"
 )
 
-func (ui *ui) Configuration() *fyne.Container {
-	gzlabel := widget.NewLabel("GZDoom path")
-	gzdirEntry := widget.NewEntry()
-	gzdirEntry.OnChanged = func(s string) {
+type configUI struct {
+	mainUI *ui
+	gzdoom struct {
+		Label  *widget.Label
+		Entry  *widget.Entry
+		Button *widget.Button
+	}
+	zdoom struct {
+		Label  *widget.Label
+		Entry  *widget.Entry
+		Button *widget.Button
+	}
+	download struct {
+		gzdoom *widget.Button
+		zdoom  *widget.Button
+	}
+}
+
+var configuration configUI
+
+func (ui *configUI) Container(mainUI *ui) *fyne.Container {
+	ui.mainUI = mainUI
+	gzdoom := ui.Gzdoom()
+	zdoom := ui.Zdoom()
+	download := ui.Download()
+
+	content := container.NewVBox(
+		gzdoom,
+		zdoom,
+		download,
+	)
+	return content
+}
+
+func (ui *configUI) Gzdoom() *fyne.Container {
+	gzdoom := &ui.gzdoom
+	gzdoom.Label = widget.NewLabel("GZDoom path")
+	gzdoom.Entry = widget.NewEntry()
+	gzdoom.Entry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
 		err := settings.Write()
 		if err != nil {
 			ErrWin(err)
 		}
+		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
-	gzdirEntry.SetText(settings.GZDoomDir)
-	gzdirBt := widget.NewButton("Select path", func() {
+	gzdoom.Entry.SetText(settings.GZDoomDir)
+	gzdoom.Button = widget.NewButton("Select path", func() {
 		newDir := tools.ExeFilePicker()
 		if newDir == "" {
 			return
@@ -32,21 +68,30 @@ func (ui *ui) Configuration() *fyne.Container {
 		if err != nil {
 			ErrWin(err)
 		}
-		gzdirEntry.SetText(newDir)
+		gzdoom.Entry.SetText(newDir)
 	})
-	gzdirCont := container.NewBorder(nil, nil, gzdirBt, nil, gzdirEntry)
+	gzdirCont := container.NewBorder(nil, nil, gzdoom.Button, nil, gzdoom.Entry)
+	content := container.NewVBox(
+		gzdoom.Label,
+		gzdirCont,
+	)
+	return content
+}
 
-	zdirLabel := widget.NewLabel("ZDoom path")
-	zdirEntry := widget.NewEntry()
-	zdirEntry.SetText(settings.ZDoomDir)
-	zdirEntry.OnChanged = func(s string) {
+func (ui *configUI) Zdoom() *fyne.Container {
+	zdoom := &ui.zdoom
+	zdoom.Label = widget.NewLabel("ZDoom path")
+	zdoom.Entry = widget.NewEntry()
+	zdoom.Entry.SetText(settings.ZDoomDir)
+	zdoom.Entry.OnChanged = func(s string) {
 		settings.ZDoomDir = s
 		err := settings.Write()
 		if err != nil {
 			ErrWin(err)
 		}
+		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
-	zdirBt := widget.NewButton("Select path", func() {
+	zdoom.Button = widget.NewButton("Select path", func() {
 		newDir := tools.ExeFilePicker()
 		if newDir == "" {
 			return
@@ -57,53 +102,55 @@ func (ui *ui) Configuration() *fyne.Container {
 			ErrWin(err)
 		}
 	})
+	zdirCont := container.NewBorder(nil, nil, zdoom.Button, nil, zdoom.Entry)
+	content := container.NewVBox(
+		zdoom.Label,
+		zdirCont,
+	)
+	return content
+}
 
-	downGZDoomBt := &widget.Button{Text: "Download GZDoom"}
-	downGZDoomBt.OnTapped = func() {
-		downGZDoomBt.SetText("Downloading...")
+func (ui *configUI) Download() *fyne.Container {
+	mainUI := ui.mainUI
+	down := &ui.download
+	down.gzdoom = &widget.Button{Text: "Download GZDoom"}
+	down.gzdoom.OnTapped = func() {
+		down.gzdoom.SetText("Downloading...")
 		err := download.GZDoom()
 		if err != nil {
 			ErrWin(err)
 			return
 		}
-		gzdirEntry.SetText(settings.GZDoomDir)
-		ui.ZRunnerSelect.ClearSelected()
-		downGZDoomBt.SetText("Downloaded!")
+		ui.gzdoom.Entry.SetText(settings.GZDoomDir)
+		mainUI.ZRunnerSelect.ClearSelected()
+		down.gzdoom.SetText("Downloaded!")
 		time.Sleep(time.Second * 2)
-		downGZDoomBt.SetText("DownloadGZDoom")
+		down.gzdoom.SetText("DownloadGZDoom")
 	}
 
-	downZDoomBt := &widget.Button{Text: "Download ZDoom"}
-	downZDoomBt.OnTapped = func() {
-		downZDoomBt.SetText("Downloading...")
+	down.zdoom = &widget.Button{Text: "Download ZDoom"}
+	down.zdoom.OnTapped = func() {
+		down.zdoom.SetText("Downloading...")
 		err := download.ZDoom()
 		if err != nil {
 			ErrWin(err)
 			if runtime.GOOS == "linux" {
-				downZDoomBt.SetText("Only for windows!")
+				down.zdoom.SetText("Only for windows!")
 				time.Sleep(time.Second * 2)
 			}
-			downZDoomBt.SetText("Download ZDoom (only for windows)")
+			down.zdoom.SetText("Download ZDoom")
 			return
 		}
-		zdirEntry.SetText(settings.ZDoomDir)
-		ui.ZRunnerSelect.ClearSelected()
-		downZDoomBt.SetText("Downloaded!")
+		ui.zdoom.Entry.SetText(settings.ZDoomDir)
+		mainUI.ZRunnerSelect.ClearSelected()
+		down.zdoom.SetText("Downloaded!")
 		time.Sleep(time.Second * 2)
-		downZDoomBt.SetText("Download ZDoom (only for windows)")
+		down.zdoom.SetText("Download ZDoom")
 	}
 	if runtime.GOOS == "linux" {
-		downZDoomBt.Disable()
+		down.zdoom.Disable()
 	}
 
-	downloadCont := container.NewAdaptiveGrid(2, downGZDoomBt, downZDoomBt)
-	zdirCont := container.NewBorder(nil, nil, zdirBt, nil, zdirEntry)
-	content := container.NewVBox(
-		gzlabel,
-		gzdirCont,
-		zdirLabel,
-		zdirCont,
-		downloadCont,
-	)
-	return content
+	downloadCont := container.NewAdaptiveGrid(2, down.gzdoom, down.zdoom)
+	return downloadCont
 }
