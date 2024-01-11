@@ -1,6 +1,6 @@
 [Details]
   Icon = "../../assets/cacodemon.png"
   Name = "GZGoLauncher"
-  ID = "github.Tom5521.GZGoLauncher"
+  ID = "Tom5521.GZGoLauncher"
   Version = "1.2.0"
   Build = 52
