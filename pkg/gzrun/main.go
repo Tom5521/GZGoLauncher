@@ -41,7 +41,7 @@ func ExistsGZInPath() bool {
 	return err == nil
 }
 
-func (p Pars) FormatCmd() *exec.Cmd {
+func (p Pars) MakeCmd() *exec.Cmd {
 	cmd := exec.Command(GZDir, "-iwad", p.IWad)
 	if p.Mods.Enabled {
 		cmd.Args = append(cmd.Args, "-file")
@@ -89,7 +89,7 @@ func (p Pars) Run() error {
 	if err != nil {
 		return err
 	}
-	cmd := p.FormatCmd()
+	cmd := p.MakeCmd()
 	err = cmd.Run()
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func (p Pars) Start() error {
 	if err != nil {
 		return err
 	}
-	cmd := p.FormatCmd()
+	cmd := p.MakeCmd()
 	err = cmd.Start()
 	if err != nil {
 		return err
