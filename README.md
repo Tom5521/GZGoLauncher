@@ -16,7 +16,7 @@ Install my-project with go or by executing the binary in its own folder
 Install with go:
 
 ```bash
-go install -v https://github.com/Tom5521/GZGoLauncher/cmd/GZGoLauncher@latest
+go install -v github.com/Tom5521/GZGoLauncher/cmd/GZGoLauncher@latest
 ```
 
 You can compile it, you need:
