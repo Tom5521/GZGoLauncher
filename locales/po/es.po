@@ -1,0 +1,136 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Tom5521 <thomas.bored5521@gmail.com>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: ../internal/gui/configuration.go
+msgid "GZDoom Path"
+msgstr "Ruta de GZDoom"
+
+#: ../internal/gui/configuration.go
+msgid "Select path"
+msgstr "Seleccionar ruta"
+
+#: ../internal/gui/configuration.go
+msgid "ZDoom path"
+msgstr "Ruta de ZDoom"
+
+#: ../internal/gui/configuration.go
+msgid "Download GZDoom"
+msgstr "Descargar GZDoom"
+
+#: ../internal/gui/configuration.go
+msgid "Downloading..."
+msgstr "Descargando..."
+
+#: ../internal/gui/configuration.go
+msgid "Downloaded!"
+msgstr "¡Descargado!"
+
+#: ../internal/gui/configuration.go
+msgid "Retry"
+msgstr "Reintentar"
+
+#: ../internal/gui/configuration.go
+msgid "Download ZDoom"
+msgstr "Descargar ZDoom"
+
+#: ../internal/gui/configuration.go
+msgid "Current language:"
+msgstr "Lenguaje actual:"
+
+#: internal/gui/main.go
+msgid "Run"
+msgstr "Iniciar"
+
+#: internal/gui/main.go
+msgid "Settings"
+msgstr "Configuración"
+
+#: internal/gui/main.go
+msgid "Select a Runner"
+msgstr "Selecciona un runner"
+
+#: internal/gui/right.go
+msgid "Launch Options"
+msgstr "Opciones de inicio"
+
+#: internal/gui/right.go
+msgid "Close launcher on start"
+msgstr "Cerrar el launcher al iniciar"
+
+#: internal/gui/right.go
+msgid "No startup"
+msgstr "No startup"
+
+#: internal/gui/right.go
+msgid "Audio Options"
+msgstr "Opciones de audio"
+
+#: internal/gui/right.go
+msgid "No sound"
+msgstr "Sin sonido"
+
+#: internal/gui/right.go
+msgid "No music"
+msgstr "Sin musica"
+
+#: internal/gui/right.go
+msgid "No SFX"
+msgstr "Sin SFX"
+
+#: internal/gui/right.go
+msgid "Gameplay Options"
+msgstr "Opciones de gameplay"
+
+#: internal/gui/right.go
+msgid "Select skill:"
+msgstr "Dificultad:"
+
+#: internal/gui/right.go
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: internal/gui/right.go
+msgid "Select a skill"
+msgstr "Seleccionar una dificultad"
+
+#: internal/gui/right.go
+msgid "I'm too young to die."
+msgstr "Soy muy joven para morir."
+
+#: internal/gui/right.go
+msgid "Hey, not too rough."
+msgstr "Oye, no seas tan duro."
+
+#: internal/gui/right.go
+msgid "Hurt me plenty."
+msgstr "Hazme mucho daño."
+
+#: internal/gui/right.go
+msgid "Ultra-Violence."
+msgstr "Ultra-Violencia."
+
+#: internal/gui/right.go
+msgid "Nightmare!"
+msgstr "¡Pesadilla!"
+
+#: internal/gui/right.go
+msgid "Select warp"
+msgstr "Seleccionar nivel"
+
+#: internal/gui/selects.go
+msgid "**Select wad**"
+msgstr "**Seleccionar wad**"
+
+#: internal/gui/selects.go
+msgid "**Select mods to use**"
+msgstr "**Selecciona mods a utilizar**"

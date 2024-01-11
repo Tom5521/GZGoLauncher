@@ -27,6 +27,10 @@ type configUI struct {
 		gzdoom *widget.Button
 		zdoom  *widget.Button
 	}
+	lang struct {
+		currentLabel *widget.Label
+		selecter     *widget.Select
+	}
 }
 
 var configuration configUI
@@ -36,18 +40,20 @@ func (ui *configUI) Container(mainUI *ui) *fyne.Container {
 	gzdoom := ui.Gzdoom()
 	zdoom := ui.Zdoom()
 	download := ui.Download()
+	lang := ui.Lang()
 
 	content := container.NewVBox(
 		gzdoom,
 		zdoom,
 		download,
+		lang,
 	)
 	return content
 }
 
 func (ui *configUI) Gzdoom() *fyne.Container {
 	gzdoom := &ui.gzdoom
-	gzdoom.Label = widget.NewLabel("GZDoom path")
+	gzdoom.Label = widget.NewLabel(po.Get("GZDoom Path"))
 	gzdoom.Entry = widget.NewEntry()
 	gzdoom.Entry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
@@ -58,7 +64,7 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	gzdoom.Entry.SetText(settings.GZDoomDir)
-	gzdoom.Button = widget.NewButton("Select path", func() {
+	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
 		newDir := tools.ExeFilePicker()
 		if newDir == "" {
 			return
@@ -80,7 +86,7 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 
 func (ui *configUI) Zdoom() *fyne.Container {
 	zdoom := &ui.zdoom
-	zdoom.Label = widget.NewLabel("ZDoom path")
+	zdoom.Label = widget.NewLabel(po.Get("ZDoom path"))
 	zdoom.Entry = widget.NewEntry()
 	zdoom.Entry.SetText(settings.ZDoomDir)
 	zdoom.Entry.OnChanged = func(s string) {
@@ -91,7 +97,7 @@ func (ui *configUI) Zdoom() *fyne.Container {
 		}
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
-	zdoom.Button = widget.NewButton("Select path", func() {
+	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
 		newDir := tools.ExeFilePicker()
 		if newDir == "" {
 			return
@@ -113,9 +119,9 @@ func (ui *configUI) Zdoom() *fyne.Container {
 func (ui *configUI) Download() *fyne.Container {
 	mainUI := ui.mainUI
 	down := &ui.download
-	down.gzdoom = &widget.Button{Text: "Download GZDoom"}
+	down.gzdoom = &widget.Button{Text: po.Get("Download GZDoom")}
 	down.gzdoom.OnTapped = func() {
-		down.gzdoom.SetText("Downloading...")
+		down.gzdoom.SetText(po.Get("Downloading..."))
 		err := download.GZDoom()
 		if err != nil {
 			ErrWin(err)
@@ -123,25 +129,25 @@ func (ui *configUI) Download() *fyne.Container {
 		}
 		ui.gzdoom.Entry.SetText(settings.GZDoomDir)
 		mainUI.ZRunnerSelect.ClearSelected()
-		down.gzdoom.SetText("Downloaded!")
+		down.gzdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
-		down.gzdoom.SetText("DownloadGZDoom")
+		down.gzdoom.SetText(po.Get("Download GZDoom"))
 	}
 
-	down.zdoom = &widget.Button{Text: "Download ZDoom"}
+	down.zdoom = &widget.Button{Text: po.Get("Download ZDoom")}
 	down.zdoom.OnTapped = func() {
-		down.zdoom.SetText("Downloading...")
+		down.zdoom.SetText(po.Get("Downloading..."))
 		err := download.ZDoom()
 		if err != nil {
 			ErrWin(err)
-			down.zdoom.SetText("Retry")
+			down.zdoom.SetText(po.Get("Retry"))
 			return
 		}
 		ui.zdoom.Entry.SetText(settings.ZDoomDir)
 		mainUI.ZRunnerSelect.ClearSelected()
-		down.zdoom.SetText("Downloaded!")
+		down.zdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
-		down.zdoom.SetText("Download ZDoom")
+		down.zdoom.SetText(po.Get("Download ZDoom"))
 	}
 	if runtime.GOOS == "linux" {
 		down.zdoom.Disable()
@@ -149,4 +155,46 @@ func (ui *configUI) Download() *fyne.Container {
 
 	downloadCont := container.NewAdaptiveGrid(2, down.gzdoom, down.zdoom)
 	return downloadCont
+}
+
+func (ui *configUI) Lang() *fyne.Container {
+	lang := &ui.lang
+	disponibleLangs := []string{
+		"Spanish",
+		"English",
+		"Portuguese",
+	}
+	currentLang := func() string {
+		switch settings.Lang {
+		case "es":
+			return "Spanish"
+		case "en":
+			return "English"
+		case "pt":
+			return "Portuguese"
+		default:
+			return "English"
+		}
+	}
+	lang.currentLabel = &widget.Label{Text: po.Get("Current language:")}
+	lang.selecter = widget.NewSelect(disponibleLangs, func(s string) {
+		switch s {
+		case "Spanish":
+			settings.Lang = "es"
+		case "English":
+			settings.Lang = "en"
+		case "Portuguese":
+			settings.Lang = "pt"
+		default:
+			return
+		}
+		err := settings.Write()
+		if err != nil {
+			ErrWin(err)
+			return
+		}
+	})
+	lang.selecter.SetSelected(currentLang())
+	content := container.NewBorder(nil, nil, lang.currentLabel, nil, lang.selecter)
+	return content
 }

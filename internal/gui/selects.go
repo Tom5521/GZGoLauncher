@@ -16,7 +16,7 @@ func (ui *ui) SelectCont() *container.Split {
 
 func (ui *ui) IwadsCont() *fyne.Container {
 	var selected = -1
-	selectLabel := widget.NewRichTextFromMarkdown("**Select wad**")
+	selectLabel := widget.NewRichTextFromMarkdown(po.Get("**Select wad**"))
 	ui.WadList = widget.NewList(
 		func() int {
 			return len(settings.Wads)
@@ -68,7 +68,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 }
 
 func (ui *ui) ModsCont() *fyne.Container {
-	selectModLabel := widget.NewRichTextFromMarkdown("**Select mods to use**")
+	selectModLabel := widget.NewRichTextFromMarkdown(po.Get("**Select mods to use**"))
 	ui.ModsList = widget.NewList(
 		func() int {
 			return len(settings.Mods)

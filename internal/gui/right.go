@@ -8,45 +8,45 @@ import (
 
 func RightCont() *fyne.Container {
 	// Launch Options.
-	launchLabel := widget.NewLabel("Launch Options")
-	closeOnStart := widget.NewCheck("Close launcher on start", func(b bool) {
+	launchLabel := widget.NewLabel(po.Get("Launch Options"))
+	closeOnStart := widget.NewCheck(po.Get("Close launcher on start"), func(b bool) {
 		CloseOnStart = b
 	})
-	nostartup := widget.NewCheck("No startup", func(b bool) {
+	nostartup := widget.NewCheck(po.Get("No startup"), func(b bool) {
 		Runner.NoStartup = b
 	})
 
 	// Audio options.
-	audioLabel := widget.NewLabel("Audio Options")
+	audioLabel := widget.NewLabel(po.Get("Audio Options"))
 
-	nosound := widget.NewCheck("No sound", func(b bool) {
+	nosound := widget.NewCheck(po.Get("No sound"), func(b bool) {
 		Runner.NoSound = b
 	})
-	nomusic := widget.NewCheck("No music", func(b bool) {
+	nomusic := widget.NewCheck(po.Get("No music"), func(b bool) {
 		Runner.NoMusic = b
 	})
-	nosfx := widget.NewCheck("No SFX", func(b bool) {
+	nosfx := widget.NewCheck(po.Get("No SFX"), func(b bool) {
 		Runner.NoSFX = b
 	})
 
 	// Gameplay options.
-	gameplayLabel := widget.NewLabel("Gameplay Options")
-	skillLabel := widget.NewLabel("Select skill:")
+	gameplayLabel := widget.NewLabel(po.Get("Gameplay Options"))
+	skillLabel := widget.NewLabel(po.Get("Select skill:"))
 	skillList := []string{
-		"Cancel",
-		"I'm too young to die.",
-		"Hey, not too rough.",
-		"Hurt me plenty.",
-		"Ultra-Violence.",
-		"Nightmare!",
+		po.Get("Cancel"),
+		po.Get("I'm too young to die."),
+		po.Get("Hey, not too rough."),
+		po.Get("Hurt me plenty."),
+		po.Get("Ultra-Violence."),
+		po.Get("Nightmare!"),
 	}
 	selectSkill := widget.NewSelect(skillList, func(s string) {})
-	selectSkill.PlaceHolder = "Select a skill"
+	selectSkill.PlaceHolder = po.Get("Select a skill")
 	selectSkill.OnChanged = func(s string) {
 		setSkill := func(level int) {
 			Runner.Skill.Level = level
 		}
-		if s == "Cancel" {
+		if s == po.Get("Cancel") {
 			Runner.Skill.Enabled = false
 			selectSkill.ClearSelected()
 			return
@@ -68,7 +68,7 @@ func RightCont() *fyne.Container {
 		}
 	}
 
-	warpLabel := widget.NewLabel("Select warp")
+	warpLabel := widget.NewLabel(po.Get("Select warp"))
 	warpEntry := widget.NewEntry()
 	warpEntry.OnChanged = func(s string) {
 		if len(s) > 4 {

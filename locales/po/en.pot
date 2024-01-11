@@ -1,0 +1,195 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: internal/gui/configuration.go
+msgid "GZDoom Path"
+msgstr ""
+
+
+#: internal/gui/configuration.go
+msgid "Select path"
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "ZDoom path"
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "Download GZDoom"
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "Downloading..."
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "Downloaded!"
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "Retry"
+msgstr ""
+
+
+
+#: internal/gui/configuration.go
+msgid "Download ZDoom"
+msgstr ""
+
+
+#: internal/gui/configuration.go
+msgid "Current language:"
+msgstr ""
+
+
+
+#: internal/gui/main.go
+msgid "Run"
+msgstr ""
+
+
+
+#: internal/gui/main.go
+msgid "Settings"
+msgstr ""
+
+
+
+#: internal/gui/main.go
+msgid "Select a Runner"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Launch Options"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Close launcher on start"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "No startup"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Audio Options"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "No sound"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "No music"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "No SFX"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Gameplay Options"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select skill:"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Cancel"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select a skill"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "I'm too young to die."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Hey, not too rough."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Hurt me plenty."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Ultra-Violence."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Nightmare!"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select warp"
+msgstr ""
+
+
+
+#: internal/gui/selects.go
+msgid "**Select wad**"
+msgstr ""
+
+
+
+#: internal/gui/selects.go
+msgid "**Select mods to use**"
+msgstr ""
+
