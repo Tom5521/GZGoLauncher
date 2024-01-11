@@ -52,6 +52,7 @@ You can also download the binaries and unzip them, to run them in a portable way
 ## Screenshots
 
 ![screenshot](./screenshots/Screenshot1.png)
+![screenshot](./screenshots/Screenshot2.png)
 
 <https://github.com/Tom5521/GZGoLauncher/assets/88908582/d9692c54-9dfa-4f68-b89e-4828cc160daa>
 
