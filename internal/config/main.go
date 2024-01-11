@@ -13,6 +13,7 @@ type Mod struct {
 	Path    string
 	Enabled bool
 }
+
 type Wad string
 
 func (w *Wad) IsValid() bool {
@@ -27,6 +28,7 @@ func (w *Wad) IsValid() bool {
 }
 
 type Config struct {
+	Lang      string `json:"lang"`
 	GZDoomDir string `json:"gzdoom-dir"`
 	ZDoomDir  string `json:"zdoom-dir"`
 	GZDir     string `json:"gzdir"`
@@ -87,7 +89,7 @@ func Read() Config {
 		}
 	}
 	if _, err = os.Stat(CurrentFilePath); os.IsNotExist(err) {
-		s := Config{}
+		s := Config{Lang: "en", GZDoomDir: "gzdoom", ZDoomDir: "zdoom"}
 		var bytedata []byte
 		bytedata, err = json.Marshal(s)
 		if err != nil {

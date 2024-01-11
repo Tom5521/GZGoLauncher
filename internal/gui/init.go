@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZGoLauncher/locales"
 )
 
 type Gui struct {
@@ -22,6 +23,7 @@ type ui struct {
 var (
 	settings     = &config.Settings
 	CloseOnStart bool
+	po           = locales.GetPo(settings.Lang)
 )
 
 func Init() *Gui {
