@@ -8,7 +8,7 @@ import (
 
 func RightCont() *fyne.Container {
 	// Launch Options.
-	launchLabel := widget.NewLabel(po.Get("Launch Options"))
+	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
 	closeOnStart := widget.NewCheck(po.Get("Close launcher on start"), func(b bool) {
 		CloseOnStart = b
 	})
@@ -30,7 +30,7 @@ func RightCont() *fyne.Container {
 	})
 
 	// Gameplay options.
-	gameplayLabel := widget.NewLabel(po.Get("Gameplay Options"))
+	gameplayLabel := &widget.Label{Text: po.Get("Gameplay Options"), Alignment: fyne.TextAlignCenter}
 	skillLabel := widget.NewLabel(po.Get("Select skill:"))
 	skillList := []string{
 		po.Get("Cancel"),
@@ -82,6 +82,18 @@ func RightCont() *fyne.Container {
 		Runner.Warp.Level = s
 	}
 
+	fastMonsters := widget.NewCheck(po.Get("Fast monsters"), func(b bool) {
+		Runner.FastMonsters = b
+	})
+
+	noMonsters := widget.NewCheck(po.Get("No monsters"), func(b bool) {
+		Runner.NoMonsters = b
+	})
+
+	respawnMonsters := widget.NewCheck(po.Get("Respawn monsters"), func(b bool) {
+		Runner.RespawnMonsters = b
+	})
+
 	// Containers
 
 	launchCont := container.NewAdaptiveGrid(2,
@@ -97,10 +109,16 @@ func RightCont() *fyne.Container {
 
 	skillCont := container.NewBorder(nil, nil, skillLabel, nil, selectSkill)
 	warpCont := container.NewBorder(nil, nil, warpLabel, nil, warpEntry)
+	gameplayChecks := container.NewAdaptiveGrid(2,
+		fastMonsters,
+		noMonsters,
+		respawnMonsters,
+	)
 	gameplayCont := container.NewVBox(
 		gameplayLabel,
 		skillCont,
 		warpCont,
+		gameplayChecks,
 	)
 
 	mainBox := container.NewVBox(

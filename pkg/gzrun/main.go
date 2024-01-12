@@ -30,6 +30,10 @@ type Pars struct {
 		Enabled bool
 		Args    []string
 	}
+	FastMonsters    bool
+	NoMonsters      bool
+	RespawnMonsters bool
+
 	NoSFX     bool
 	NoMusic   bool
 	NoSound   bool
@@ -68,6 +72,15 @@ func (p Pars) MakeCmd() *exec.Cmd {
 	}
 	if p.NoStartup {
 		cmd.Args = append(cmd.Args, "-nostartup")
+	}
+	if p.RespawnMonsters {
+		cmd.Args = append(cmd.Args, "-respawn")
+	}
+	if p.NoMonsters {
+		cmd.Args = append(cmd.Args, "-nomonsters")
+	}
+	if p.FastMonsters {
+		cmd.Args = append(cmd.Args, "-fast")
 	}
 	if p.CustomArgs.Enabled {
 		cmd.Args = append(cmd.Args, p.CustomArgs.Args...)
