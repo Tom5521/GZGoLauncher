@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"log"
 	"reflect"
 	"time"
 
@@ -39,11 +38,9 @@ func AutoSaver() {
 		oldConfig := config.Settings
 		time.Sleep(50 * time.Millisecond)
 		if !reflect.DeepEqual(oldRunner, Runner) {
-			log.Println("Runner es diferente")
 			gzsave.Save(Runner)
 		}
 		if !reflect.DeepEqual(oldConfig, config.Settings) {
-			log.Println("Config es diferente")
 			err := settings.Write()
 			if err != nil {
 				ErrWin(err)
