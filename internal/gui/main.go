@@ -26,7 +26,7 @@ func (ui *ui) MainContent() *fyne.Container {
 		OnTapped: func() {
 			ui.RunDoom()
 		}}
-	rightContent := container.NewHBox(widget.NewSeparator(), RightCont())
+	rightContent := container.NewHBox(widget.NewSeparator(), container.NewVScroll(RightCont()))
 	downContent := container.NewBorder(nil, nil, nil, func() *fyne.Container {
 		ui.ZRunnerSelect = &widget.Select{
 			Selected: func() string {
@@ -49,10 +49,6 @@ func (ui *ui) MainContent() *fyne.Container {
 				default:
 					return
 				}
-				err := settings.Write()
-				if err != nil {
-					ErrWin(err)
-				}
 			},
 			PlaceHolder: po.Get("Select a Runner"),
 		}
@@ -63,10 +59,6 @@ func (ui *ui) MainContent() *fyne.Container {
 		ui.CustomArgs = &widget.Entry{Text: settings.CustomArgs}
 		ui.CustomArgs.OnChanged = func(s string) {
 			settings.CustomArgs = s
-			err := settings.Write()
-			if err != nil {
-				ErrWin(err)
-			}
 		}
 		ui.CustomArgs.SetPlaceHolder(po.Get("Example: %s", "-fast"))
 		return container.NewBorder(nil, nil, label, nil, ui.CustomArgs)

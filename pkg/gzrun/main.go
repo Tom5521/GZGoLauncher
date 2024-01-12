@@ -2,6 +2,7 @@ package gzrun
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -30,6 +31,16 @@ type Pars struct {
 		Enabled bool
 		Args    []string
 	}
+
+	Multiplayer struct {
+		Enabled    bool
+		NetMode    uint // 0: Peer to peer | 1: Packet server
+		Host       int
+		Port       int // Default:5029
+		Deathmatch bool
+		IP         string
+	}
+
 	FastMonsters    bool
 	NoMonsters      bool
 	RespawnMonsters bool
@@ -81,6 +92,19 @@ func (p Pars) MakeCmd() *exec.Cmd {
 	}
 	if p.FastMonsters {
 		cmd.Args = append(cmd.Args, "-fast")
+	}
+	if p.Multiplayer.Enabled {
+		cmd.Args = append(cmd.Args, "join", fmt.Sprintf("%s:%v", p.Multiplayer.IP, "5029"))
+		if p.Multiplayer.Port != 0 {
+			cmd.Args = append(cmd.Args, "-port", strconv.Itoa(p.Multiplayer.Port))
+		}
+		if p.Multiplayer.Host != 0 {
+			cmd.Args = append(cmd.Args, "-host", strconv.Itoa(p.Multiplayer.Host))
+		}
+		if p.Multiplayer.Deathmatch {
+			cmd.Args = append(cmd.Args, "-deathmatch")
+		}
+		cmd.Args = append(cmd.Args, "-netmode", strconv.Itoa(int(p.Multiplayer.NetMode)))
 	}
 	if p.CustomArgs.Enabled {
 		cmd.Args = append(cmd.Args, p.CustomArgs.Args...)

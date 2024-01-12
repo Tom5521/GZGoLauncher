@@ -63,10 +63,6 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 	gzdoom.Entry = &widget.Entry{Text: settings.GZDoomDir}
 	gzdoom.Entry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
@@ -75,10 +71,6 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 			return
 		}
 		settings.GZDoomDir = newDir
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		gzdoom.Entry.SetText(newDir)
 	})
 	gzdirCont := container.NewBorder(nil, nil, gzdoom.Button, nil, gzdoom.Entry)
@@ -95,10 +87,6 @@ func (ui *configUI) Zdoom() *fyne.Container {
 	zdoom.Entry = &widget.Entry{Text: settings.ZDoomDir}
 	zdoom.Entry.OnChanged = func(s string) {
 		settings.ZDoomDir = s
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
@@ -107,10 +95,6 @@ func (ui *configUI) Zdoom() *fyne.Container {
 			return
 		}
 		settings.ZDoomDir = newDir
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 	})
 	zdirCont := container.NewBorder(nil, nil, zdoom.Button, nil, zdoom.Entry)
 	content := container.NewVBox(
@@ -192,11 +176,6 @@ func (ui *configUI) Lang() *fyne.Container {
 		case "Portuguese":
 			settings.Lang = "pt"
 		default:
-			return
-		}
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
 			return
 		}
 		po.Parse(locales.GetParser(settings.Lang))

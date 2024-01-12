@@ -32,6 +32,13 @@ func (ui *ui) IwadsCont() *fyne.Container {
 		Runner.IWad = string(settings.Wads[id])
 		selected = id
 	}
+	if Runner.IWad != "" {
+		for i, w := range settings.Wads {
+			if Runner.IWad == string(w) {
+				ui.WadList.Select(i)
+			}
+		}
+	}
 
 	add := func() {
 		file := tools.WadFilePicker()
@@ -43,10 +50,6 @@ func (ui *ui) IwadsCont() *fyne.Container {
 			return
 		}
 		settings.Wads = append(settings.Wads, newWad)
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		ui.WadList.Refresh()
 	}
 	remove := func() {
@@ -54,10 +57,6 @@ func (ui *ui) IwadsCont() *fyne.Container {
 			return
 		}
 		settings.Wads = deleteSlice(settings.Wads, selected)
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		ui.WadList.UnselectAll()
 		selected = -1
 	}
@@ -80,9 +79,9 @@ func (ui *ui) ModsCont() *fyne.Container {
 				&widget.Label{},
 			)
 		},
-		func(lii widget.ListItemID, co fyne.CanvasObject) {
-			mod := &settings.Mods[lii]
-			ctr := co.(*fyne.Container)
+		func(i widget.ListItemID, o fyne.CanvasObject) {
+			mod := &settings.Mods[i]
+			ctr := o.(*fyne.Container)
 			l := ctr.Objects[0].(*widget.Label)
 			c := ctr.Objects[1].(*widget.Check)
 			l.SetText(mod.Path)
@@ -105,10 +104,6 @@ func (ui *ui) ModsCont() *fyne.Container {
 			return
 		}
 		settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
-		}
 		ui.ModsList.Refresh()
 	}
 	remove := func() {
@@ -116,10 +111,6 @@ func (ui *ui) ModsCont() *fyne.Container {
 			if i.Enabled {
 				settings.Mods = deleteSlice(settings.Mods, index)
 			}
-		}
-		err := settings.Write()
-		if err != nil {
-			ErrWin(err)
 		}
 		ui.ModsList.Refresh()
 	}

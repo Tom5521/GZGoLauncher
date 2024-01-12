@@ -28,13 +28,14 @@ func (w *Wad) IsValid() bool {
 }
 
 type Config struct {
-	CustomArgs string `json:"custom-args"`
-	Lang       string `json:"lang"`
-	GZDoomDir  string `json:"gzdoom-dir"`
-	ZDoomDir   string `json:"zdoom-dir"`
-	GZDir      string `json:"gzdir"`
-	Mods       []Mod  `json:"mods"`
-	Wads       []Wad  `json:"wads"`
+	CloseOnStart bool   `json:"close-on-start"`
+	CustomArgs   string `json:"custom-args"`
+	Lang         string `json:"lang"`
+	GZDoomDir    string `json:"gzdoom-dir"`
+	ZDoomDir     string `json:"zdoom-dir"`
+	GZDir        string `json:"gzdir"`
+	Mods         []Mod  `json:"mods"`
+	Wads         []Wad  `json:"wads"`
 }
 
 func (c *Config) Write() error {

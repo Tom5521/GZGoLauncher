@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"strconv"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
@@ -9,25 +11,45 @@ import (
 func RightCont() *fyne.Container {
 	// Launch Options.
 	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
-	closeOnStart := widget.NewCheck(po.Get("Close launcher on start"), func(b bool) {
-		CloseOnStart = b
-	})
-	nostartup := widget.NewCheck(po.Get("No startup"), func(b bool) {
-		Runner.NoStartup = b
-	})
+	closeOnStart := &widget.Check{
+		Text:    po.Get("Close launcher on start"),
+		Checked: settings.CloseOnStart,
+		OnChanged: func(b bool) {
+			settings.CloseOnStart = b
+		},
+	}
+	nostartup := &widget.Check{
+		Text:    po.Get("No startup"),
+		Checked: Runner.NoStartup,
+		OnChanged: func(b bool) {
+			Runner.NoStartup = b
+		},
+	}
 
 	// Audio options.
-	audioLabel := widget.NewLabel(po.Get("Audio Options"))
+	audioLabel := &widget.Label{Text: po.Get("Audio Options"), Alignment: fyne.TextAlignCenter}
 
-	nosound := widget.NewCheck(po.Get("No sound"), func(b bool) {
-		Runner.NoSound = b
-	})
-	nomusic := widget.NewCheck(po.Get("No music"), func(b bool) {
-		Runner.NoMusic = b
-	})
-	nosfx := widget.NewCheck(po.Get("No SFX"), func(b bool) {
-		Runner.NoSFX = b
-	})
+	nosound := &widget.Check{
+		Text:    po.Get("No sound"),
+		Checked: Runner.NoSound,
+		OnChanged: func(b bool) {
+			Runner.NoSound = b
+		},
+	}
+	nomusic := &widget.Check{
+		Text:    po.Get("No music"),
+		Checked: Runner.NoSound,
+		OnChanged: func(b bool) {
+			Runner.NoMusic = b
+		},
+	}
+	nosfx := &widget.Check{
+		Text:    po.Get("No SFX"),
+		Checked: Runner.NoSFX,
+		OnChanged: func(b bool) {
+			Runner.NoSFX = b
+		},
+	}
 
 	// Gameplay options.
 	gameplayLabel := &widget.Label{Text: po.Get("Gameplay Options"), Alignment: fyne.TextAlignCenter}
@@ -67,9 +89,23 @@ func RightCont() *fyne.Container {
 			setSkill(4)
 		}
 	}
+	if Runner.Skill.Enabled {
+		switch Runner.Skill.Level {
+		case 0:
+			selectSkill.Selected = skillList[1]
+		case 1:
+			selectSkill.Selected = skillList[2]
+		case 2:
+			selectSkill.Selected = skillList[3]
+		case 3:
+			selectSkill.Selected = skillList[4]
+		case 4:
+			selectSkill.Selected = skillList[5]
+		}
+	}
 
 	warpLabel := widget.NewLabel(po.Get("Select warp"))
-	warpEntry := widget.NewEntry()
+	warpEntry := &widget.Entry{Text: Runner.Warp.Level}
 	warpEntry.OnChanged = func(s string) {
 		if len(s) > 4 {
 			warpEntry.SetText(s[4:])
@@ -82,17 +118,118 @@ func RightCont() *fyne.Container {
 		Runner.Warp.Level = s
 	}
 
-	fastMonsters := widget.NewCheck(po.Get("Fast monsters"), func(b bool) {
-		Runner.FastMonsters = b
-	})
+	fastMonsters := &widget.Check{
+		Text:    po.Get("Fast monsters"),
+		Checked: Runner.FastMonsters,
+		OnChanged: func(b bool) {
+			Runner.FastMonsters = b
+		},
+	}
 
-	noMonsters := widget.NewCheck(po.Get("No monsters"), func(b bool) {
-		Runner.NoMonsters = b
-	})
+	noMonsters := &widget.Check{
+		Text:    po.Get("No monsters"),
+		Checked: Runner.NoMonsters,
+		OnChanged: func(b bool) {
+			Runner.NoMonsters = b
+		},
+	}
 
-	respawnMonsters := widget.NewCheck(po.Get("Respawn monsters"), func(b bool) {
-		Runner.RespawnMonsters = b
-	})
+	respawnMonsters := &widget.Check{
+		Text:    po.Get("Respawn monsters"),
+		Checked: Runner.RespawnMonsters,
+		OnChanged: func(b bool) {
+			Runner.RespawnMonsters = b
+		},
+	}
+
+	// Multiplayer
+
+	multiplayerLabel := &widget.Label{Text: po.Get("Multiplayer"), Alignment: fyne.TextAlignCenter}
+
+	hostLabel := &widget.Label{Text: po.Get("Host:")}
+	hostEntry := &widget.Entry{Text: strconv.Itoa(Runner.Multiplayer.Host)}
+	hostEntry.OnChanged = func(s string) {
+		h, err := strconv.Atoi(s)
+		if err != nil {
+			hostEntry.SetText("0")
+			return
+		}
+		Runner.Multiplayer.Host = h
+	}
+
+	deathMatch := &widget.Check{
+		Text:    po.Get("Deathmatch"),
+		Checked: Runner.Multiplayer.Deathmatch,
+		OnChanged: func(b bool) {
+			Runner.Multiplayer.Deathmatch = b
+		},
+	}
+
+	packetServer := &widget.Check{
+		Text: po.Get("Packet server"),
+		Checked: func() bool {
+			if Runner.Multiplayer.NetMode == 1 {
+				return true
+			}
+			return false
+		}(),
+		OnChanged: func(b bool) {
+			if b {
+				Runner.Multiplayer.NetMode = 1
+				return
+			}
+			Runner.Multiplayer.NetMode = 0
+		},
+	}
+
+	portLabel := &widget.Label{Text: po.Get("Port:")}
+	portEntry := &widget.Entry{Text: strconv.Itoa(Runner.Multiplayer.Port)}
+	portEntry.OnChanged = func(s string) {
+		p, err := strconv.Atoi(s)
+		if err != nil {
+			portEntry.SetText("5029")
+			return
+		}
+		Runner.Multiplayer.Port = p
+	}
+
+	connectToLb := &widget.Label{Text: po.Get("Connect to")}
+	connectToEntry := &widget.Entry{Text: Runner.Multiplayer.IP}
+	connectToEntry.OnChanged = func(s string) {
+		Runner.Multiplayer.IP = s
+	}
+
+	disableMultiplayer := func() {
+		hostEntry.Disable()
+		connectToEntry.Disable()
+		portEntry.Disable()
+		deathMatch.Disable()
+		packetServer.Disable()
+		Runner.Multiplayer.Enabled = false
+	}
+	enableMultiplayer := func() {
+		hostEntry.Enable()
+		connectToEntry.Enable()
+		portEntry.Enable()
+		deathMatch.Enable()
+		packetServer.Enable()
+		Runner.Multiplayer.Enabled = true
+	}
+	enabledMultiplayer := &widget.Check{
+		Text:    po.Get("Enabled"),
+		Checked: Runner.Multiplayer.Enabled,
+		OnChanged: func(b bool) {
+			if !b {
+				disableMultiplayer()
+				return
+			}
+			enableMultiplayer()
+
+		},
+	}
+	if !Runner.Multiplayer.Enabled {
+		disableMultiplayer()
+	}
 
 	// Containers
 
@@ -121,12 +258,24 @@ func RightCont() *fyne.Container {
 		gameplayChecks,
 	)
 
+	multiplayerBox := container.NewVBox(
+		multiplayerLabel,
+		enabledMultiplayer,
+		container.NewBorder(nil, nil, hostLabel, nil, hostEntry),
+		deathMatch,
+		packetServer,
+		container.NewBorder(nil, nil, portLabel, nil, portEntry),
+		connectToLb,
+		connectToEntry,
+	)
+
 	mainBox := container.NewVBox(
 		launchLabel,
 		launchCont,
 		audioLabel,
 		audioCont,
 		gameplayCont,
+		multiplayerBox,
 	)
 	return mainBox
 }
