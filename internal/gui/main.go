@@ -28,32 +28,50 @@ func (ui *ui) MainContent() *fyne.Container {
 		}}
 	rightContent := container.NewHBox(widget.NewSeparator(), RightCont())
 	downContent := container.NewBorder(nil, nil, nil, func() *fyne.Container {
-		ui.ZRunnerSelect = widget.NewSelect([]string{"GZDoom", "ZDoom"}, func(s string) {
-			switch s {
-			case "GZDoom":
-				settings.GZDir = settings.GZDoomDir
-			case "ZDoom":
-				settings.GZDir = settings.ZDoomDir
-			default:
-				return
-			}
+		ui.ZRunnerSelect = &widget.Select{
+			Selected: func() string {
+				switch settings.GZDir {
+				case settings.GZDoomDir:
+					return "GZDoom"
+				case settings.ZDoomDir:
+					return "ZDoom"
+				default:
+					return "GZDoom"
+				}
+			}(),
+			Options: []string{"GZDoom", "ZDoom"},
+			OnChanged: func(s string) {
+				switch s {
+				case "GZDoom":
+					settings.GZDir = settings.GZDoomDir
+				case "ZDoom":
+					settings.GZDir = settings.ZDoomDir
+				default:
+					return
+				}
+				err := settings.Write()
+				if err != nil {
+					ErrWin(err)
+				}
+			},
+			PlaceHolder: po.Get("Select a Runner"),
+		}
+		c := container.NewHBox(ui.ZRunnerSelect, runButton)
+		return c
+	}(), func() *fyne.Container {
+		label := widget.NewLabel(po.Get("Custom arguments:"))
+		ui.CustomArgs = &widget.Entry{Text: settings.CustomArgs}
+		ui.CustomArgs.OnChanged = func(s string) {
+			settings.CustomArgs = s
 			err := settings.Write()
 			if err != nil {
 				ErrWin(err)
 			}
-		})
-		switch settings.GZDir {
-		case settings.GZDoomDir:
-			ui.ZRunnerSelect.SetSelected("GZDoom")
-		case settings.ZDoomDir:
-			ui.ZRunnerSelect.SetSelected("ZDoom")
-		default:
-			ui.ZRunnerSelect.ClearSelected()
 		}
-		ui.ZRunnerSelect.PlaceHolder = po.Get("Select a Runner")
-		c := container.NewHBox(ui.ZRunnerSelect, runButton)
-		return c
-	}())
+		ui.CustomArgs.SetPlaceHolder(po.Get("Example: %s", "-fast"))
+		return container.NewBorder(nil, nil, label, nil, ui.CustomArgs)
+	}(),
+	)
 	content := container.NewBorder(nil, downContent, nil, rightContent, selectConts)
 	return content
 }

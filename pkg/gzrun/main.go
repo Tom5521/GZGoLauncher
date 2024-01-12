@@ -26,6 +26,10 @@ type Pars struct {
 		Enabled bool
 		List    []string
 	}
+	CustomArgs struct {
+		Enabled bool
+		Args    []string
+	}
 	NoSFX     bool
 	NoMusic   bool
 	NoSound   bool
@@ -64,6 +68,9 @@ func (p Pars) MakeCmd() *exec.Cmd {
 	}
 	if p.NoStartup {
 		cmd.Args = append(cmd.Args, "-nostartup")
+	}
+	if p.CustomArgs.Enabled {
+		cmd.Args = append(cmd.Args, p.CustomArgs.Args...)
 	}
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

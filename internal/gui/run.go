@@ -3,6 +3,7 @@ package gui
 import (
 	"fmt"
 	"runtime"
+	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
 )
@@ -22,8 +23,9 @@ func (ui *ui) RunDoom() {
 	mods := enabledPaths()
 
 	Runner.Mods.Enabled = len(mods) > 0
-
 	Runner.Mods.List = mods
+	Runner.CustomArgs.Enabled = len(settings.CustomArgs) > 0
+	Runner.CustomArgs.Args = strings.Fields(settings.CustomArgs)
 
 	if CloseOnStart {
 		ui.MainWindow.Hide()

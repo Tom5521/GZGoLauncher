@@ -28,7 +28,7 @@ func read(file string) []byte {
 		if err != nil {
 			fmt.Println(err)
 		}
-		return read("po/en.pot")
+		return read("po/en.po")
 	}
 	return data
 }
@@ -41,10 +41,6 @@ func GetPo(lang string) *gotext.Po {
 
 func GetParser(lang string) []byte {
 	var bytedata []byte
-	if lang == "en" {
-		bytedata = read("po/en.pot")
-		return bytedata
-	}
 	bytedata = read("po/" + lang + ".po")
 	return bytedata
 }
