@@ -107,11 +107,9 @@ func RightCont() *fyne.Container {
 	warpLabel := widget.NewLabel(po.Get("Select warp"))
 	warpEntry := &widget.Entry{Text: Runner.Warp.Level}
 	warpEntry.OnChanged = func(s string) {
-		if len(s) > 4 {
-			warpEntry.SetText(s[4:])
-		}
 		if s == "" {
 			Runner.Warp.Enabled = false
+			Runner.Warp.Level = ""
 			return
 		}
 		Runner.Warp.Enabled = true
