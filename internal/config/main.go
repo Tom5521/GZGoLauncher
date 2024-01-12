@@ -90,7 +90,14 @@ func Read() Config {
 		}
 	}
 	if _, err = os.Stat(CurrentFilePath); os.IsNotExist(err) {
-		s := Config{Lang: "en", GZDoomDir: "gzdoom", ZDoomDir: "zdoom"}
+		zdoom, gzdoom := func() (string, string) {
+			const z, g string = "zdoom", "gzdoom"
+			if runtime.GOOS == "windows" {
+				return z + ".exe", g + ".exe"
+			}
+			return z, g
+		}()
+		s := Config{Lang: "en", GZDoomDir: gzdoom, ZDoomDir: zdoom}
 		var bytedata []byte
 		bytedata, err = json.Marshal(s)
 		if err != nil {

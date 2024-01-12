@@ -2,7 +2,6 @@ package gui
 
 import (
 	"fmt"
-	"runtime"
 	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
@@ -43,11 +42,4 @@ func (ui *ui) RunDoom() {
 		ErrWin(err)
 		return
 	}
-}
-
-func GZDir() string {
-	if runtime.GOOS == "windows" {
-		return "gzdoom.exe"
-	}
-	return "gzdoom"
 }
