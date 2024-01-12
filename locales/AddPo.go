@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Tom5521/GoNotes/pkg/messages"
+	msg "github.com/Tom5521/GoNotes/pkg/messages"
 	"gopkg.in/yaml.v3"
 )
 
@@ -48,11 +48,14 @@ func AddLineToFile(filename, line string) error {
 	return nil
 }
 
-func ReadFile(f string) map[string]string {
+func ReadFile(f string) (map[string]string, error) {
 	var ret map[string]string
-	file, _ := os.ReadFile(f)
-	yaml.Unmarshal(file, &ret)
-	return ret
+	file, err := os.ReadFile(f)
+	if err != nil {
+		return ret, err
+	}
+	err = yaml.Unmarshal(file, &ret)
+	return ret, err
 }
 
 const Template string = `
@@ -63,15 +66,18 @@ msgstr ""
 `
 
 func main() {
-	data := ReadFile("locales/last-add.yml")
+	data, err := ReadFile("locales/last-add.yml")
+	if err != nil {
+		msg.FatalError(err)
+	}
 	dirs, err := GetFilesInDirectory("locales/po/")
 	if err != nil {
-		messages.FatalError(err)
+		msg.FatalError(err)
 	}
 	for _, file := range dirs {
 		err := AddLineToFile(file, fmt.Sprintf(Template, data["route"], data["msgid"]))
 		if err != nil {
-			messages.FatalError(err)
+			msg.FatalError(err)
 		}
 	}
 }

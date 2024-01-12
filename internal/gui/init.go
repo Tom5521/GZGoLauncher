@@ -18,6 +18,7 @@ type ui struct {
 	WadList       *widget.List
 	ModsList      *widget.List
 	ZRunnerSelect *widget.Select
+	CustomArgs    *widget.Entry
 }
 
 var (

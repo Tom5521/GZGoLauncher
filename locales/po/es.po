@@ -134,3 +134,23 @@ msgstr "**Seleccionar wad**"
 #: internal/gui/selects.go
 msgid "**Select mods to use**"
 msgstr "**Selecciona mods a utilizar**"
+
+#: internal/gui/configuration.go
+msgid "Show credits"
+msgstr "Creditos"
+
+#: internal/gui/configuration.go
+msgid "Info"
+msgstr "Información"
+
+#: internal/gui/configuration.go
+msgid "You will be able to see the changes after restarting"
+msgstr "Podrás ver los cambios tras reiniciar el programa"
+
+#: internal/gui/configuration.go
+msgid "Custom arguments:"
+msgstr "Argumentos personalizados:"
+
+#: internal/gui/configuration.go
+msgid "Example: %s"
+msgstr "Ejemplo: %s"

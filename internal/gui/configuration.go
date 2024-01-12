@@ -6,9 +6,12 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
+	"github.com/Tom5521/GZGoLauncher/internal/gui/credits"
 	"github.com/Tom5521/GZGoLauncher/internal/tools"
+	"github.com/Tom5521/GZGoLauncher/locales"
 )
 
 type configUI struct {
@@ -31,6 +34,7 @@ type configUI struct {
 		currentLabel *widget.Label
 		selecter     *widget.Select
 	}
+	credits *widget.Button
 }
 
 var configuration configUI
@@ -41,20 +45,22 @@ func (ui *configUI) Container(mainUI *ui) *fyne.Container {
 	zdoom := ui.Zdoom()
 	download := ui.Download()
 	lang := ui.Lang()
+	credits := ui.Credits()
 
 	content := container.NewVBox(
 		gzdoom,
 		zdoom,
 		download,
 		lang,
+		credits,
 	)
 	return content
 }
 
 func (ui *configUI) Gzdoom() *fyne.Container {
 	gzdoom := &ui.gzdoom
-	gzdoom.Label = widget.NewLabel(po.Get("GZDoom Path"))
-	gzdoom.Entry = widget.NewEntry()
+	gzdoom.Label = &widget.Label{Text: po.Get("GZDoom Path")}
+	gzdoom.Entry = &widget.Entry{Text: settings.GZDoomDir}
 	gzdoom.Entry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
 		err := settings.Write()
@@ -63,7 +69,6 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 		}
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
-	gzdoom.Entry.SetText(settings.GZDoomDir)
 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
 		newDir := tools.ExeFilePicker()
 		if newDir == "" {
@@ -87,8 +92,7 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 func (ui *configUI) Zdoom() *fyne.Container {
 	zdoom := &ui.zdoom
 	zdoom.Label = widget.NewLabel(po.Get("ZDoom path"))
-	zdoom.Entry = widget.NewEntry()
-	zdoom.Entry.SetText(settings.ZDoomDir)
+	zdoom.Entry = &widget.Entry{Text: settings.ZDoomDir}
 	zdoom.Entry.OnChanged = func(s string) {
 		settings.ZDoomDir = s
 		err := settings.Write()
@@ -179,6 +183,8 @@ func (ui *configUI) Lang() *fyne.Container {
 	lang.currentLabel = &widget.Label{Text: po.Get("Current language:")}
 	lang.selecter = widget.NewSelect(disponibleLangs, func(s string) {
 		switch s {
+		case currentLang():
+			return
 		case "Spanish":
 			settings.Lang = "es"
 		case "English":
@@ -193,8 +199,24 @@ func (ui *configUI) Lang() *fyne.Container {
 			ErrWin(err)
 			return
 		}
+		po.Parse(locales.GetParser(settings.Lang))
+		dialog.ShowInformation(
+			po.Get("Info"),
+			po.Get("You will be able to see the changes after restarting"),
+			ui.mainUI.MainWindow,
+		)
 	})
 	lang.selecter.SetSelected(currentLang())
 	content := container.NewBorder(nil, nil, lang.currentLabel, nil, lang.selecter)
+	return content
+}
+
+func (ui *configUI) Credits() *fyne.Container {
+	ui.credits = widget.NewButton(po.Get("Show credits"), func() {
+		credits.CreditsWindow(ui.mainUI.App, fyne.NewSize(400, 800)).Show()
+	})
+	content := container.NewVBox(
+		ui.credits,
+	)
 	return content
 }
