@@ -154,3 +154,43 @@ msgstr "Argumentos personalizados:"
 #: internal/gui/configuration.go
 msgid "Example: %s"
 msgstr "Exemplo: %s"
+
+#: internal/gui/right.go
+msgid "Fast monsters"
+msgstr "Monstros rápidos"
+
+#: internal/gui/right.go
+msgid "No monsters"
+msgstr "Sem monstros"
+
+#: internal/gui/right.go
+msgid "Respawn monsters"
+msgstr "Reaparecer monstros"
+
+#: internal/gui/right.go
+msgid "Multiplayer"
+msgstr "Multijogador"
+
+#: internal/gui/right.go
+msgid "Host:"
+msgstr "Anfitrião:"
+
+#: internal/gui/right.go
+msgid "Deathmatch"
+msgstr "Deathmatch"
+
+#: internal/gui/right.go
+msgid "Packet server"
+msgstr "Servidor packet"
+
+#: internal/gui/right.go
+msgid "Port:"
+msgstr "Porto:"
+
+#: internal/gui/right.go
+msgid "Connect to"
+msgstr "Ligar a"
+
+#: internal/gui/right.go
+msgid "Enabled"
+msgstr "Ativado"

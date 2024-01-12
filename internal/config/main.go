@@ -28,13 +28,14 @@ func (w *Wad) IsValid() bool {
 }
 
 type Config struct {
-	CustomArgs string `json:"custom-args"`
-	Lang       string `json:"lang"`
-	GZDoomDir  string `json:"gzdoom-dir"`
-	ZDoomDir   string `json:"zdoom-dir"`
-	GZDir      string `json:"gzdir"`
-	Mods       []Mod  `json:"mods"`
-	Wads       []Wad  `json:"wads"`
+	CloseOnStart bool   `json:"close-on-start"`
+	CustomArgs   string `json:"custom-args"`
+	Lang         string `json:"lang"`
+	GZDoomDir    string `json:"gzdoom-dir"`
+	ZDoomDir     string `json:"zdoom-dir"`
+	GZDir        string `json:"gzdir"`
+	Mods         []Mod  `json:"mods"`
+	Wads         []Wad  `json:"wads"`
 }
 
 func (c *Config) Write() error {
@@ -90,7 +91,14 @@ func Read() Config {
 		}
 	}
 	if _, err = os.Stat(CurrentFilePath); os.IsNotExist(err) {
-		s := Config{Lang: "en", GZDoomDir: "gzdoom", ZDoomDir: "zdoom"}
+		zdoom, gzdoom := func() (string, string) {
+			const z, g string = "zdoom", "gzdoom"
+			if runtime.GOOS == "windows" {
+				return z + ".exe", g + ".exe"
+			}
+			return z, g
+		}()
+		s := Config{Lang: "en", GZDoomDir: gzdoom, ZDoomDir: zdoom}
 		var bytedata []byte
 		bytedata, err = json.Marshal(s)
 		if err != nil {

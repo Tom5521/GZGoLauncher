@@ -1,2 +1,2 @@
-route: internal/gui/configuration.go
-msgid: 'Example: %s'
+route: internal/gui/right.go
+msgid: Enabled

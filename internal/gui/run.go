@@ -2,13 +2,10 @@ package gui
 
 import (
 	"fmt"
-	"runtime"
 	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
 )
-
-var Runner gzrun.Pars
 
 func (ui *ui) RunDoom() {
 	if Runner.IWad == "" {
@@ -27,7 +24,7 @@ func (ui *ui) RunDoom() {
 	Runner.CustomArgs.Enabled = len(settings.CustomArgs) > 0
 	Runner.CustomArgs.Args = strings.Fields(settings.CustomArgs)
 
-	if CloseOnStart {
+	if settings.CloseOnStart {
 		ui.MainWindow.Hide()
 		err := Runner.Run()
 		if err != nil {
@@ -38,16 +35,10 @@ func (ui *ui) RunDoom() {
 	}
 	gzrun.GZDir = settings.GZDir
 	fmt.Println(Runner.MakeCmd())
+	// return // NOTE: Uncomment this to view the cmd without starting *zdoom.
 	err := Runner.Start()
 	if err != nil {
 		ErrWin(err)
 		return
 	}
-}
-
-func GZDir() string {
-	if runtime.GOOS == "windows" {
-		return "gzdoom.exe"
-	}
-	return "gzdoom"
 }
