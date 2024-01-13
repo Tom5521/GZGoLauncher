@@ -7,7 +7,7 @@ A cross-platform launcher for *zdoom
 
 - Light/dark mode toggle
 - Cross platform
-- Auto download gzdoom/zdoom
+- Assisted download of gzdoom/zdoom
 
 ## Installation
 

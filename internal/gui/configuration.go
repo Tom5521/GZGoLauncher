@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"runtime"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -136,9 +135,6 @@ func (ui *configUI) downBox() *fyne.Container {
 		down.zdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
 		down.zdoom.SetText(po.Get("Download ZDoom"))
-	}
-	if runtime.GOOS == "linux" {
-		down.zdoom.Disable()
 	}
 
 	downloadCont := container.NewAdaptiveGrid(2, down.gzdoom, down.zdoom)
