@@ -24,6 +24,7 @@ const (
 	WinGZDoomURL   = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-4-11-3.a.-Windows-64bit.zip"
 	WinZDoomURL    = "https://zdoom.org/files/zdoom/2.8/zdoom-2.8.1.zip"
 	LinuxGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-g4.11.3-linux-portable.tar.xz"
+	LinuxZDoomURL  = "https://zdoom.org/files/zdoom/2.8/zdoom_2.8.1_amd64.deb"
 )
 
 func Download(url, file string) error {
@@ -92,7 +93,7 @@ func GZDoom() error {
 	if IsWindows {
 		settings.GZDoomDir = config.CurrentPath + `\gzdoom\gzdoom.exe`
 	}
-	err = settings.Write()
+	err = os.RemoveAll(path)
 	if err != nil {
 		return err
 	}
@@ -102,8 +103,15 @@ func GZDoom() error {
 // Only with windows.
 func ZDoom() error {
 	if IsLinux {
-		return ErrOnlyForWindows
+		return linuxZdoom()
 	}
+	if IsWindows {
+		return windowsZdoom()
+	}
+	return nil
+}
+
+func windowsZdoom() error {
 	path := config.CurrentPath + `\zdoom.zip`
 	url := WinZDoomURL
 	err := Download(url, path)
@@ -119,9 +127,66 @@ func ZDoom() error {
 		return err
 	}
 	settings.ZDoomDir = config.CurrentPath + `\zdoom\zdoom.exe`
-	err = settings.Write()
+	return nil
+}
+
+func linuxZdoom() error {
+	var (
+		debName = "zdoom.deb"
+		path    = config.CurrentPath + "/" + debName
+		url     = LinuxZDoomURL
+		tmpDir  = "tmp-zdoom"
+	)
+	err := Download(url, path)
 	if err != nil {
 		return err
 	}
+	err = os.Chdir(config.CurrentPath)
+	if err != nil {
+		return err
+	}
+	if _, err = os.Stat(tmpDir); os.IsNotExist(err) {
+		err = os.Mkdir(tmpDir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+	cmd := exec.Command("ar", "x", debName, "--output="+tmpDir)
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	err = os.Chdir(tmpDir)
+	if err != nil {
+		return err
+	}
+	if _, err = os.Stat("zdoom"); os.IsNotExist(err) {
+		err = os.Mkdir("zdoom", os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+	cmd = exec.Command("tar", "-xf", "data.tar.xz", "-C", "zdoom")
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	cmd = exec.Command("cp", "-rf", "zdoom/opt/zdoom", config.CurrentPath)
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	err = os.Chdir(config.CurrentPath)
+	if err != nil {
+		return err
+	}
+	toRemove := []string{tmpDir, debName}
+	for _, f := range toRemove {
+		err = os.RemoveAll(f)
+		if err != nil {
+			return err
+		}
+	}
+	settings.ZDoomDir = config.CurrentPath + "/zdoom/zdoom"
 	return nil
 }

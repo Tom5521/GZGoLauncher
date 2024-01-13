@@ -8,7 +8,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func RightCont() *fyne.Container {
+func (ui *ui) RightCont() *fyne.Container {
 	// Launch Options.
 	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
 	closeOnStart := &widget.Check{
@@ -107,15 +107,8 @@ func RightCont() *fyne.Container {
 	warpLabel := widget.NewLabel(po.Get("Select warp"))
 	warpEntry := &widget.Entry{Text: Runner.Warp.Level}
 	warpEntry.OnChanged = func(s string) {
-		if len(s) > 4 {
-			warpEntry.SetText(s[4:])
-		}
-		if s == "" {
-			Runner.Warp.Enabled = false
-			return
-		}
-		Runner.Warp.Enabled = true
 		Runner.Warp.Level = s
+		Runner.Warp.Enabled = s != ""
 	}
 
 	fastMonsters := &widget.Check{
