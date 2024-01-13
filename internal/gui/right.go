@@ -8,7 +8,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func RightCont() *fyne.Container {
+func (ui *ui) RightCont() *fyne.Container {
 	// Launch Options.
 	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
 	closeOnStart := &widget.Check{

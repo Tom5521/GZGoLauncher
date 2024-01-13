@@ -39,13 +39,13 @@ type configUI struct {
 
 var configuration configUI
 
-func (ui *configUI) Container(mainUI *ui) *fyne.Container {
+func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	ui.mainUI = mainUI
-	gzdoom := ui.Gzdoom()
-	zdoom := ui.Zdoom()
-	download := ui.Download()
-	lang := ui.Lang()
-	credits := ui.Credits()
+	gzdoom := ui.gzBox()
+	zdoom := ui.zBox()
+	download := ui.downBox()
+	lang := ui.langBox()
+	credits := ui.creditsBox()
 
 	content := container.NewVBox(
 		gzdoom,
@@ -57,7 +57,7 @@ func (ui *configUI) Container(mainUI *ui) *fyne.Container {
 	return content
 }
 
-func (ui *configUI) Gzdoom() *fyne.Container {
+func (ui *configUI) gzBox() *fyne.Container {
 	gzdoom := &ui.gzdoom
 	gzdoom.Label = &widget.Label{Text: po.Get("GZDoom Path")}
 	gzdoom.Entry = &widget.Entry{Text: settings.GZDoomDir}
@@ -81,7 +81,7 @@ func (ui *configUI) Gzdoom() *fyne.Container {
 	return content
 }
 
-func (ui *configUI) Zdoom() *fyne.Container {
+func (ui *configUI) zBox() *fyne.Container {
 	zdoom := &ui.zdoom
 	zdoom.Label = widget.NewLabel(po.Get("ZDoom path"))
 	zdoom.Entry = &widget.Entry{Text: settings.ZDoomDir}
@@ -104,7 +104,7 @@ func (ui *configUI) Zdoom() *fyne.Container {
 	return content
 }
 
-func (ui *configUI) Download() *fyne.Container {
+func (ui *configUI) downBox() *fyne.Container {
 	mainUI := ui.mainUI
 	down := &ui.download
 	down.gzdoom = &widget.Button{Text: po.Get("Download GZDoom")}
@@ -145,7 +145,7 @@ func (ui *configUI) Download() *fyne.Container {
 	return downloadCont
 }
 
-func (ui *configUI) Lang() *fyne.Container {
+func (ui *configUI) langBox() *fyne.Container {
 	lang := &ui.lang
 	disponibleLangs := []string{
 		"Spanish",
@@ -190,7 +190,7 @@ func (ui *configUI) Lang() *fyne.Container {
 	return content
 }
 
-func (ui *configUI) Credits() *fyne.Container {
+func (ui *configUI) creditsBox() *fyne.Container {
 	ui.credits = widget.NewButton(po.Get("Show credits"), func() {
 		credits.CreditsWindow(ui.mainUI.App, fyne.NewSize(400, 800)).Show()
 	})
