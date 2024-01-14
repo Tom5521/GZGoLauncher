@@ -174,7 +174,7 @@ func (ui *configUI) langBox() *fyne.Container {
 		default:
 			return
 		}
-		po.Parse(locales.GetParser(settings.Lang))
+		po.Parse(locales.Parser(settings.Lang))
 		dialog.ShowInformation(
 			po.Get("Info"),
 			po.Get("You will be able to see the changes after restarting"),

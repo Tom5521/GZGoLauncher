@@ -153,3 +153,14 @@ func (p Pars) Start() error {
 	}
 	return nil
 }
+
+func (p Pars) Out() (string, error) {
+	err := p.check()
+	if err != nil {
+		return "", err
+	}
+	cmd := p.MakeCmd()
+	cmd.Stdout = nil
+	out, err := cmd.Output()
+	return string(out), err
+}

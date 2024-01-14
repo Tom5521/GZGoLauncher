@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
+	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 func (ui *ui) RunDoom() {
@@ -36,6 +37,14 @@ func (ui *ui) RunDoom() {
 	gzrun.GZDir = settings.GZDir
 	fmt.Println(Runner.MakeCmd())
 	// return // NOTE: Uncomment this to view the cmd without starting *zdoom.
+	if settings.ShowOutOnClose {
+		out, err := Runner.Out()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.ShowOutWin(out)
+		return
+	}
 	err := Runner.Start()
 	if err != nil {
 		ErrWin(err)

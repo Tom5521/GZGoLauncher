@@ -151,8 +151,7 @@ func linuxZdoom() error {
 			return err
 		}
 	}
-	cmd := exec.Command("ar", "x", debName, "--output="+tmpDir)
-	err = cmd.Run()
+	err = ExtractDeb(debName, tmpDir)
 	if err != nil {
 		return err
 	}
@@ -166,7 +165,7 @@ func linuxZdoom() error {
 			return err
 		}
 	}
-	cmd = exec.Command("tar", "-xf", "data.tar.xz", "-C", "zdoom")
+	cmd := exec.Command("tar", "-xf", "data.tar.xz", "-C", "zdoom")
 	err = cmd.Run()
 	if err != nil {
 		return err
