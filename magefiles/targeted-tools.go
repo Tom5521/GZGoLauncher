@@ -78,7 +78,7 @@ func MakeWindowsZip() error {
 		return err
 	}
 	fmt.Println("Cleaning...")
-	err = os.RemoveAll(zipDir)
+	err = sh.Rm(zipDir)
 	if err != nil {
 		return err
 	}

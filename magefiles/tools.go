@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"runtime"
 	"time"
 
 	"github.com/artdarek/go-unzip"
+	"github.com/bitfield/script"
 	"github.com/magefile/mage/sh"
 	"github.com/yi-ge/unxz"
 )
@@ -74,29 +73,20 @@ func mkdir(dir string) error {
 func download(url, file string) error {
 	fmt.Printf("Downloading %s", url)
 	nowtime := time.Now()
-	response, err := http.Get(url)
+	_, err := script.Get(url).WriteFile(file)
 	if err != nil {
 		return err
 	}
-	defer response.Body.Close()
-
-	outputFile, err := os.Create(file)
-	if err != nil {
-		return err
-	}
-	defer outputFile.Close()
-
-	_, err = io.Copy(outputFile, response.Body)
 	fmt.Println("Downloaded in ", file)
 	fmt.Println("[Download]Elapsed time: ", time.Since(nowtime).String())
-	return err
+	return nil
 }
 
 type ex struct{}
 
 func (ex) tarXz(src, destDir string) error {
 	if _, err := os.Stat(destDir); os.IsNotExist(err) {
-		err := mkdir(destDir)
+		err = mkdir(destDir)
 		if err != nil {
 			return err
 		}
