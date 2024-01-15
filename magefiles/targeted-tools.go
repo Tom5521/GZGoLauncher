@@ -96,7 +96,6 @@ func Release() error {
 	if err != nil {
 		return err
 	}
-
 	fmt.Println("[release]Elapsed time: ", time.Since(nowtime).String())
 	return nil
 }

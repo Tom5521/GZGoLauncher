@@ -6,19 +6,14 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"runtime"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
+	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 )
 
 var ErrOnlyForWindows = errors.New("only for windows")
 
 var settings = &config.Settings
-
-const (
-	IsWindows = runtime.GOOS == "windows"
-	IsLinux   = runtime.GOOS == "linux"
-)
 
 const (
 	WinGZDoomURL   = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-4-11-3.a.-Windows-64bit.zip"
@@ -46,16 +41,16 @@ func Download(url, file string) error {
 
 func GZDoom() error {
 	path := func() string {
-		if IsWindows {
+		if v.IsWindows {
 			return config.CurrentPath + `\gzdoom.zip`
 		}
 		return config.CurrentPath + "/gzdoom.tar.xz"
 	}()
 	url := func() string {
-		if IsWindows {
+		if v.IsWindows {
 			return WinGZDoomURL
 		}
-		if IsLinux {
+		if v.IsLinux {
 			return LinuxGZDoomURL
 		}
 		return ""
@@ -74,23 +69,23 @@ func GZDoom() error {
 			return err
 		}
 	}
-	if IsWindows {
+	if v.IsWindows {
 		err = Unzip(path, "gzdoom")
 		if err != nil {
 			return err
 		}
 	}
-	if IsLinux {
+	if v.IsLinux {
 		cmd := exec.Command("tar", "-xf", "gzdoom.tar.xz", "--strip-components=1", "-C", "gzdoom")
 		err = cmd.Run()
 		if err != nil {
 			return err
 		}
 	}
-	if IsLinux {
+	if v.IsLinux {
 		settings.GZDoomDir = config.CurrentPath + "/gzdoom/gzdoom"
 	}
-	if IsWindows {
+	if v.IsWindows {
 		settings.GZDoomDir = config.CurrentPath + `\gzdoom\gzdoom.exe`
 	}
 	err = os.RemoveAll(path)
@@ -102,10 +97,10 @@ func GZDoom() error {
 
 // Only with windows.
 func ZDoom() error {
-	if IsLinux {
+	if v.IsLinux {
 		return linuxZdoom()
 	}
-	if IsWindows {
+	if v.IsWindows {
 		return windowsZdoom()
 	}
 	return nil

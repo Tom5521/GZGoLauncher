@@ -3,9 +3,8 @@ package config
 import (
 	"encoding/json"
 	"os"
-	"os/user"
-	"runtime"
 
+	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
@@ -34,7 +33,7 @@ type Config struct {
 	Lang           string `json:"lang"`
 	GZDoomDir      string `json:"gzdoom-dir"`
 	ZDoomDir       string `json:"zdoom-dir"`
-	GZDir          string `json:"gzdir"`
+	ExecDir        string `json:"runner-dir"`
 	Mods           []Mod  `json:"mods"`
 	Wads           []Wad  `json:"wads"`
 }
@@ -44,7 +43,7 @@ func (c *Config) Write() error {
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(CurrentFilePath, bytedata, os.ModePerm)
+	err = os.WriteFile(FilePath, bytedata, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -52,35 +51,24 @@ func (c *Config) Write() error {
 }
 
 var (
-	HomeDir = func() string {
-		usr, err := user.Current()
-		if err != nil {
-			messages.FatalError(err)
+	FilePath = func() string {
+		if v.IsWindows {
+			return v.HomeDir + WindowsPath + "/config.json"
 		}
-		return usr.HomeDir
-	}()
-	CurrentFilePath = func() string {
-		usr, err := user.Current()
-		if err != nil {
-			messages.FatalError(err)
-		}
-		if runtime.GOOS == "windows" {
-			return usr.HomeDir + WindowsPath + "/config.json"
-		}
-		return usr.HomeDir + UnixPath + "/config.json"
+		return v.HomeDir + UnixPath + "/config.json"
 	}()
 	CurrentPath = func() string {
-		if runtime.GOOS == "windows" {
-			return HomeDir + WindowsPath
+		if v.IsWindows {
+			return v.HomeDir + WindowsPath
 		}
-		return HomeDir + UnixPath
+		return v.HomeDir + UnixPath
 	}()
 	Settings = Read()
 )
 
 const (
 	UnixPath    string = "/.config/GZGoLauncher"
-	WindowsPath string = "\\Documents\\GZGoLauncher"
+	WindowsPath string = `\Documents\GZGoLauncher`
 )
 
 func Read() Config {
@@ -91,10 +79,10 @@ func Read() Config {
 			messages.FatalError(err)
 		}
 	}
-	if _, err = os.Stat(CurrentFilePath); os.IsNotExist(err) {
+	if _, err = os.Stat(FilePath); os.IsNotExist(err) {
 		zdoom, gzdoom := func() (string, string) {
 			const z, g string = "zdoom", "gzdoom"
-			if runtime.GOOS == "windows" {
+			if v.IsWindows {
 				return z + ".exe", g + ".exe"
 			}
 			return z, g
@@ -105,12 +93,12 @@ func Read() Config {
 		if err != nil {
 			messages.FatalError(err)
 		}
-		err = os.WriteFile(CurrentFilePath, bytedata, os.ModePerm)
+		err = os.WriteFile(FilePath, bytedata, os.ModePerm)
 		if err != nil {
 			messages.FatalError(err)
 		}
 	}
-	bytedata, err := os.ReadFile(CurrentFilePath)
+	bytedata, err := os.ReadFile(FilePath)
 	if err != nil {
 		messages.FatalError(err)
 	}

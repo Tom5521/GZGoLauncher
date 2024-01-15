@@ -20,16 +20,16 @@ func (ui *ui) Bottom() *fyne.Container {
 		OnChanged: func(s string) {
 			switch s {
 			case "GZDoom":
-				settings.GZDir = settings.GZDoomDir
+				settings.ExecDir = settings.GZDoomDir
 			case "ZDoom":
-				settings.GZDir = settings.ZDoomDir
+				settings.ExecDir = settings.ZDoomDir
 			default:
 				return
 			}
 		},
 		PlaceHolder: po.Get("Select a Runner"),
 	}
-	switch settings.GZDir {
+	switch settings.ExecDir {
 	case "":
 		ui.ZRunnerSelect.ClearSelected()
 	case settings.GZDoomDir:

@@ -2,8 +2,8 @@ package tools
 
 import (
 	"fmt"
-	"runtime"
 
+	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 	"github.com/ncruces/zenity"
 )
 
@@ -33,7 +33,7 @@ func ImageFilePicker() string {
 }
 
 func ExeFilePicker() string {
-	if runtime.GOOS == "windows" {
+	if v.IsWindows {
 		return FilePicker([]string{"*.exe"}, ".exe files")
 	}
 	return FilePicker([]string{}, "Executable files")

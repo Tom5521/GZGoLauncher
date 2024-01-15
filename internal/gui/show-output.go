@@ -10,7 +10,9 @@ import (
 func (ui *ui) ShowOutWin(text string) {
 	w := ui.App.NewWindow(po.Get("Output"))
 	text = fmt.Sprintf("```\n%s\n```", text)
+	cmd := widget.NewRichTextFromMarkdown(fmt.Sprintf("**Command:** `%s`", Runner.MakeCmd()))
 	richText := widget.NewRichTextFromMarkdown(text)
-	w.SetContent(container.NewVScroll(richText))
+	content := container.NewBorder(cmd, nil, nil, nil, richText)
+	w.SetContent(container.NewVScroll(content))
 	w.Show()
 }
