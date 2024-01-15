@@ -217,3 +217,15 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
+
+
+#: internal/gui/right.go
+msgid "The automatic download of zdoom on mac is not supported, I recommend you to download the binary by yourself and select its path in the corresponding zdoom path."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Show output on close"
+msgstr ""
+

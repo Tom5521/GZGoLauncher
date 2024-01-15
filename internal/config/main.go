@@ -57,7 +57,7 @@ var (
 		}
 		return v.HomeDir + UnixPath + "/config.json"
 	}()
-	CurrentPath = func() string {
+	Path = func() string {
 		if v.IsWindows {
 			return v.HomeDir + WindowsPath
 		}
@@ -73,8 +73,8 @@ const (
 
 func Read() Config {
 	var err error
-	if _, err = os.Stat(CurrentPath); os.IsNotExist(err) {
-		err = os.Mkdir(CurrentPath, os.ModePerm)
+	if _, err = os.Stat(Path); os.IsNotExist(err) {
+		err = os.Mkdir(Path, os.ModePerm)
 		if err != nil {
 			messages.FatalError(err)
 		}

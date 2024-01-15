@@ -14,8 +14,10 @@ var (
 )
 
 type Pars struct {
-	IWad  string
-	Skill struct {
+	Error  error  `json:"-"`
+	ErrOut string `json:"-"`
+	IWad   string
+	Skill  struct {
 		Enabled bool
 		Level   int
 	}
@@ -115,20 +117,23 @@ func (p Pars) MakeCmd() *exec.Cmd {
 	return cmd
 }
 
-func (p Pars) check() error {
+func (p *Pars) check() error {
 	if p.IWad == "" {
+		p.Error = ErrBadIwad
 		return ErrBadIwad
 	}
 	if _, err := os.Stat(p.IWad); os.IsNotExist(err) {
+		p.Error = ErrBadIwad
 		return ErrBadIwad
 	}
 	if !ExistsGZInPath() {
+		p.Error = ErrMissingGZDoom
 		return ErrMissingGZDoom
 	}
 	return nil
 }
 
-func (p Pars) Run() error {
+func (p *Pars) Run() error {
 	err := p.check()
 	if err != nil {
 		return err
@@ -136,12 +141,13 @@ func (p Pars) Run() error {
 	cmd := p.MakeCmd()
 	err = cmd.Run()
 	if err != nil {
+		p.Error = err
 		return err
 	}
 	return nil
 }
 
-func (p Pars) Start() error {
+func (p *Pars) Start() error {
 	err := p.check()
 	if err != nil {
 		return err
@@ -149,18 +155,25 @@ func (p Pars) Start() error {
 	cmd := p.MakeCmd()
 	err = cmd.Start()
 	if err != nil {
+		p.Error = err
 		return err
 	}
 	return nil
 }
 
-func (p Pars) Out() (string, error) {
+func (p *Pars) Out() (string, error) {
 	err := p.check()
 	if err != nil {
 		return "", err
 	}
 	cmd := p.MakeCmd()
 	cmd.Stdout = nil
-	out, err := cmd.Output()
+	cmd.Stderr = nil
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		p.Error = err
+		p.ErrOut = string(out)
+		return string(out), err
+	}
 	return string(out), err
 }

@@ -42,7 +42,7 @@ func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	ui.mainUI = mainUI
 	gzdoom := ui.gzBox()
 	zdoom := ui.zBox()
-	download := ui.downBox()
+	download := ui.downloadBox()
 	lang := ui.langBox()
 	credits := ui.creditsBox()
 
@@ -103,7 +103,7 @@ func (ui *configUI) zBox() *fyne.Container {
 	return content
 }
 
-func (ui *configUI) downBox() *fyne.Container {
+func (ui *configUI) downloadBox() *fyne.Container {
 	mainUI := ui.mainUI
 	down := &ui.download
 	down.gzdoom = &widget.Button{Text: po.Get("Download GZDoom")}
@@ -125,6 +125,11 @@ func (ui *configUI) downBox() *fyne.Container {
 	down.zdoom.OnTapped = func() {
 		down.zdoom.SetText(po.Get("Downloading..."))
 		err := download.ZDoom()
+		if err == download.ErrZDoomOnMac {
+			ErrWin(po.Get("The automatic download of zdoom on mac is not supported, I recommend you to download the binary by yourself and select its path in the corresponding zdoom path."))
+			down.zdoom.SetText(po.Get("Download ZDoom"))
+			return
+		}
 		if err != nil {
 			ErrWin(err)
 			down.zdoom.SetText(po.Get("Retry"))
