@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/magefile/mage/mg"
@@ -76,10 +77,13 @@ func (Build) Linux() error {
 	return nil
 }
 
-func (Build) MacAMD() error {
+func (b Build) MacAMD() error {
 	err := checkdir()
 	if err != nil {
 		return err
+	}
+	if runtime.GOOS == "darwin" {
+		return b.nativeMac()
 	}
 	type FyneApp struct {
 		Details struct {
@@ -146,10 +150,13 @@ func (Build) MacAMD() error {
 	return nil
 }
 
-func (Build) MacARM() error {
+func (b Build) MacARM() error {
 	err := checkdir()
 	if err != nil {
 		return err
+	}
+	if runtime.GOOS == "darwin" {
+		return b.nativeMac()
 	}
 	type FyneApp struct {
 		Details struct {
@@ -212,6 +219,19 @@ func (Build) MacARM() error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (Build) nativeMac() error {
+	nowtime := time.Now()
+	defer func() {
+		fmt.Println("[build:macARM]Elapsed time: ", time.Since(nowtime).String())
+	}()
+	fmt.Println("Compilng for mac arm64...")
+	err := sh.RunV("fyne", "package", "--os", "darwin", "--release", "--src", MainDir)
+	if err != nil {
+		return err
 	}
 	return nil
 }
