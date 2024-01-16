@@ -190,7 +190,7 @@ func (Build) MacARM() error {
 	if err != nil {
 		return err
 	}
-	err = sh.Rm("./builds/" + MacZipNameAmd64)
+	err = sh.Rm("./builds/" + MacZipNameArm64)
 	if err != nil {
 		return err
 	}
