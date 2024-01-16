@@ -16,7 +16,21 @@ var (
 	compile    = Build{}
 	extract    = ex{}
 	WindowsEnv = windowsEnv()
+	MacEnv     = macEnv()
 )
+
+func macEnv() map[string]string {
+	var values map[string]string
+	if runtime.GOOS != "linux" {
+		return values
+	}
+	values = map[string]string{
+		"CC":          "/usr/local/osx-ndk-x86/bin/o32-clang",
+		"GOOS":        "darwin",
+		"CGO_ENABLED": "1",
+	}
+	return values
+}
 
 func windowsEnv() map[string]string {
 	if runtime.GOOS != "linux" {

@@ -10,8 +10,11 @@ const (
 	MainFile             = MainDir + "main.go"
 	WindowsExeName       = ProyectName + "-win64.exe"
 	MakeWindowsZipTmpDir = "windows-tmp"
+	MacZipName           = ProyectName + "-MacOS.zip"
 	WindowsZipName       = ProyectName + "-win64.zip"
 	LinuxTarName         = ProyectName + "-linux64.tar.xz"
+	IconPath             = "./assets/cacodemon.png"
+	MacosSDKPath         = "./SDKs/MacOSX11.3.sdk/"
 )
 
 var (
