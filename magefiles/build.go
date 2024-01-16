@@ -128,6 +128,10 @@ func (Build) Mac() error {
 	if err != nil {
 		return err
 	}
+	err = os.Chdir("../../../")
+	if err != nil {
+		return err
+	}
 	toRemove := []string{"main.go", "FyneApp.toml"}
 	for _, f := range toRemove {
 		err = sh.Rm(f)
