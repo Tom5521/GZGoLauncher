@@ -25,7 +25,11 @@ func (Build) All() error {
 	if err != nil {
 		return err
 	}
-	err = compile.Mac()
+	err = compile.MacAMD()
+	if err != nil {
+		return err
+	}
+	err = compile.MacARM()
 	if err != nil {
 		return err
 	}
@@ -72,7 +76,7 @@ func (Build) Linux() error {
 	return nil
 }
 
-func (Build) Mac() error {
+func (Build) MacAMD() error {
 	err := checkdir()
 	if err != nil {
 		return err
@@ -89,7 +93,7 @@ func (Build) Mac() error {
 	var file FyneApp
 	nowtime := time.Now()
 	defer func() {
-		fmt.Println("[build:Mac]Elapsed time: ", time.Since(nowtime).String())
+		fmt.Println("[build:MacAMD]Elapsed time: ", time.Since(nowtime).String())
 	}()
 	err = copyfile("./cmd/GZGoLauncher/main.go", "./main.go")
 	if err != nil {
@@ -112,11 +116,11 @@ func (Build) Mac() error {
 	if err != nil {
 		return err
 	}
-	err = sh.RunV("sudo", "fyne-cross", "darwin", "--macosx-sdk-path", MacosSDKPath)
+	err = sh.RunV("sudo", "fyne-cross", "darwin", "-arch=amd64", "--macosx-sdk-path", MacosSDKPath)
 	if err != nil {
 		return err
 	}
-	err = sh.Rm("./builds/GZGoLauncher-MacOS.zip")
+	err = sh.Rm("./builds/" + MacZipNameAmd64)
 	if err != nil {
 		return err
 	}
@@ -124,7 +128,77 @@ func (Build) Mac() error {
 	if err != nil {
 		return err
 	}
-	err = sh.RunV("zip", "-r", "../../../builds/GZGoLauncher-MacOS.zip", ".")
+	err = sh.RunV("zip", "-r", "../../../builds/"+MacZipNameAmd64, ".")
+	if err != nil {
+		return err
+	}
+	err = os.Chdir("../../../")
+	if err != nil {
+		return err
+	}
+	toRemove := []string{"main.go", "FyneApp.toml"}
+	for _, f := range toRemove {
+		err = sh.Rm(f)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (Build) MacARM() error {
+	err := checkdir()
+	if err != nil {
+		return err
+	}
+	type FyneApp struct {
+		Details struct {
+			Icon    string `toml:"Icon"`
+			Name    string `toml:"Name"`
+			ID      string `toml:"ID"`
+			Version string `toml:"Version"`
+			Build   int    `toml:"Build"`
+		} `toml:"Details"`
+	}
+	var file FyneApp
+	nowtime := time.Now()
+	defer func() {
+		fmt.Println("[build:MacARM]Elapsed time: ", time.Since(nowtime).String())
+	}()
+	err = copyfile("./cmd/GZGoLauncher/main.go", "./main.go")
+	if err != nil {
+		return err
+	}
+	tomlbytedata, err := os.ReadFile("./cmd/GZGoLauncher/FyneApp.toml")
+	if err != nil {
+		return err
+	}
+	err = toml.Unmarshal(tomlbytedata, &file)
+	if err != nil {
+		return err
+	}
+	file.Details.Icon = IconPath
+	bytedata, err := toml.Marshal(file)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile("FyneApp.toml", bytedata, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	err = sh.RunV("sudo", "fyne-cross", "darwin", "-arch=arm64", "--macosx-sdk-path", MacosSDKPath)
+	if err != nil {
+		return err
+	}
+	err = sh.Rm("./builds/" + MacZipNameAmd64)
+	if err != nil {
+		return err
+	}
+	err = os.Chdir("./fyne-cross/dist/darwin-arm64/")
+	if err != nil {
+		return err
+	}
+	err = sh.RunV("zip", "-r", "../../../builds/"+MacZipNameArm64, ".")
 	if err != nil {
 		return err
 	}
