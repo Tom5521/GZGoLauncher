@@ -19,7 +19,7 @@ for your architecture.
 
 2. Unzip the package
 
-3. Run GZGoLauncher.exe; the binary is completely portable.
+3. Run `GZGoLauncher.exe`; the binary is completely portable.
 
 ### MacOS
 
