@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
+	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 func (ui *ui) RunDoom() {
@@ -16,7 +17,7 @@ func (ui *ui) RunDoom() {
 		ErrWin("Select a runner first!")
 		return
 	}
-	gzrun.GZDir = settings.GZDir
+	gzrun.GZDir = settings.ExecDir
 	mods := enabledPaths()
 
 	Runner.Mods.Enabled = len(mods) > 0
@@ -33,9 +34,17 @@ func (ui *ui) RunDoom() {
 		ui.MainWindow.Show()
 		return
 	}
-	gzrun.GZDir = settings.GZDir
+	gzrun.GZDir = settings.ExecDir
 	fmt.Println(Runner.MakeCmd())
 	// return // NOTE: Uncomment this to view the cmd without starting *zdoom.
+	if settings.ShowOutOnClose {
+		out, err := Runner.Out()
+		if err != nil {
+			messages.Error(err)
+		}
+		ui.ShowOutWin(out)
+		return
+	}
 	err := Runner.Start()
 	if err != nil {
 		ErrWin(err)

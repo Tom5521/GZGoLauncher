@@ -29,7 +29,7 @@ type ui struct {
 var (
 	Runner   gzrun.Pars = gzsave.Read()
 	settings            = &config.Settings
-	po                  = locales.GetPo(settings.Lang)
+	po                  = locales.Po(settings.Lang)
 )
 
 func AutoSaver() {

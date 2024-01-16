@@ -6,9 +6,11 @@ require (
 	fyne.io/fyne/v2 v2.4.3
 	github.com/Tom5521/GoNotes v1.1.0
 	github.com/artdarek/go-unzip v1.0.0
+	github.com/bitfield/script v0.22.0
 	github.com/leonelquinteros/gotext v1.5.2
 	github.com/magefile/mage v1.15.0
 	github.com/ncruces/zenity v0.10.10
+	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/yi-ge/unxz v1.0.3
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -30,6 +32,8 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gookit/color v1.5.4 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/itchyny/gojq v0.12.14 // indirect
+	github.com/itchyny/timefmt-go v0.1.5 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -44,7 +48,8 @@ require (
 	golang.org/x/image v0.11.0 // indirect
 	golang.org/x/mobile v0.0.0-20230531173138-3c911d8e3eda // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	honnef.co/go/js/dom v0.0.0-20210725211120-f030747120f2 // indirect
+	mvdan.cc/sh/v3 v3.7.0 // indirect
 )

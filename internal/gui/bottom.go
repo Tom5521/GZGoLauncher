@@ -16,28 +16,28 @@ func (ui *ui) Bottom() *fyne.Container {
 			ui.RunDoom()
 		}}
 	ui.ZRunnerSelect = &widget.Select{
-		Selected: func() string {
-			switch settings.GZDir {
-			case settings.GZDoomDir:
-				return "GZDoom"
-			case settings.ZDoomDir:
-				return "ZDoom"
-			default:
-				return "GZDoom"
-			}
-		}(),
 		Options: []string{"GZDoom", "ZDoom"},
 		OnChanged: func(s string) {
 			switch s {
 			case "GZDoom":
-				settings.GZDir = settings.GZDoomDir
+				settings.ExecDir = settings.GZDoomDir
 			case "ZDoom":
-				settings.GZDir = settings.ZDoomDir
+				settings.ExecDir = settings.ZDoomDir
 			default:
 				return
 			}
 		},
 		PlaceHolder: po.Get("Select a Runner"),
+	}
+	switch settings.ExecDir {
+	case "":
+		ui.ZRunnerSelect.ClearSelected()
+	case settings.GZDoomDir:
+		ui.ZRunnerSelect.SetSelected("GZDoom")
+	case settings.ZDoomDir:
+		ui.ZRunnerSelect.SetSelected("GZDoom")
+	default:
+		ui.ZRunnerSelect.ClearSelected()
 	}
 	cArgsLabel := widget.NewRichTextFromMarkdown(fmt.Sprintf(
 		"[%s](https://zdoom.org/wiki/Command_line_parameters)",

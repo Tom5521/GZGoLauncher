@@ -194,3 +194,15 @@ msgstr "Ligar a"
 #: internal/gui/right.go
 msgid "Enabled"
 msgstr "Ativado"
+
+
+#: internal/gui/right.go
+msgid "The automatic download of zdoom on mac is not supported, I recommend you to download the binary by yourself and select its path in the corresponding zdoom path."
+msgstr "A transferência automática do zdoom no mac não é suportada, pelo que recomendo que transfira o binário por si próprio e seleccione o caminho correspondente no caminho do zdoom."
+
+
+
+#: internal/gui/right.go
+msgid "Show output on close"
+msgstr "Mostrar saída no fecho"
+

@@ -1,2 +1,3 @@
+---
 route: internal/gui/right.go
-msgid: Enabled
+msgid: Show output on close

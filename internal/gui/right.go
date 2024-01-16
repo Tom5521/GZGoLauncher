@@ -25,6 +25,13 @@ func (ui *ui) RightCont() *fyne.Container {
 			Runner.NoStartup = b
 		},
 	}
+	showOutOnClose := &widget.Check{
+		Text:    po.Get("Show output on close"),
+		Checked: settings.ShowOutOnClose,
+		OnChanged: func(b bool) {
+			settings.ShowOutOnClose = b
+		},
+	}
 
 	// Audio options.
 	audioLabel := &widget.Label{Text: po.Get("Audio Options"), Alignment: fyne.TextAlignCenter}
@@ -229,6 +236,7 @@ func (ui *ui) RightCont() *fyne.Container {
 	launchCont := container.NewAdaptiveGrid(2,
 		closeOnStart,
 		nostartup,
+		showOutOnClose,
 	)
 
 	audioCont := container.NewAdaptiveGrid(2,

@@ -19,8 +19,6 @@ The available ones are:
 - Portuguese
 `
 
-var Languages = []string{"Español", "English", "Português"}
-
 func read(file string) []byte {
 	data, err := PoFiles.ReadFile(file)
 	if err != nil {
@@ -33,13 +31,13 @@ func read(file string) []byte {
 	return data
 }
 
-func GetPo(lang string) *gotext.Po {
+func Po(lang string) *gotext.Po {
 	po := gotext.NewPo()
-	po.Parse(GetParser(lang))
+	po.Parse(Parser(lang))
 	return po
 }
 
-func GetParser(lang string) []byte {
+func Parser(lang string) []byte {
 	var bytedata []byte
 	bytedata = read("po/" + lang + ".po")
 	return bytedata

@@ -11,7 +11,7 @@ import (
 	"github.com/ncruces/zenity"
 )
 
-var FilePath = config.CurrentPath + "/runner-config.json"
+var FilePath = config.Path + "/runner-config.json"
 
 func errWin(txt ...any) {
 	err := zenity.Error(fmt.Sprint(txt...))
