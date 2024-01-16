@@ -90,8 +90,10 @@ mage build:windows
 
 macOS requirements:
 
-- Command-line tools (On non-Mac systems)
-- o32-clang (Optional, On non-Mac systems)
+- Command-line tools (On non-Mac systems) in `SDKs/MacOSX11.3.sdk/`, more information
+[here](https://github.com/fyne-io/fyne-cross?tab=readme-ov-file#extract-the-macos-sdk-for-osxdarwinapple-cross-compiling)
+- o32-clang (Optional, On non-Mac systems),
+more information [here](https://github.com/tpoechtrager/osxcross)
 - Fyne Package
 - C compiler
 - Go compiler
