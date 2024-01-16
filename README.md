@@ -1,53 +1,116 @@
-
 # GZGoLauncher
 
-A cross-platform launcher for *zdoom
+A cross-platform launcher for *ZDoom
 
 ## Features
 
 - Light/dark mode toggle
-- Cross platform
-- Assisted download of gzdoom/zdoom
+- Cross-platform
+- Assisted download of GZDoom/ZDoom
 
-## Installation
+## Binary Installation
 
-Install my-project with go or by executing the binary in its own folder
+Install GZGoLauncher with Go or by executing the binary in its own folder.
 
-Install with go:
+### Windows
+
+1. Download the package from [releases](https://github.com/Tom5521/GZGoLauncher/releases/latest)
+for your architecture.
+
+2. Unzip the package
+
+3. Run `GZGoLauncher.exe`; the binary is completely portable.
+
+### MacOS
+
+1. Download the package from [releases](https://github.com/Tom5521/GZGoLauncher/releases/latest)
+for your architecture.
+
+2. Unzip the package and move `GZGoLauncher.app` to your Applications folder,
+or you can execute the binary in `GZGoLauncher.app/Contents/MacOS/GZGoLauncher`.
+
+### Linux
+
+1. Download the package from [releases](https://github.com/Tom5521/GZGoLauncher/releases/latest)
+for your architecture.
+
+2. Untar the package and cd into the folder.
+
+3. Run `make install` or `make user-install` for user local installation.
+
+## Build & Install
+
+Install with Go on all systems:
 
 ```bash
 go install -v github.com/Tom5521/GZGoLauncher/cmd/GZGoLauncher@latest
 ```
 
-You can compile it, you need:
+### On Linux
+
+Linux requirements:
 
 - C compiler
 - Go compiler
 - Mage
-- 7z and zip(for windows packaging)
+- Fyne Package
 - Git
-- Fyne Package (Optionally)
-
-Compiling and installing in Linux
 
 ```bash
 git clone https://github.com/Tom5521/GZGoLauncher
+cd GZGoLauncher
 git checkout <latest version>
 mage install:user # mage install:root for root installation
 ```
 
-On Windows
+### On Windows
+
+Windows requirements:
+
+- C compiler
+- Go compiler
+- Git
+- Zip (to release the package)
+- 7z (to unzip the opengl32.dll file)
+- Mage
+- Fyne Package
+- x86_64-w64-mingw32-gcc (on non-Windows systems)
 
 ```batch
 git clone https://github.com/Tom5521/GZGoLauncher
+cd GZGoLauncher
 git checkout <latest version>
 mage build:windows
-# Go to builds folder and run GZGoLauncher.exe
-# Then run the executable, and done!
-# The windows and linux executable is fully portable
+# Go to the builds folder and run GZGoLauncher.exe
+# Then run the executable, and you're done!
+# The Windows and Linux executables are fully portable
 ```
 
-You can also download the binaries and unzip them, to run them in a portable way
+### On macOS
+
+macOS requirements:
+
+- Command-line tools (On non-Mac systems) in `SDKs/MacOSX11.3.sdk/`, more information
+[here](https://github.com/fyne-io/fyne-cross?tab=readme-ov-file#extract-the-macos-sdk-for-osxdarwinapple-cross-compiling)
+- o32-clang (Optional, On non-Mac systems),
+more information [here](https://github.com/tpoechtrager/osxcross)
+- Fyne Package
+- C compiler
+- Go compiler
+- Mage
+- Fyne package
+- Zip (To release the package)
+
+```bash
+git clone https://github.com/Tom5521/GZGoLauncher
+cd GZGoLauncher
+git checkout <latest version>
+mage build:defaultMac
+# Now move GZGoLauncher.app to the Applications folder
+# Theoretically, it should already be installed
+```
+
+You can also download the binaries and unzip them to run them in a portable way.
 
 ## Screenshots
 
