@@ -26,8 +26,8 @@ for your architecture.
 1. Download the package from [releases](https://github.com/Tom5521/GZGoLauncher/releases/latest)
 for your architecture.
 
-2. Unzip the package and move GZGoLauncher.app to your Applications folder,
-or you can execute the binary in GZGoLauncher.app/Contents/MacOS/GZGoLauncher.
+2. Unzip the package and move `GZGoLauncher.app` to your Applications folder,
+or you can execute the binary in `GZGoLauncher.app/Contents/MacOS/GZGoLauncher`.
 
 ### Linux
 
