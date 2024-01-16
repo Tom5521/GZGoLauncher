@@ -223,12 +223,22 @@ func (b Build) MacARM() error {
 	return nil
 }
 
+func (b Build) DefaultMac() error {
+	if runtime.GOARCH == "arm64" {
+		return b.MacARM()
+	}
+	if runtime.GOARCH == "amd64" {
+		return b.MacAMD()
+	}
+	return nil
+}
+
 func (Build) nativeMac() error {
 	nowtime := time.Now()
 	defer func() {
 		fmt.Println("[build:macARM]Elapsed time: ", time.Since(nowtime).String())
 	}()
-	fmt.Println("Compilng for mac arm64...")
+	fmt.Println("Compiling for YOUR mac...")
 	err := sh.RunV("fyne", "package", "--os", "darwin", "--release", "--src", MainDir)
 	if err != nil {
 		return err
