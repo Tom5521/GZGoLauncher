@@ -8,7 +8,6 @@ import (
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
-	"github.com/pelletier/go-toml/v2"
 )
 
 type Build mg.Namespace
@@ -85,16 +84,6 @@ func (b Build) MacAMD() error {
 	if runtime.GOOS == "darwin" {
 		return b.nativeMac()
 	}
-	type FyneApp struct {
-		Details struct {
-			Icon    string `toml:"Icon"`
-			Name    string `toml:"Name"`
-			ID      string `toml:"ID"`
-			Version string `toml:"Version"`
-			Build   int    `toml:"Build"`
-		} `toml:"Details"`
-	}
-	var file FyneApp
 	nowtime := time.Now()
 	defer func() {
 		fmt.Println("[build:MacAMD]Elapsed time: ", time.Since(nowtime).String())
@@ -103,24 +92,11 @@ func (b Build) MacAMD() error {
 	if err != nil {
 		return err
 	}
-	tomlbytedata, err := os.ReadFile("./cmd/GZGoLauncher/FyneApp.toml")
+	err = copyfile("../cmd/GZGoLauncher/FyneApp.toml", "FyneApp.toml")
 	if err != nil {
 		return err
 	}
-	err = toml.Unmarshal(tomlbytedata, &file)
-	if err != nil {
-		return err
-	}
-	file.Details.Icon = IconPath
-	bytedata, err := toml.Marshal(file)
-	if err != nil {
-		return err
-	}
-	err = os.WriteFile("FyneApp.toml", bytedata, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	err = sh.RunV("sudo", "fyne-cross", "darwin", "-arch=amd64", "--macosx-sdk-path", MacosSDKPath)
+	err = sh.RunV("sudo", "fyne-cross", "darwin", "-icon", "./assets/cacodemon.png", "-arch=amd64", "--macosx-sdk-path", MacosSDKPath)
 	if err != nil {
 		return err
 	}
@@ -158,16 +134,6 @@ func (b Build) MacARM() error {
 	if runtime.GOOS == "darwin" {
 		return b.nativeMac()
 	}
-	type FyneApp struct {
-		Details struct {
-			Icon    string `toml:"Icon"`
-			Name    string `toml:"Name"`
-			ID      string `toml:"ID"`
-			Version string `toml:"Version"`
-			Build   int    `toml:"Build"`
-		} `toml:"Details"`
-	}
-	var file FyneApp
 	nowtime := time.Now()
 	defer func() {
 		fmt.Println("[build:MacARM]Elapsed time: ", time.Since(nowtime).String())
@@ -176,24 +142,11 @@ func (b Build) MacARM() error {
 	if err != nil {
 		return err
 	}
-	tomlbytedata, err := os.ReadFile("./cmd/GZGoLauncher/FyneApp.toml")
+	err = copyfile("./cmd/GZGoLauncher/FyneApp.toml", "FyneApp.toml")
 	if err != nil {
 		return err
 	}
-	err = toml.Unmarshal(tomlbytedata, &file)
-	if err != nil {
-		return err
-	}
-	file.Details.Icon = IconPath
-	bytedata, err := toml.Marshal(file)
-	if err != nil {
-		return err
-	}
-	err = os.WriteFile("FyneApp.toml", bytedata, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	err = sh.RunV("sudo", "fyne-cross", "darwin", "-arch=arm64", "--macosx-sdk-path", MacosSDKPath)
+	err = sh.RunV("sudo", "fyne-cross", "darwin", "-icon", "./assets/cacodemon.png", "-arch=arm64", "--macosx-sdk-path", MacosSDKPath)
 	if err != nil {
 		return err
 	}
@@ -244,4 +197,15 @@ func (Build) nativeMac() error {
 		return err
 	}
 	return nil
+}
+
+func (b Build) Mac(mode string) error {
+	switch mode {
+	case "ARM":
+		return b.MacARM()
+	case "AMD":
+		return b.MacAMD()
+	default:
+		return b.DefaultMac()
+	}
 }
