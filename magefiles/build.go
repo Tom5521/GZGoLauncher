@@ -77,26 +77,16 @@ func (Build) Linux() error {
 }
 
 func (b Build) MacAMD() error {
-	err := checkdir()
+	err := b.setupMac()
 	if err != nil {
 		return err
-	}
-	if runtime.GOOS == "darwin" {
-		return b.nativeMac()
 	}
 	nowtime := time.Now()
 	defer func() {
 		fmt.Println("[build:MacAMD]Elapsed time: ", time.Since(nowtime).String())
 	}()
-	err = copyfile("./cmd/GZGoLauncher/main.go", "./main.go")
-	if err != nil {
-		return err
-	}
-	err = copyfile("../cmd/GZGoLauncher/FyneApp.toml", "FyneApp.toml")
-	if err != nil {
-		return err
-	}
-	err = sh.RunV("sudo", "fyne-cross", "darwin", "-icon", "./assets/cacodemon.png", "-arch=amd64", "--macosx-sdk-path", MacosSDKPath)
+	err = sh.RunV("sudo", "fyne-cross", "darwin",
+		"-icon", "./assets/cacodemon.png", "-arch=amd64", "--macosx-sdk-path", MacosSDKPath)
 	if err != nil {
 		return err
 	}
@@ -127,26 +117,16 @@ func (b Build) MacAMD() error {
 }
 
 func (b Build) MacARM() error {
-	err := checkdir()
+	err := b.setupMac()
 	if err != nil {
 		return err
-	}
-	if runtime.GOOS == "darwin" {
-		return b.nativeMac()
 	}
 	nowtime := time.Now()
 	defer func() {
 		fmt.Println("[build:MacARM]Elapsed time: ", time.Since(nowtime).String())
 	}()
-	err = copyfile("./cmd/GZGoLauncher/main.go", "./main.go")
-	if err != nil {
-		return err
-	}
-	err = copyfile("./cmd/GZGoLauncher/FyneApp.toml", "FyneApp.toml")
-	if err != nil {
-		return err
-	}
-	err = sh.RunV("sudo", "fyne-cross", "darwin", "-icon", "./assets/cacodemon.png", "-arch=arm64", "--macosx-sdk-path", MacosSDKPath)
+	err = sh.RunV("sudo", "fyne-cross", "darwin",
+		"-icon", "./assets/cacodemon.png", "-arch=arm64", "--macosx-sdk-path", MacosSDKPath)
 	if err != nil {
 		return err
 	}

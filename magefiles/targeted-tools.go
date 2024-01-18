@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/Tom5521/GoNotes/pkg/messages"
@@ -21,10 +22,22 @@ func Clean() {
 			messages.Error(err)
 		}
 	}
+	for _, f := range FilesToCleanWithSudo {
+		if _, err := os.Stat(f); os.IsNotExist(err) {
+			continue
+		}
+		fmt.Printf("Deleting %s...\n", f)
+		cmd := exec.Command("sudo", "rm", "-rf", f)
+		err := cmd.Run()
+		if err != nil {
+			messages.Error(err)
+		}
+	}
 	fmt.Println("[clean]Elapsed time: ", time.Since(nowtime).String())
 }
 
 func MakeWindowsZip() error {
+	const dllfile = "/opengl32.dll"
 	nowtime := time.Now()
 	var zipDir = MakeWindowsZipTmpDir
 	if _, err := os.Stat(zipDir); os.IsNotExist(err) {
@@ -33,13 +46,13 @@ func MakeWindowsZip() error {
 			return err
 		}
 	}
-	if _, err := os.Stat(TmpDir + "/opengl32.dll"); os.IsNotExist(err) {
+	if _, err := os.Stat(TmpDir + dllfile); os.IsNotExist(err) {
 		err = downloadWinFiles()
 		if err != nil {
 			return err
 		}
 	}
-	err := copyfile(TmpDir+"/opengl32.dll", zipDir+"/opengl32.dll")
+	err := copyfile(TmpDir+dllfile, zipDir+dllfile)
 	if err != nil {
 		return err
 	}
