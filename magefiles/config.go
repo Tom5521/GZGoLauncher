@@ -24,4 +24,7 @@ var (
 		"./builds",
 		"./cmd/GZGoLauncher/builds/",
 	}
+	FilesToCleanWithSudo = []string{
+		"fyne-cross",
+	}
 )
