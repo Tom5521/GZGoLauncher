@@ -10,7 +10,7 @@ import (
 
 func Unzip(src, dest string) error {
 	if _, err := os.Stat(dest); os.IsNotExist(err) {
-		err := os.Mkdir(dest, os.ModePerm)
+		err = os.Mkdir(dest, os.ModePerm)
 		if err != nil {
 			return err
 		}
