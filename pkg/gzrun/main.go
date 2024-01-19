@@ -173,7 +173,6 @@ func (p *Pars) Out() (string, error) {
 	if err != nil {
 		p.Error = err
 		p.ErrOut = string(out)
-		return string(out), err
 	}
 	return string(out), err
 }
