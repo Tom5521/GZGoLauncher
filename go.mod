@@ -10,7 +10,6 @@ require (
 	github.com/leonelquinteros/gotext v1.5.2
 	github.com/magefile/mage v1.15.0
 	github.com/ncruces/zenity v0.10.10
-	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/yi-ge/unxz v1.0.3
 	gopkg.in/yaml.v3 v3.0.1
 )

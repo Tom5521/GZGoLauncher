@@ -3,38 +3,42 @@ package tools
 import (
 	"fmt"
 
-	v "github.com/Tom5521/GZGoLauncher/pkg/values"
-	"github.com/ncruces/zenity"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+	"github.com/Tom5521/GZGoLauncher/locales"
 )
 
-func FilePicker(filters []string, msg string) string {
-	const defaultPath string = ""
-	ret, err := zenity.SelectFile(
-		zenity.Filename(defaultPath),
-		zenity.FileFilters{
-			{msg, filters, true},
-		})
-	if err != nil {
-		fmt.Println(err)
+var po = locales.Current
+
+func ErrWin(txt ...any) {
+	app := fyne.CurrentApp()
+	if app == nil {
+		return
 	}
-	return ret
-}
-
-func WadFilePicker() string {
-	return FilePicker([]string{"*.wad"}, "wad files")
-}
-
-func PK3FilePicker() string {
-	return FilePicker([]string{"*.pk3", "*.wad"}, "pk3 or wad files")
-}
-
-func ImageFilePicker() string {
-	return FilePicker([]string{"*.png", "*.gif", "*.ico", "*.jpg", "*.webp"}, "Images")
-}
-
-func ExeFilePicker() string {
-	if v.IsWindows {
-		return FilePicker([]string{"*.exe"}, ".exe files")
+	text := fmt.Sprint(txt...)
+	w := app.NewWindow(po.Get("Error"))
+	w.SetIcon(theme.ErrorIcon())
+	label := &widget.Label{
+		Alignment: fyne.TextAlignCenter,
+		Text:      text,
+		TextStyle: fyne.TextStyle{
+			Bold: true,
+		},
 	}
-	return FilePicker([]string{}, "Executable files")
+	button := &widget.Button{
+		Text: po.Get("Accept"),
+		OnTapped: func() {
+			w.Close()
+		},
+		Importance: widget.DangerImportance,
+	}
+
+	buttonBox := boxes.NewCenter(button)
+	content := container.NewBorder(nil, buttonBox, nil, nil, label)
+	w.SetContent(content)
+	w.Show()
+	w.RequestFocus()
 }

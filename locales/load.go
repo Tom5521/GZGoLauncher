@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 
+	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/leonelquinteros/gotext"
 	"github.com/ncruces/zenity"
 )
@@ -42,3 +43,5 @@ func Parser(lang string) []byte {
 	bytedata = read("po/" + lang + ".po")
 	return bytedata
 }
+
+var Current = Po(config.Settings.Lang)

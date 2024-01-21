@@ -4,17 +4,22 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 	"github.com/Tom5521/GZGoLauncher/internal/gui/credits"
-	"github.com/Tom5521/GZGoLauncher/internal/tools"
 	"github.com/Tom5521/GZGoLauncher/locales"
 )
 
 type configUI struct {
 	mainUI *ui
+	theme  struct {
+		label *widget.Label
+		mode  *widget.Select
+	}
 	gzdoom struct {
 		Label  *widget.Label
 		Entry  *widget.Entry
@@ -40,13 +45,15 @@ var configuration configUI
 
 func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	ui.mainUI = mainUI
+	th := ui.themeBox()
 	gzdoom := ui.gzBox()
 	zdoom := ui.zBox()
 	download := ui.downloadBox()
 	lang := ui.langBox()
 	credits := ui.creditsBox()
 
-	content := container.NewVBox(
+	content := boxes.NewVBox(
+		th,
 		gzdoom,
 		zdoom,
 		download,
@@ -56,24 +63,63 @@ func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	return content
 }
 
+func (ui *configUI) themeBox() *fyne.Container {
+	themes := []string{
+		po.Get("Dark"),
+		po.Get("Light"),
+	}
+	ui.theme.label = widget.NewLabel(po.Get("Select theme:"))
+	ui.theme.mode = widget.NewSelect(themes, func(s string) {
+		var t fyne.Theme
+		var mode bool
+		if s == themes[0] {
+			t = theme.DarkTheme()
+			mode = false
+		} else {
+			t = theme.LightTheme()
+			mode = true
+		}
+		ui.mainUI.App.Settings().SetTheme(t)
+		settings.ThemeMode = mode
+	})
+
+	// Themes
+	// 1 = Light
+	// 0 = Dark
+	if settings.ThemeMode {
+		ui.theme.mode.SetSelected(themes[1])
+	} else {
+		ui.theme.mode.SetSelected(themes[0])
+	}
+
+	content := boxes.NewBorder(nil, nil, ui.theme.label, nil, ui.theme.mode)
+	return content
+}
+
 func (ui *configUI) gzBox() *fyne.Container {
 	gzdoom := &ui.gzdoom
-	gzdoom.Label = &widget.Label{Text: po.Get("GZDoom Path")}
+	gzdoom.Label = &widget.Label{
+		Text:      po.Get("GZDoom Path"),
+		Alignment: fyne.TextAlignCenter,
+		TextStyle: fyne.TextStyle{
+			Bold: true,
+		},
+	}
 	gzdoom.Entry = &widget.Entry{Text: settings.GZDoomDir}
 	gzdoom.Entry.OnChanged = func(s string) {
 		settings.GZDoomDir = s
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := tools.ExeFilePicker()
+		newDir := filepicker.Exe()
 		if newDir == "" {
 			return
 		}
 		settings.GZDoomDir = newDir
 		gzdoom.Entry.SetText(newDir)
 	})
-	gzdirCont := container.NewBorder(nil, nil, gzdoom.Button, nil, gzdoom.Entry)
-	content := container.NewVBox(
+	gzdirCont := boxes.NewBorder(nil, nil, gzdoom.Button, nil, gzdoom.Entry)
+	content := boxes.NewVBox(
 		gzdoom.Label,
 		gzdirCont,
 	)
@@ -82,21 +128,27 @@ func (ui *configUI) gzBox() *fyne.Container {
 
 func (ui *configUI) zBox() *fyne.Container {
 	zdoom := &ui.zdoom
-	zdoom.Label = widget.NewLabel(po.Get("ZDoom path"))
+	zdoom.Label = &widget.Label{
+		Text:      po.Get("ZDoom path"),
+		Alignment: fyne.TextAlignCenter,
+		TextStyle: fyne.TextStyle{
+			Bold: true,
+		},
+	}
 	zdoom.Entry = &widget.Entry{Text: settings.ZDoomDir}
 	zdoom.Entry.OnChanged = func(s string) {
 		settings.ZDoomDir = s
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := tools.ExeFilePicker()
+		newDir := filepicker.Exe()
 		if newDir == "" {
 			return
 		}
 		settings.ZDoomDir = newDir
 	})
-	zdirCont := container.NewBorder(nil, nil, zdoom.Button, nil, zdoom.Entry)
-	content := container.NewVBox(
+	zdirCont := boxes.NewBorder(nil, nil, zdoom.Button, nil, zdoom.Entry)
+	content := boxes.NewVBox(
 		zdoom.Label,
 		zdirCont,
 	)
@@ -142,7 +194,7 @@ func (ui *configUI) downloadBox() *fyne.Container {
 		down.zdoom.SetText(po.Get("Download ZDoom"))
 	}
 
-	downloadCont := container.NewAdaptiveGrid(2, down.gzdoom, down.zdoom)
+	downloadCont := boxes.NewAdaptiveGrid(2, down.gzdoom, down.zdoom)
 	return downloadCont
 }
 
@@ -187,7 +239,7 @@ func (ui *configUI) langBox() *fyne.Container {
 		)
 	})
 	lang.selecter.SetSelected(currentLang())
-	content := container.NewBorder(nil, nil, lang.currentLabel, nil, lang.selecter)
+	content := boxes.NewBorder(nil, nil, lang.currentLabel, nil, lang.selecter)
 	return content
 }
 
@@ -195,7 +247,7 @@ func (ui *configUI) creditsBox() *fyne.Container {
 	ui.credits = widget.NewButton(po.Get("Show credits"), func() {
 		credits.CreditsWindow(ui.mainUI.App, fyne.NewSize(400, 800)).Show()
 	})
-	content := container.NewVBox(
+	content := boxes.NewVBox(
 		ui.credits,
 	)
 	return content

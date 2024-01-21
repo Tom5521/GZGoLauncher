@@ -1,12 +1,15 @@
 package gui
 
 import (
+	"os"
+	"slices"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
-	"github.com/Tom5521/GZGoLauncher/internal/tools"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 )
 
 func (ui *ui) SelectCont() *container.Split {
@@ -41,14 +44,23 @@ func (ui *ui) IwadsCont() *fyne.Container {
 	}
 
 	add := func() {
-		file := tools.WadFilePicker()
+		file := filepicker.Wad()
 		if file == "" {
 			return
 		}
 		newWad := config.Wad(file)
 		if !newWad.IsValid() {
+			ErrWin(po.Get("The file is not valid!"))
 			return
 		}
+		i := slices.IndexFunc(settings.Wads, func(w config.Wad) bool {
+			return w == newWad
+		})
+		if i != -1 {
+			ErrWin(po.Get("The file already exists"))
+			return
+		}
+
 		settings.Wads = append(settings.Wads, newWad)
 		ui.WadList.Refresh()
 	}
@@ -58,6 +70,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 		}
 		settings.Wads = deleteSlice(settings.Wads, selected)
 		ui.WadList.UnselectAll()
+		Runner.IWad = ""
 		selected = -1
 	}
 	toolbar := toolbar(selectLabel, add, remove)
@@ -96,21 +109,43 @@ func (ui *ui) ModsCont() *fyne.Container {
 		},
 	)
 	ui.ModsList.OnSelected = func(id widget.ListItemID) {
-		ui.ModsList.UnselectAll()
+		ui.ModsList.Unselect(id)
 	}
 	add := func() {
-		newMod := tools.PK3FilePicker()
+		newMod := filepicker.PK3()
 		if newMod == "" {
+			return
+		}
+		stat, err := os.Stat(newMod)
+		if os.IsNotExist(err) {
+			ErrWin(po.Get("The file is not valid!"))
+			return
+		}
+		if stat.IsDir() {
+			ErrWin(po.Get("The file is not valid!"))
+			return
+		}
+		i := slices.IndexFunc(settings.Mods, func(m config.Mod) bool {
+			return m.Path == newMod
+		})
+		if i != -1 {
+			ErrWin(po.Get("The file already exists"))
 			return
 		}
 		settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
 		ui.ModsList.Refresh()
 	}
 	remove := func() {
-		for index, i := range settings.Mods {
-			if i.Enabled {
-				settings.Mods = deleteSlice(settings.Mods, index)
+		var toDelete []int
+		for i, mod := range settings.Mods {
+			if mod.Enabled {
+				toDelete = append(toDelete, i)
 			}
+		}
+		var i int
+		for _, idx := range toDelete {
+			settings.Mods = append(settings.Mods[:idx-i], settings.Mods[idx-i+1:]...)
+			i++
 		}
 		ui.ModsList.Refresh()
 	}
@@ -129,12 +164,9 @@ func enabledPaths() []string {
 	return paths
 }
 
-func deleteSlice[S ~[]E, E any](slice S, index int) S {
-	if index < 0 || index >= len(slice) {
-		return slice
-	}
-	newSlice := append(slice[:index], slice[index+1:]...)
-	return newSlice
+func deleteSlice[S ~[]E, E any](s S, i int) S {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }
 
 func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {
