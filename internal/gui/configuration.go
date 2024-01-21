@@ -7,8 +7,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/GZGoLauncher/internal/FilePicker"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 	"github.com/Tom5521/GZGoLauncher/internal/gui/credits"
 	"github.com/Tom5521/GZGoLauncher/locales"
 )
@@ -65,7 +65,7 @@ func (ui *configUI) gzBox() *fyne.Container {
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := FilePicker.Exe()
+		newDir := filepicker.Exe()
 		if newDir == "" {
 			return
 		}
@@ -89,7 +89,7 @@ func (ui *configUI) zBox() *fyne.Container {
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := FilePicker.Exe()
+		newDir := filepicker.Exe()
 		if newDir == "" {
 			return
 		}

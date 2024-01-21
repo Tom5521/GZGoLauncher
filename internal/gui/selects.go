@@ -8,8 +8,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/GZGoLauncher/internal/FilePicker"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 )
 
 func (ui *ui) SelectCont() *container.Split {
@@ -44,7 +44,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 	}
 
 	add := func() {
-		file := FilePicker.Wad()
+		file := filepicker.Wad()
 		if file == "" {
 			return
 		}
@@ -112,7 +112,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 		ui.ModsList.Unselect(id)
 	}
 	add := func() {
-		newMod := FilePicker.PK3()
+		newMod := filepicker.PK3()
 		if newMod == "" {
 			return
 		}
@@ -136,10 +136,16 @@ func (ui *ui) ModsCont() *fyne.Container {
 		ui.ModsList.Refresh()
 	}
 	remove := func() {
-		for index, i := range settings.Mods {
-			if i.Enabled {
-				settings.Mods = deleteSlice(settings.Mods, index)
+		var toDelete []int
+		for i, mod := range settings.Mods {
+			if mod.Enabled {
+				toDelete = append(toDelete, i)
 			}
+		}
+		var i int
+		for _, idx := range toDelete {
+			settings.Mods = append(settings.Mods[:idx-i], settings.Mods[idx-i+1:]...)
+			i++
 		}
 		ui.ModsList.Refresh()
 	}
@@ -158,12 +164,9 @@ func enabledPaths() []string {
 	return paths
 }
 
-func deleteSlice[S ~[]E, E any](slice S, index int) S {
-	if index < 0 || index >= len(slice) {
-		return slice
-	}
-	newSlice := append(slice[:index], slice[index+1:]...)
-	return newSlice
+func deleteSlice[S ~[]E, E any](s S, i int) S {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }
 
 func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {
