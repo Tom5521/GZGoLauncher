@@ -37,6 +37,10 @@ func ExtractDeb(file, dir string) error {
 			return err
 		}
 	}
+	_, err := exec.LookPath("ar")
+	if err != nil {
+		return ErrArIsNotInPath
+	}
 	cmd := exec.Command("ar", "x", file, "--output="+dir)
 	return cmd.Run()
 }

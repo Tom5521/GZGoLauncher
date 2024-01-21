@@ -14,6 +14,7 @@ var (
 	ErrIncompatiblePlattaform = errors.New("incompatible plattaform")
 	ErrOnlyForWindows         = errors.New("only for windows")
 	ErrZDoomOnMac             = errors.New("zdoom is not available on mac")
+	ErrArIsNotInPath          = errors.New("ar executable is not in path")
 )
 
 var settings = &config.Settings
@@ -61,7 +62,7 @@ func GZDoom() error {
 
 // Only with windows.
 func ZDoom() error {
-	if !v.IsMac {
+	if v.IsMac {
 		return macZDoom()
 	}
 	if v.IsLinux {
