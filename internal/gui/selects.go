@@ -70,6 +70,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 		}
 		settings.Wads = deleteSlice(settings.Wads, selected)
 		ui.WadList.UnselectAll()
+		Runner.IWad = ""
 		selected = -1
 	}
 	toolbar := toolbar(selectLabel, add, remove)

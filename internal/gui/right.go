@@ -4,8 +4,9 @@ import (
 	"strconv"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 )
 
 func (ui *ui) RightCont() *fyne.Container {
@@ -31,6 +32,9 @@ func (ui *ui) RightCont() *fyne.Container {
 		OnChanged: func(b bool) {
 			settings.ShowOutOnClose = b
 		},
+	}
+	if v.IsWindows {
+		showOutOnClose.Hide()
 	}
 
 	// Audio options.
@@ -224,7 +228,6 @@ func (ui *ui) RightCont() *fyne.Container {
 				return
 			}
 			enableMultiplayer()
-
 		},
 	}
 	if !Runner.Multiplayer.Enabled {
@@ -233,49 +236,49 @@ func (ui *ui) RightCont() *fyne.Container {
 
 	// Containers
 
-	launchCont := container.NewAdaptiveGrid(2,
+	launchBox := boxes.NewAdaptiveGrid(2,
 		closeOnStart,
 		nostartup,
 		showOutOnClose,
 	)
 
-	audioCont := container.NewAdaptiveGrid(2,
+	audioBox := boxes.NewAdaptiveGrid(2,
 		nomusic,
 		nosound,
 		nosfx,
 	)
 
-	skillCont := container.NewBorder(nil, nil, skillLabel, nil, selectSkill)
-	warpCont := container.NewBorder(nil, nil, warpLabel, nil, warpEntry)
-	gameplayChecks := container.NewAdaptiveGrid(2,
+	skillBox := boxes.NewBorder(nil, nil, skillLabel, nil, selectSkill)
+	warpBox := boxes.NewBorder(nil, nil, warpLabel, nil, warpEntry)
+	gameplayCheckBox := boxes.NewAdaptiveGrid(2,
 		fastMonsters,
 		noMonsters,
 		respawnMonsters,
 	)
-	gameplayCont := container.NewVBox(
+	gameplayBox := boxes.NewVBox(
 		gameplayLabel,
-		skillCont,
-		warpCont,
-		gameplayChecks,
+		skillBox,
+		warpBox,
+		gameplayCheckBox,
 	)
 
-	multiplayerBox := container.NewVBox(
+	multiplayerBox := boxes.NewVBox(
 		multiplayerLabel,
 		enabledMultiplayer,
-		container.NewBorder(nil, nil, hostLabel, nil, hostEntry),
+		boxes.NewBorder(nil, nil, hostLabel, nil, hostEntry),
 		deathMatch,
 		packetServer,
-		container.NewBorder(nil, nil, portLabel, nil, portEntry),
+		boxes.NewBorder(nil, nil, portLabel, nil, portEntry),
 		connectToLb,
 		connectToEntry,
 	)
 
-	mainBox := container.NewVBox(
+	mainBox := boxes.NewVBox(
 		launchLabel,
-		launchCont,
+		launchBox,
 		audioLabel,
-		audioCont,
-		gameplayCont,
+		audioBox,
+		gameplayBox,
 		multiplayerBox,
 	)
 	return mainBox
