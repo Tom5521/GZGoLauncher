@@ -229,3 +229,21 @@ msgstr ""
 msgid "Show output on close"
 msgstr ""
 
+
+
+#: internal/gui/right.go
+msgid "Light"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Dark"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select theme:"
+msgstr ""
+

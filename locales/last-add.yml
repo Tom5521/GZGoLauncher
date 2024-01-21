@@ -1,3 +1,2 @@
----
 route: internal/gui/right.go
-msgid: Show output on close
+msgid: "Select theme:"

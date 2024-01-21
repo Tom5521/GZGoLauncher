@@ -195,14 +195,22 @@ msgstr "Conectar a"
 msgid "Enabled"
 msgstr "Habilidado"
 
-
 #: internal/gui/right.go
 msgid "The automatic download of zdoom on mac is not supported, I recommend you to download the binary by yourself and select its path in the corresponding zdoom path."
-msgstr "La descarga automatica de zdoom en mac no esta soportada, te recomiendo descargar el binario por ti mismo y seleccionar su ruta correspondiente en la ruta de zdoom"
-
-
+msgstr "La descarga automática de zdoom en mac no esta soportada, te recomiendo descargar el binario por ti mismo y seleccionar su ruta correspondiente en la ruta de zdoom."
 
 #: internal/gui/right.go
 msgid "Show output on close"
 msgstr "Mostrar la salida al terminar"
 
+#: internal/gui/right.go
+msgid "Light"
+msgstr "Claro"
+
+#: internal/gui/right.go
+msgid "Dark"
+msgstr "Oscuro"
+
+#: internal/gui/right.go
+msgid "Select theme:"
+msgstr "Seleccionar tema:"

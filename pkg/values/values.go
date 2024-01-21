@@ -3,6 +3,8 @@ package values
 import (
 	"os/user"
 	"runtime"
+
+	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 const (
@@ -15,6 +17,7 @@ var (
 	HomeDir = func() string {
 		usr, err := user.Current()
 		if err != nil {
+			messages.Error(err)
 			panic(err)
 		}
 		return usr.HomeDir

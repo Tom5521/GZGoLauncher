@@ -27,6 +27,7 @@ func (w *Wad) IsValid() bool {
 }
 
 type Config struct {
+	ThemeMode      bool   `json:"theme-mode"` // 1 = light, 0 = dark
 	ShowOutOnClose bool   `json:"show-out-on-close"`
 	CloseOnStart   bool   `json:"close-on-start"`
 	CustomArgs     string `json:"custom-args"`
