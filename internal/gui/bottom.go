@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
 
-func (ui *ui) Bottom() *fyne.Container {
+func (ui *ui) BottomBox() *fyne.Container {
 	runButton := &widget.Button{
 		Text:       po.Get("Run"),
 		Importance: widget.HighImportance,
@@ -49,8 +49,8 @@ func (ui *ui) Bottom() *fyne.Container {
 	}
 	ui.CustomArgs.SetPlaceHolder(po.Get("Example: %s", "-fast"))
 
-	customArgsBox := container.NewBorder(nil, nil, cArgsLabel, nil, ui.CustomArgs)
-	rightBox := container.NewHBox(ui.ZRunnerSelect, runButton)
-	content := container.NewBorder(nil, nil, nil, rightBox, customArgsBox)
+	customArgsBox := boxes.NewBorder(nil, nil, cArgsLabel, nil, ui.CustomArgs)
+	rightBox := boxes.NewHBox(ui.ZRunnerSelect, runButton)
+	content := boxes.NewBorder(nil, nil, nil, rightBox, customArgsBox)
 	return content
 }

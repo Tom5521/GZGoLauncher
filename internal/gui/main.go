@@ -20,9 +20,9 @@ func (ui *ui) StartMainWindow() {
 }
 
 func (ui *ui) MainBox() *fyne.Container {
-	selectbox := ui.SelectCont()
-	rightbox := container.NewHBox(widget.NewSeparator(), container.NewVScroll(ui.RightCont()))
-	bottom := ui.Bottom()
+	selectbox := ui.SelectBox()
+	rightbox := container.NewHBox(widget.NewSeparator(), container.NewVScroll(ui.RightBox()))
+	bottom := ui.BottomBox()
 	content := container.NewBorder(nil, bottom, nil, rightbox, selectbox)
 	return content
 }
