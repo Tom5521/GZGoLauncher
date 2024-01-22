@@ -8,6 +8,22 @@ import (
 	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
+var (
+	FilePath = Path + "/config.json"
+	Path     = func() string {
+		if v.IsWindows {
+			return v.HomeDir + WindowsPath
+		}
+		return v.HomeDir + UnixPath
+	}()
+	Settings = Read()
+)
+
+const (
+	UnixPath    string = "/.config/GZGoLauncher"
+	WindowsPath string = `\Documents\GZGoLauncher`
+)
+
 type Mod struct {
 	Path    string
 	Enabled bool
@@ -50,27 +66,6 @@ func (c *Config) Write() error {
 	}
 	return nil
 }
-
-var (
-	FilePath = func() string {
-		if v.IsWindows {
-			return v.HomeDir + WindowsPath + "/config.json"
-		}
-		return v.HomeDir + UnixPath + "/config.json"
-	}()
-	Path = func() string {
-		if v.IsWindows {
-			return v.HomeDir + WindowsPath
-		}
-		return v.HomeDir + UnixPath
-	}()
-	Settings = Read()
-)
-
-const (
-	UnixPath    string = "/.config/GZGoLauncher"
-	WindowsPath string = `\Documents\GZGoLauncher`
-)
 
 func Read() Config {
 	var err error
