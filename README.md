@@ -33,3 +33,5 @@ The information on how to compile it was moved to [wiki](https://github.com/Tom5
 This app was created listening to 
 [this](https://www.youtube.com/playlist?list=PLpShJAhHjyQws83odym7Q9mZ82wxvnRfw)
 playlist :v
+
+I ❤️ Maximum the Hormone
