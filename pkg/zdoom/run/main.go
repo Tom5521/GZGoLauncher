@@ -6,11 +6,15 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+
+	"github.com/Tom5521/GZGoLauncher/locales"
 )
 
 var (
-	ErrMissingGZDoom = errors.New("gzdoom/zdoom not found")
-	ErrBadIwad       = errors.New("the iwad is incorrect or does not exist")
+	po = locales.Current
+
+	ErrMissingGZDoom = errors.New(po.Get("gzdoom/zdoom not found"))
+	ErrBadIwad       = errors.New(po.Get("the iwad is incorrect or does not exist"))
 )
 
 type Pars struct {
@@ -142,9 +146,8 @@ func (p *Pars) Run() error {
 	err = cmd.Run()
 	if err != nil {
 		p.Error = err
-		return err
 	}
-	return nil
+	return err
 }
 
 func (p *Pars) Start() error {
@@ -156,9 +159,8 @@ func (p *Pars) Start() error {
 	err = cmd.Start()
 	if err != nil {
 		p.Error = err
-		return err
 	}
-	return nil
+	return err
 }
 
 func (p *Pars) Out() (string, error) {

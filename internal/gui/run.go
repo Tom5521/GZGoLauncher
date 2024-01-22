@@ -10,11 +10,11 @@ import (
 
 func (ui *ui) RunDoom() {
 	if Runner.IWad == "" {
-		ErrWin("Select a wad first!")
+		ErrWin(po.Get("Select a wad first!"))
 		return
 	}
 	if ui.ZRunnerSelect.Selected == "" {
-		ErrWin("Select a runner first!")
+		ErrWin(po.Get("Select a runner first!"))
 		return
 	}
 	run.GZDir = settings.ExecDir

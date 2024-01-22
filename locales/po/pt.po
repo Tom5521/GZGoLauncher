@@ -214,3 +214,51 @@ msgstr "Escuro"
 #: internal/gui/right.go
 msgid "Select theme:"
 msgstr "Selecionar tema:"
+
+#: internal/gui/right.go
+msgid "Error"
+msgstr "Erro"
+
+#: internal/gui/right.go
+msgid "Accept"
+msgstr "Aceitar"
+
+#: internal/gui/right.go
+msgid "Select a wad first!"
+msgstr "Seleccione primeiro um ficheiro wad!"
+
+#: internal/gui/right.go
+msgid "Select a runner first!"
+msgstr "Seleccione primeiro um corredor!"
+
+#: internal/gui/right.go
+msgid "The file is not valid!"
+msgstr "O ficheiro não é válido!"
+
+#: internal/gui/right.go
+msgid "The file already exists"
+msgstr "O ficheiro já existe"
+
+#: internal/gui/right.go
+msgid "gzdoom/zdoom not found"
+msgstr "gzdoom/zdoom não encontrado"
+
+#: internal/gui/right.go
+msgid "the iwad is incorrect or does not exist"
+msgstr "o iwad está incorreto ou não existe"
+
+#: internal/gui/right.go
+msgid "incompatible plattaform"
+msgstr "plataforma incompatível"
+
+#: internal/gui/right.go
+msgid "only for windows"
+msgstr "apenas para o Windows"
+
+#: internal/gui/right.go
+msgid "zdoom is not available on mac"
+msgstr "O zdoom não está disponível no mac"
+
+#: internal/gui/right.go
+msgid "ar executable is not in path"
+msgstr "ar executável não está no caminho"

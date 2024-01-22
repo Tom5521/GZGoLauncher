@@ -214,3 +214,51 @@ msgstr "Oscuro"
 #: internal/gui/right.go
 msgid "Select theme:"
 msgstr "Seleccionar tema:"
+
+#: internal/gui/right.go
+msgid "Error"
+msgstr "Error"
+
+#: internal/gui/right.go
+msgid "Accept"
+msgstr "Aceptar"
+
+#: internal/gui/right.go
+msgid "Select a wad first!"
+msgstr "Seleccionar un wad primero!"
+
+#: internal/gui/right.go
+msgid "Select a runner first!"
+msgstr "Seleccionar un runner primero!"
+
+#: internal/gui/right.go
+msgid "The file is not valid!"
+msgstr "El archivo no es valido!"
+
+#: internal/gui/right.go
+msgid "The file already exists"
+msgstr "El archivo ya existe"
+
+#: internal/gui/right.go
+msgid "gzdoom/zdoom not found"
+msgstr "gzdoom/zdoom no encontrado"
+
+#: internal/gui/right.go
+msgid "the iwad is incorrect or does not exist"
+msgstr "el archivo iwad es incorrecto o no existe"
+
+#: internal/gui/right.go
+msgid "incompatible plattaform"
+msgstr "plataforma incompatible"
+
+#: internal/gui/right.go
+msgid "only for windows"
+msgstr "solo para windows"
+
+#: internal/gui/right.go
+msgid "zdoom is not available on mac"
+msgstr "zdoom no esta disponible para mac"
+
+#: internal/gui/right.go
+msgid "ar executable is not in path"
+msgstr "el ejecutable de ar no esta en el path"
