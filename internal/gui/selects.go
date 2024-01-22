@@ -5,15 +5,15 @@ import (
 	"slices"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 )
 
-func (ui *ui) SelectCont() *container.Split {
-	content := container.NewVSplit(ui.IwadsCont(), ui.ModsCont())
+func (ui *ui) SelectBox() *boxes.Split {
+	content := boxes.NewVSplit(ui.IwadsCont(), ui.ModsCont())
 	return content
 }
 
@@ -75,7 +75,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 	}
 	toolbar := toolbar(selectLabel, add, remove)
 
-	content := container.NewBorder(toolbar, nil, nil, nil, ui.WadList)
+	content := boxes.NewBorder(toolbar, nil, nil, nil, ui.WadList)
 	return content
 }
 
@@ -86,7 +86,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 			return len(settings.Mods)
 		},
 		func() fyne.CanvasObject {
-			return container.NewBorder(
+			return boxes.NewBorder(
 				nil, nil, nil,
 				&widget.Check{},
 				&widget.Label{},
@@ -150,7 +150,7 @@ func (ui *ui) ModsCont() *fyne.Container {
 		ui.ModsList.Refresh()
 	}
 	bar := toolbar(selectModLabel, add, remove)
-	content := container.NewBorder(bar, nil, nil, nil, ui.ModsList)
+	content := boxes.NewBorder(bar, nil, nil, nil, ui.ModsList)
 	return content
 }
 
@@ -175,6 +175,6 @@ func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {
 		widget.NewToolbarAction(theme.ContentRemoveIcon(), minus),
 		widget.NewToolbarAction(theme.ContentAddIcon(), plus),
 	)
-	content := container.NewBorder(nil, nil, leftItem, nil, toolbar)
+	content := boxes.NewBorder(nil, nil, leftItem, nil, toolbar)
 	return content
 }

@@ -9,8 +9,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/locales"
-	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
-	"github.com/Tom5521/GZGoLauncher/pkg/gzsave"
+	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
+	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/save"
 )
 
 type Gui struct {
@@ -27,9 +27,9 @@ type ui struct {
 }
 
 var (
-	Runner   gzrun.Pars = gzsave.Read()
-	settings            = &config.Settings
-	po                  = locales.Current
+	Runner   run.Pars = save.Read()
+	settings          = &config.Settings
+	po                = locales.Current
 )
 
 func AutoSaver() {
@@ -38,7 +38,7 @@ func AutoSaver() {
 		oldConfig := config.Settings
 		time.Sleep(50 * time.Millisecond)
 		if !reflect.DeepEqual(oldRunner, Runner) {
-			gzsave.Save(Runner)
+			save.Save(Runner)
 		}
 		if !reflect.DeepEqual(oldConfig, config.Settings) {
 			err := settings.Write()

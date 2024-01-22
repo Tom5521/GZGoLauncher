@@ -247,3 +247,75 @@ msgstr ""
 msgid "Select theme:"
 msgstr ""
 
+
+
+#: internal/gui/right.go
+msgid "Error"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Accept"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select a wad first!"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select a runner first!"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "The file is not valid!"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "The file already exists"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "gzdoom/zdoom not found"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "the iwad is incorrect or does not exist"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "incompatible plattaform"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "only for windows"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "zdoom is not available on mac"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "ar executable is not in path"
+msgstr ""
+

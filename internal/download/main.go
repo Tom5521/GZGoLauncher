@@ -7,10 +7,13 @@ import (
 	"os"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZGoLauncher/locales"
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 )
 
 var (
+	po = locales.Current
+
 	ErrIncompatiblePlattaform = errors.New("incompatible plattaform")
 	ErrOnlyForWindows         = errors.New("only for windows")
 	ErrZDoomOnMac             = errors.New("zdoom is not available on mac")

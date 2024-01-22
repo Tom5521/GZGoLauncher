@@ -9,7 +9,7 @@ import (
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 )
 
-func (ui *ui) RightCont() *fyne.Container {
+func (ui *ui) RightBox() *fyne.Container {
 	// Launch Options.
 	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
 	closeOnStart := &widget.Check{
