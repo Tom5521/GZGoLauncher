@@ -2,7 +2,7 @@ package gui
 
 import (
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
+	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -10,9 +10,9 @@ func (ui *ui) StartMainWindow() {
 	metadata := ui.App.Metadata()
 	ui.MainWindow = ui.App.NewWindow(metadata.Name)
 	ui.MainWindow.SetIcon(metadata.Icon)
-	mainTabs := container.NewAppTabs(
-		container.NewTabItem(po.Get("Run"), ui.MainBox()),
-		container.NewTabItem(po.Get("Settings"), configuration.MainBox(ui)),
+	mainTabs := boxes.NewAppTabs(
+		boxes.NewTabItem(po.Get("Run"), ui.MainBox()),
+		boxes.NewTabItem(po.Get("Settings"), configuration.MainBox(ui)),
 	)
 	ui.MainWindow.Resize(fyne.NewSize(1100, 500))
 	ui.MainWindow.SetContent(mainTabs)
@@ -21,8 +21,8 @@ func (ui *ui) StartMainWindow() {
 
 func (ui *ui) MainBox() *fyne.Container {
 	selectbox := ui.SelectBox()
-	rightbox := container.NewHBox(widget.NewSeparator(), container.NewVScroll(ui.RightBox()))
+	rightbox := boxes.NewHBox(widget.NewSeparator(), boxes.NewVScroll(ui.RightBox()))
 	bottom := ui.BottomBox()
-	content := container.NewBorder(nil, bottom, nil, rightbox, selectbox)
+	content := boxes.NewBorder(nil, bottom, nil, rightbox, selectbox)
 	return content
 }
