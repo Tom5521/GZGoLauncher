@@ -1,42 +1,65 @@
 package filepicker
 
 import (
-	"fmt"
-
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
+	"github.com/Tom5521/GoNotes/pkg/messages"
 	"github.com/ncruces/zenity"
 )
 
 var latestPath string
 
-func Picker(filters []string, msg, path string) string {
-	latestPath = path
-	ret, err := zenity.SelectFile(
-		zenity.Filename(path),
+type Picker struct {
+	Filters []string
+	Msg     string
+	Path    string
+}
+
+func (p Picker) Start() string {
+	ret, msg := zenity.SelectFile(
+		zenity.Filename(p.Path),
 		zenity.FileFilters{
-			{msg, filters, true},
+			{p.Msg, p.Filters, true},
 		})
-	if err != nil {
-		fmt.Println(err)
+	if msg != nil {
+		messages.Error(msg)
 	}
 	return ret
 }
 
 func Wad() string {
-	return Picker([]string{"*.wad"}, "wad files", latestPath)
+	p := Picker{
+		Filters: []string{"*.wad"},
+		Msg:     "Wad files",
+		Path:    latestPath,
+	}
+	return p.Start()
 }
 
 func PK3() string {
-	return Picker([]string{"*.pk3", "*.wad"}, "pk3 or wad files", latestPath)
+	p := Picker{
+		Filters: []string{"*.pk3", "*.wad"},
+		Msg:     "pk3 or wad files",
+		Path:    latestPath,
+	}
+	return p.Start()
 }
 
 func Image() string {
-	return Picker([]string{"*.png", "*.gif", "*.ico", "*.jpg", "*.webp"}, "Images", latestPath)
+	p := Picker{
+		Filters: []string{"*.png", "*.gif", "*.ico", "*.jpg", "*.webp"},
+		Msg:     "Images",
+		Path:    latestPath,
+	}
+	return p.Start()
 }
 
 func Exe() string {
-	if v.IsWindows {
-		return Picker([]string{"*.exe"}, ".exe files", latestPath)
+	p := Picker{
+		Msg:  "Executable files",
+		Path: latestPath,
 	}
-	return Picker([]string{}, "Executable files", latestPath)
+	if v.IsWindows {
+		p.Filters = []string{"*.exe"}
+	}
+	return p.Start()
 }
