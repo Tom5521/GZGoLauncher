@@ -1,4 +1,4 @@
-package gzsave
+package save
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
-	"github.com/Tom5521/GZGoLauncher/pkg/gzrun"
+	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
 	"github.com/Tom5521/GoNotes/pkg/messages"
 	"github.com/ncruces/zenity"
 )
@@ -20,7 +20,7 @@ func errWin(txt ...any) {
 	}
 }
 
-func Save(r gzrun.Pars) {
+func Save(r run.Pars) {
 	bytedata, err := json.Marshal(r)
 	if err != nil {
 		errWin(err)
@@ -33,8 +33,8 @@ func Save(r gzrun.Pars) {
 	}
 }
 
-func Read() gzrun.Pars {
-	var pars gzrun.Pars
+func Read() run.Pars {
+	var pars run.Pars
 	if _, err := os.Stat(FilePath); os.IsNotExist(err) {
 		Save(pars)
 		return pars

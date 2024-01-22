@@ -1,4 +1,4 @@
-package gzrun
+package run
 
 import (
 	"errors"
