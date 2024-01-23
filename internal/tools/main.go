@@ -2,26 +2,35 @@ package tools
 
 import (
 	"fmt"
+	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/GZGoLauncher/locales"
-	"github.com/Tom5521/GoNotes/pkg/messages"
+	msg "github.com/Tom5521/GoNotes/pkg/messages"
+	"github.com/leonelquinteros/gotext"
 	"github.com/ncruces/zenity"
 )
 
-var po = locales.Current
+var (
+	po               *gotext.Po
+	FatalErrExitCode int
+)
+
+func ReceivePo(p *gotext.Po) {
+	po = p
+}
 
 func ErrWin(txt ...any) {
+	msg.Error(txt...)
 	app := fyne.CurrentApp()
-	if app == nil {
+	if app == nil || po == nil {
 		text := fmt.Sprint(txt...)
 		err := zenity.Error(text)
 		if err != nil {
-			messages.Error(err)
+			msg.Error(err)
 		}
 		return
 	}
@@ -49,4 +58,9 @@ func ErrWin(txt ...any) {
 	w.SetContent(content)
 	w.Show()
 	w.RequestFocus()
+}
+
+func FatalErrWin(txt ...any) {
+	ErrWin(txt...)
+	os.Exit(FatalErrExitCode)
 }

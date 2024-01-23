@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
+	t "github.com/Tom5521/GZGoLauncher/internal/tools"
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
-	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 var (
@@ -72,7 +72,7 @@ func Read() Config {
 	if _, err = os.Stat(Path); os.IsNotExist(err) {
 		err = os.Mkdir(Path, os.ModePerm)
 		if err != nil {
-			messages.FatalError(err)
+			t.FatalErrWin(err)
 		}
 	}
 	if _, err = os.Stat(FilePath); os.IsNotExist(err) {
@@ -87,21 +87,21 @@ func Read() Config {
 		var bytedata []byte
 		bytedata, err = json.Marshal(s)
 		if err != nil {
-			messages.FatalError(err)
+			t.FatalErrWin(err)
 		}
 		err = os.WriteFile(FilePath, bytedata, os.ModePerm)
 		if err != nil {
-			messages.FatalError(err)
+			t.FatalErrWin(err)
 		}
 	}
 	bytedata, err := os.ReadFile(FilePath)
 	if err != nil {
-		messages.FatalError(err)
+		t.FatalErrWin(err)
 	}
 	ret := Config{}
 	err = json.Unmarshal(bytedata, &ret)
 	if err != nil {
-		messages.FatalError(err)
+		t.FatalErrWin(err)
 	}
 	return ret
 }

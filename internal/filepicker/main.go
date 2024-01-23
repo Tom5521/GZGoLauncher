@@ -1,8 +1,10 @@
 package filepicker
 
 import (
+	"errors"
+
+	"github.com/Tom5521/GZGoLauncher/internal/tools"
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
-	"github.com/Tom5521/GoNotes/pkg/messages"
 	"github.com/ncruces/zenity"
 )
 
@@ -15,15 +17,15 @@ type Picker struct {
 }
 
 func (p Picker) Start() string {
-	ret, msg := zenity.SelectFile(
+	f, err := zenity.SelectFile(
 		zenity.Filename(p.Path),
 		zenity.FileFilters{
 			{p.Msg, p.Filters, true},
 		})
-	if msg != nil {
-		messages.Error(msg)
+	if err != nil && !errors.Is(err, zenity.ErrCanceled) {
+		tools.ErrWin(err)
 	}
-	return ret
+	return f
 }
 
 func Wad() string {

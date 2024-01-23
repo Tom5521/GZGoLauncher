@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZGoLauncher/internal/tools"
 	"github.com/Tom5521/GZGoLauncher/locales"
 	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
 	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/save"
@@ -55,5 +56,7 @@ func Init() *Gui {
 	ui.App = app
 	// Initialize auto saver
 	go AutoSaver()
+	// Initialize error window
+	tools.ReceivePo(po)
 	return ui
 }
