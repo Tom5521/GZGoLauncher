@@ -31,8 +31,8 @@ type Mod struct {
 
 type Wad string
 
-func (w *Wad) IsValid() bool {
-	stat, err := os.Stat(string(*w))
+func (w Wad) IsValid() bool {
+	stat, err := os.Stat(string(w))
 	if os.IsNotExist(err) {
 		return false
 	}
