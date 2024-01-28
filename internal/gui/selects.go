@@ -44,31 +44,33 @@ func (ui *ui) IwadsCont() *fyne.Container {
 	}
 
 	add := func() {
-		file := filepicker.Wad()
-		if file == "" {
-			return
-		}
-		newWad := config.Wad(file)
-		if !newWad.IsValid() {
-			ErrWin(po.Get("The file is not valid!"))
-			return
-		}
-		i := slices.IndexFunc(settings.Wads, func(w config.Wad) bool {
-			return w == newWad
-		})
-		if i != -1 {
-			ErrWin(po.Get("The file already exists"))
-			return
-		}
+		files := filepicker.Wad.MultiStart()
+		for _, file := range files {
+			if file == "" {
+				return
+			}
+			newWad := config.Wad(file)
+			if !newWad.IsValid() {
+				ErrWin(po.Get("The file is not valid!"))
+				return
+			}
+			i := slices.IndexFunc(settings.Wads, func(w config.Wad) bool {
+				return w == newWad
+			})
+			if i != -1 {
+				ErrWin(po.Get("The file already exists"))
+				return
+			}
 
-		settings.Wads = append(settings.Wads, newWad)
+			settings.Wads = append(settings.Wads, newWad)
+		}
 		ui.WadList.Refresh()
 	}
 	remove := func() {
 		if selected == -1 {
 			return
 		}
-		settings.Wads = deleteSlice(settings.Wads, selected)
+		settings.Wads = slices.Delete(settings.Wads, selected, selected+1)
 		ui.WadList.UnselectAll()
 		Runner.IWad = ""
 		selected = -1
@@ -112,40 +114,43 @@ func (ui *ui) ModsCont() *fyne.Container {
 		ui.ModsList.Unselect(id)
 	}
 	add := func() {
-		newMod := filepicker.PK3()
-		if newMod == "" {
-			return
+		newMods := filepicker.Pk3.MultiStart()
+		for _, newMod := range newMods {
+			if newMod == "" {
+				return
+			}
+			stat, err := os.Stat(newMod)
+			if os.IsNotExist(err) {
+				ErrWin(po.Get("The file is not valid!"))
+				return
+			}
+			if stat.IsDir() {
+				ErrWin(po.Get("The file is not valid!"))
+				return
+			}
+			i := slices.IndexFunc(settings.Mods, func(m config.Mod) bool {
+				return m.Path == newMod
+			})
+			if i != -1 {
+				ErrWin(po.Get("The file already exists"))
+				return
+			}
+			settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
 		}
-		stat, err := os.Stat(newMod)
-		if os.IsNotExist(err) {
-			ErrWin(po.Get("The file is not valid!"))
-			return
-		}
-		if stat.IsDir() {
-			ErrWin(po.Get("The file is not valid!"))
-			return
-		}
-		i := slices.IndexFunc(settings.Mods, func(m config.Mod) bool {
-			return m.Path == newMod
-		})
-		if i != -1 {
-			ErrWin(po.Get("The file already exists"))
-			return
-		}
-		settings.Mods = append(settings.Mods, config.Mod{Path: newMod})
 		ui.ModsList.Refresh()
 	}
 	remove := func() {
 		var toDelete []int
+	next:
+		toDelete = []int{}
 		for i, mod := range settings.Mods {
 			if mod.Enabled {
 				toDelete = append(toDelete, i)
 			}
 		}
-		var i int
-		for _, idx := range toDelete {
-			settings.Mods = append(settings.Mods[:idx-i], settings.Mods[idx-i+1:]...)
-			i++
+		for _, f := range toDelete {
+			settings.Mods = slices.Delete(settings.Mods, f, f+1)
+			goto next
 		}
 		ui.ModsList.Refresh()
 	}
@@ -162,11 +167,6 @@ func enabledPaths() []string {
 		}
 	}
 	return paths
-}
-
-func deleteSlice[S ~[]E, E any](s S, i int) S {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
 }
 
 func toolbar(leftItem fyne.CanvasObject, plus, minus func()) *fyne.Container {

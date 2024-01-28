@@ -111,7 +111,7 @@ func (ui *configUI) gzBox() *fyne.Container {
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := filepicker.Exe()
+		newDir := filepicker.Executable.Start()
 		if newDir == "" {
 			return
 		}
@@ -141,7 +141,7 @@ func (ui *configUI) zBox() *fyne.Container {
 		ui.mainUI.ZRunnerSelect.ClearSelected()
 	}
 	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-		newDir := filepicker.Exe()
+		newDir := filepicker.Executable.Start()
 		if newDir == "" {
 			return
 		}

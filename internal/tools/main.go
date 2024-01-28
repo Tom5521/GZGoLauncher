@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -23,15 +22,19 @@ func ReceivePo(p *gotext.Po) {
 	po = p
 }
 
+func ZenityErrWin(txt ...any) {
+	errtext := fmt.Sprint(txt...)
+	err := zenity.Error(errtext)
+	if err != nil {
+		msg.Error(err)
+	}
+}
+
 func ErrWin(txt ...any) {
 	msg.Error(txt...)
 	app := fyne.CurrentApp()
 	if app == nil || po == nil {
-		text := fmt.Sprint(txt...)
-		err := zenity.Error(text)
-		if err != nil {
-			msg.Error(err)
-		}
+		ZenityErrWin(txt...)
 		return
 	}
 	text := fmt.Sprint(txt...)
@@ -54,7 +57,7 @@ func ErrWin(txt ...any) {
 	}
 
 	buttonBox := boxes.NewCenter(button)
-	content := container.NewBorder(nil, buttonBox, nil, nil, label)
+	content := boxes.NewBorder(nil, buttonBox, nil, nil, label)
 	w.SetContent(content)
 	w.Show()
 	w.RequestFocus()
