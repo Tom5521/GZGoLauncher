@@ -2,27 +2,39 @@ package tools
 
 import (
 	"fmt"
+	"os"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/GZGoLauncher/locales"
-	"github.com/Tom5521/GoNotes/pkg/messages"
+	msg "github.com/Tom5521/GoNotes/pkg/messages"
+	"github.com/leonelquinteros/gotext"
 	"github.com/ncruces/zenity"
 )
 
-var po = locales.Current
+var (
+	po               *gotext.Po
+	FatalErrExitCode int
+)
+
+func ReceivePo(p *gotext.Po) {
+	po = p
+}
+
+func ZenityErrWin(txt ...any) {
+	errtext := fmt.Sprint(txt...)
+	err := zenity.Error(errtext)
+	if err != nil {
+		msg.Error(err)
+	}
+}
 
 func ErrWin(txt ...any) {
+	msg.Error(txt...)
 	app := fyne.CurrentApp()
-	if app == nil {
-		text := fmt.Sprint(txt...)
-		err := zenity.Error(text)
-		if err != nil {
-			messages.Error(err)
-		}
+	if app == nil || po == nil {
+		ZenityErrWin(txt...)
 		return
 	}
 	text := fmt.Sprint(txt...)
@@ -45,8 +57,13 @@ func ErrWin(txt ...any) {
 	}
 
 	buttonBox := boxes.NewCenter(button)
-	content := container.NewBorder(nil, buttonBox, nil, nil, label)
+	content := boxes.NewBorder(nil, buttonBox, nil, nil, label)
 	w.SetContent(content)
 	w.Show()
 	w.RequestFocus()
+}
+
+func FatalErrWin(txt ...any) {
+	ErrWin(txt...)
+	os.Exit(FatalErrExitCode)
 }

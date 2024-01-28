@@ -17,8 +17,7 @@ var (
 	HomeDir = func() string {
 		usr, err := user.Current()
 		if err != nil {
-			messages.Error(err)
-			panic(err)
+			messages.FatalError(err)
 		}
 		return usr.HomeDir
 	}()

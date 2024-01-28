@@ -9,6 +9,7 @@ import (
 func (ui *ui) StartMainWindow() {
 	metadata := ui.App.Metadata()
 	ui.MainWindow = ui.App.NewWindow(metadata.Name)
+	ui.MainWindow.SetMaster()
 	ui.MainWindow.SetIcon(metadata.Icon)
 	mainTabs := boxes.NewAppTabs(
 		boxes.NewTabItem(po.Get("Run"), ui.MainBox()),
