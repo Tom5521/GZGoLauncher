@@ -6,12 +6,19 @@ import (
 	"fyne.io/fyne/v2"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 	v "github.com/Tom5521/GZGoLauncher/pkg/values"
 )
 
 func (ui *ui) RightBox() *fyne.Container {
+	titleLabel := func(text string) *widget.Label {
+		return &widget.Label{
+			Text:      text,
+			Alignment: fyne.TextAlignCenter,
+		}
+	}
 	// Launch Options.
-	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
+	launchLabel := titleLabel(po.Get("Launch Options"))
 	closeOnStart := &widget.Check{
 		Text:    po.Get("Close launcher on start"),
 		Checked: settings.CloseOnStart,
@@ -33,13 +40,22 @@ func (ui *ui) RightBox() *fyne.Container {
 			settings.ShowOutOnClose = b
 		},
 	}
+	configLabel := titleLabel(po.Get("Configuration file"))
+	configEntry := &widget.Entry{
+		Text: Runner.ConfigFile,
+		OnChanged: func(s string) {
+			Runner.ConfigFile = s
+		},
+	}
+	configPathBt := widget.NewButton(po.Get("Select path:"), func() {
+		configEntry.SetText(filepicker.Ini.Start())
+	})
 	if v.IsWindows {
 		showOutOnClose.Hide()
 	}
 
 	// Audio options.
-	audioLabel := &widget.Label{Text: po.Get("Audio Options"), Alignment: fyne.TextAlignCenter}
-
+	audioLabel := titleLabel(po.Get("Audio Options"))
 	nosound := &widget.Check{
 		Text:    po.Get("No sound"),
 		Checked: Runner.NoSound,
@@ -63,7 +79,7 @@ func (ui *ui) RightBox() *fyne.Container {
 	}
 
 	// Gameplay options.
-	gameplayLabel := &widget.Label{Text: po.Get("Gameplay Options"), Alignment: fyne.TextAlignCenter}
+	gameplayLabel := titleLabel(po.Get("Gameplay Options"))
 	skillLabel := widget.NewLabel(po.Get("Select skill:"))
 	skillList := []string{
 		po.Get("Cancel"),
@@ -148,8 +164,7 @@ func (ui *ui) RightBox() *fyne.Container {
 
 	// Multiplayer
 
-	multiplayerLabel := &widget.Label{Text: po.Get("Multiplayer"), Alignment: fyne.TextAlignCenter}
-
+	multiplayerLabel := titleLabel(po.Get("Multiplayer"))
 	hostLabel := &widget.Label{Text: po.Get("Host:")}
 	hostEntry := &widget.Entry{Text: strconv.Itoa(Runner.Multiplayer.Host)}
 	hostEntry.OnChanged = func(s string) {
@@ -242,6 +257,11 @@ func (ui *ui) RightBox() *fyne.Container {
 		showOutOnClose,
 	)
 
+	configBox := boxes.NewVBox(
+		configLabel,
+		boxes.NewBorder(nil, nil, configPathBt, nil, configEntry),
+	)
+
 	audioBox := boxes.NewAdaptiveGrid(2,
 		nomusic,
 		nosound,
@@ -276,6 +296,7 @@ func (ui *ui) RightBox() *fyne.Container {
 	mainBox := boxes.NewVBox(
 		launchLabel,
 		launchBox,
+		configBox,
 		audioLabel,
 		audioBox,
 		gameplayBox,

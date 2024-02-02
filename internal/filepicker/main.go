@@ -12,6 +12,11 @@ import (
 var latestPath string
 
 var (
+	Ini = Picker{
+		Filters: []string{"*.ini"},
+		Msg:     "Ini files",
+		Path:    latestPath,
+	}
 	Wad = Picker{
 		Filters: []string{"*.wad"},
 		Msg:     "Wad files",
