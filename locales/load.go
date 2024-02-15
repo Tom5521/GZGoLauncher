@@ -4,7 +4,7 @@ import (
 	"embed"
 	"fmt"
 
-	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZLauncher-gtk/internal/config"
 	"github.com/leonelquinteros/gotext"
 	"github.com/ncruces/zenity"
 )

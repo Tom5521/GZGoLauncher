@@ -4,14 +4,21 @@ import (
 	"errors"
 	"path/filepath"
 
-	t "github.com/Tom5521/GZGoLauncher/internal/tools"
-	v "github.com/Tom5521/GZGoLauncher/pkg/values"
+	t "github.com/Tom5521/GZLauncher-gtk/internal/tools"
+	v "github.com/Tom5521/GZLauncher-gtk/pkg/values"
 	"github.com/ncruces/zenity"
 )
 
-var latestPath string
+var (
+	latestPath string
+)
 
 var (
+	Ini = Picker{
+		Filters: []string{"*.ini"},
+		Msg:     "Ini files",
+		Path:    latestPath,
+	}
 	Wad = Picker{
 		Filters: []string{"*.wad"},
 		Msg:     "Wad files",

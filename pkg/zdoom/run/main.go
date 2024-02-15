@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strconv"
 
-	"github.com/Tom5521/GZGoLauncher/locales"
+	"github.com/Tom5521/GZLauncher-gtk/locales"
 )
 
 var (
@@ -18,12 +18,13 @@ var (
 )
 
 type Pars struct {
-	Error  error  `json:"-"`
-	ErrOut string `json:"-"`
-	IWad   string
-	Skill  struct {
+	Error      error  `json:"-"`
+	ErrOut     string `json:"-"`
+	IWad       string
+	ConfigFile string
+	Skill      struct {
 		Enabled bool
-		Level   int
+		Level   int // Levels 0-4
 	}
 	Warp struct {
 		Enabled bool
@@ -68,6 +69,9 @@ func ExistsGZInPath() bool {
 
 func (p Pars) MakeCmd() *exec.Cmd {
 	cmd := exec.Command(GZDir, "-iwad", p.IWad)
+	if p.ConfigFile != "" {
+		cmd.Args = append(cmd.Args, "-config", p.ConfigFile)
+	}
 	if p.Mods.Enabled {
 		cmd.Args = append(cmd.Args, "-file")
 		cmd.Args = append(cmd.Args, p.Mods.List...)

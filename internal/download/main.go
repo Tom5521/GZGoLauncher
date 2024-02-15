@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Tom5521/GZGoLauncher/internal/config"
-	"github.com/Tom5521/GZGoLauncher/locales"
-	v "github.com/Tom5521/GZGoLauncher/pkg/values"
+	"github.com/Tom5521/GZLauncher-gtk/internal/config"
+	"github.com/Tom5521/GZLauncher-gtk/locales"
+	v "github.com/Tom5521/GZLauncher-gtk/pkg/values"
 )
 
 var (

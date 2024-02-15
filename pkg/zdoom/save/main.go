@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Tom5521/GZGoLauncher/internal/config"
-	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
+	"github.com/Tom5521/GZLauncher-gtk/internal/config"
+	"github.com/Tom5521/GZLauncher-gtk/pkg/zdoom/run"
 	"github.com/Tom5521/GoNotes/pkg/messages"
 	"github.com/ncruces/zenity"
 )

@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Tom5521/GZGoLauncher/internal/config"
+	"github.com/Tom5521/GZLauncher-gtk/internal/config"
 )
 
 func windowsZdoom() error {

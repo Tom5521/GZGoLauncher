@@ -1,282 +1,265 @@
 package gui
 
 import (
+	"fmt"
+	"runtime"
 	"strconv"
 
-	"fyne.io/fyne/v2"
-	boxes "fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
-	v "github.com/Tom5521/GZGoLauncher/pkg/values"
+	"github.com/Tom5521/GZLauncher-gtk/pkg/gtk/boxes"
+	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
-func (ui *ui) RightBox() *fyne.Container {
-	// Launch Options.
-	launchLabel := &widget.Label{Text: po.Get("Launch Options"), Alignment: fyne.TextAlignCenter}
-	closeOnStart := &widget.Check{
-		Text:    po.Get("Close launcher on start"),
-		Checked: settings.CloseOnStart,
-		OnChanged: func(b bool) {
-			settings.CloseOnStart = b
-		},
+type SetSensitiver interface {
+	SetSensitive(bool)
+}
+
+func (ui *ui) Right() gtk.Widgetter {
+	newLabel := func(text string) *gtk.Label {
+		lb := gtk.NewLabel(po.Get(text))
+		lb.SetMarkup(fmt.Sprintf("<b>%s</b>", lb.Label()))
+		lb.SetHAlign(gtk.AlignCenter)
+		return lb
 	}
-	nostartup := &widget.Check{
-		Text:    po.Get("No startup"),
-		Checked: Runner.NoStartup,
-		OnChanged: func(b bool) {
-			Runner.NoStartup = b
-		},
-	}
-	showOutOnClose := &widget.Check{
-		Text:    po.Get("Show output on close"),
-		Checked: settings.ShowOutOnClose,
-		OnChanged: func(b bool) {
-			settings.ShowOutOnClose = b
-		},
-	}
-	if v.IsWindows {
-		showOutOnClose.Hide()
+	newCheck := func(text string) *gtk.CheckButton {
+		check := gtk.NewCheckButtonWithLabel(po.Get(text))
+		return check
 	}
 
-	// Audio options.
-	audioLabel := &widget.Label{Text: po.Get("Audio Options"), Alignment: fyne.TextAlignCenter}
+	launchLb := newLabel("Launch Options")
 
-	nosound := &widget.Check{
-		Text:    po.Get("No sound"),
-		Checked: Runner.NoSound,
-		OnChanged: func(b bool) {
-			Runner.NoSound = b
-		},
-	}
-	nomusic := &widget.Check{
-		Text:    po.Get("No music"),
-		Checked: Runner.NoSound,
-		OnChanged: func(b bool) {
-			Runner.NoMusic = b
-		},
-	}
-	nosfx := &widget.Check{
-		Text:    po.Get("No SFX"),
-		Checked: Runner.NoSFX,
-		OnChanged: func(b bool) {
-			Runner.NoSFX = b
-		},
-	}
+	closeOnStartCheck := newCheck("Close launcher on start")
+	closeOnStartCheck.ConnectToggled(func() {
+		settings.CloseOnStart = closeOnStartCheck.Active()
+	})
+	noStartupCheck := newCheck("No startup")
+	noStartupCheck.ConnectToggled(func() {
+		runner.NoStartup = noStartupCheck.Active()
+	})
 
-	// Gameplay options.
-	gameplayLabel := &widget.Label{Text: po.Get("Gameplay Options"), Alignment: fyne.TextAlignCenter}
-	skillLabel := widget.NewLabel(po.Get("Select skill:"))
-	skillList := []string{
-		po.Get("Cancel"),
+	showOutputOnCloseCheck := newCheck("Show output on close")
+	showOutputOnCloseCheck.ConnectToggled(func() {
+		settings.ShowOutOnClose = showOutputOnCloseCheck.Active()
+	})
+
+	audioLb := newLabel("Audio Options")
+
+	noMusicCheck := newCheck("No music")
+	noMusicCheck.ConnectToggled(func() {
+		runner.NoMusic = noMusicCheck.Active()
+	})
+	noSoundCheck := newCheck("No sound")
+	noSoundCheck.ConnectToggled(func() {
+		runner.NoSound = noSoundCheck.Active()
+	})
+	noSFXCheck := newCheck("No SFX")
+	noSFXCheck.ConnectToggled(func() {
+		runner.NoSFX = noSFXCheck.Active()
+	})
+
+	gameplayLb := newLabel("Gameplay Options")
+
+	skillLb := newLabel("Select skill:")
+	skills := []string{
+		po.Get("None."),
 		po.Get("I'm too young to die."),
 		po.Get("Hey, not too rough."),
 		po.Get("Hurt me plenty."),
 		po.Get("Ultra-Violence."),
 		po.Get("Nightmare!"),
 	}
-	selectSkill := widget.NewSelect(skillList, func(s string) {})
-	selectSkill.PlaceHolder = po.Get("Select a skill")
-	selectSkill.OnChanged = func(s string) {
-		setSkill := func(level int) {
-			Runner.Skill.Level = level
-		}
-		if s == po.Get("Cancel") {
-			Runner.Skill.Enabled = false
-			selectSkill.ClearSelected()
-			return
-		}
-		if s != "" {
-			Runner.Skill.Enabled = true
-		}
-		switch s {
-		case skillList[1]:
-			setSkill(0)
-		case skillList[2]:
-			setSkill(1)
-		case skillList[3]:
-			setSkill(2)
-		case skillList[4]:
-			setSkill(3)
-		case skillList[5]:
-			setSkill(4)
-		}
-	}
-	if Runner.Skill.Enabled {
-		switch Runner.Skill.Level {
+	skillDropDown := gtk.NewDropDownFromStrings(skills)
+	skillDropDown.SetHExpand(true)
+	skillDropDown.ConnectAfter("notify::selected", func() {
+		switch skillDropDown.Selected() {
 		case 0:
-			selectSkill.Selected = skillList[1]
-		case 1:
-			selectSkill.Selected = skillList[2]
-		case 2:
-			selectSkill.Selected = skillList[3]
-		case 3:
-			selectSkill.Selected = skillList[4]
-		case 4:
-			selectSkill.Selected = skillList[5]
+			runner.Skill.Enabled = false
+		default:
+			runner.Skill.Enabled = true
+			runner.Skill.Level = int(skillDropDown.Selected()) - 1
 		}
-	}
+	})
 
-	warpLabel := widget.NewLabel(po.Get("Select warp"))
-	warpEntry := &widget.Entry{Text: Runner.Warp.Level}
-	warpEntry.OnChanged = func(s string) {
-		Runner.Warp.Level = s
-		Runner.Warp.Enabled = s != ""
-	}
+	warpLb := newLabel("Select warp")
+	warpEntry := gtk.NewEntry()
+	warpEntry.SetPlaceholderText("E1M1")
+	warpEntry.ConnectChanged(func() {
+		if warpEntry.Text() == "" {
+			runner.Warp.Enabled = false
+		}
+		runner.Warp.Level = warpEntry.Text()
+	})
+	warpEntry.SetText(runner.Warp.Level)
+	warpEntry.SetHExpand(true)
 
-	fastMonsters := &widget.Check{
-		Text:    po.Get("Fast monsters"),
-		Checked: Runner.FastMonsters,
-		OnChanged: func(b bool) {
-			Runner.FastMonsters = b
-		},
-	}
+	fastMonstersCheck := newCheck("Fast monsters")
+	fastMonstersCheck.ConnectToggled(func() {
+		runner.FastMonsters = fastMonstersCheck.Active()
+	})
+	noMonstersCheck := newCheck("No monsters")
+	noMonstersCheck.ConnectToggled(func() {
+		runner.NoMonsters = noMonstersCheck.Active()
+	})
+	respawnMonstersCheck := newCheck("Respawn monsters")
+	respawnMonstersCheck.ConnectToggled(func() {
+		runner.RespawnMonsters = respawnMonstersCheck.Active()
+	})
 
-	noMonsters := &widget.Check{
-		Text:    po.Get("No monsters"),
-		Checked: Runner.NoMonsters,
-		OnChanged: func(b bool) {
-			Runner.NoMonsters = b
-		},
-	}
+	multiplayerLb := newLabel("Multiplayer")
 
-	respawnMonsters := &widget.Check{
-		Text:    po.Get("Respawn monsters"),
-		Checked: Runner.RespawnMonsters,
-		OnChanged: func(b bool) {
-			Runner.RespawnMonsters = b
-		},
-	}
-
-	// Multiplayer
-
-	multiplayerLabel := &widget.Label{Text: po.Get("Multiplayer"), Alignment: fyne.TextAlignCenter}
-
-	hostLabel := &widget.Label{Text: po.Get("Host:")}
-	hostEntry := &widget.Entry{Text: strconv.Itoa(Runner.Multiplayer.Host)}
-	hostEntry.OnChanged = func(s string) {
-		h, err := strconv.Atoi(s)
+	hostLb := newLabel("Host:")
+	hostEntry := gtk.NewEntry()
+	hostEntry.SetHExpand(true)
+	hostEntry.SetText(strconv.Itoa(runner.Multiplayer.Host))
+	hostEntry.SetPlaceholderText("0")
+	hostEntry.ConnectChanged(func() {
+		txt := hostEntry.Text()
+		for i, l := range txt {
+			_, err := strconv.Atoi(string(l))
+			if err != nil {
+				hostEntry.SetText(txt[:i])
+			}
+		}
+		host, err := strconv.Atoi(txt)
 		if err != nil {
 			hostEntry.SetText("0")
+			runner.Multiplayer.Host = 0
 			return
 		}
-		Runner.Multiplayer.Host = h
-	}
+		runner.Multiplayer.Host = host
+	})
 
-	deathMatch := &widget.Check{
-		Text:    po.Get("Deathmatch"),
-		Checked: Runner.Multiplayer.Deathmatch,
-		OnChanged: func(b bool) {
-			Runner.Multiplayer.Deathmatch = b
-		},
-	}
+	deathmatchCheck := newCheck("Deathmatch")
+	packetServerCheck := newCheck("Packet server")
 
-	packetServer := &widget.Check{
-		Text: po.Get("Packet server"),
-		Checked: func() bool {
-			if Runner.Multiplayer.NetMode == 1 {
-				return true
+	portLb := newLabel("Port:")
+	portEntry := gtk.NewEntry()
+	portEntry.SetHExpand(true)
+	portEntry.SetText(strconv.Itoa(runner.Multiplayer.Port))
+	portEntry.ConnectChanged(func() {
+		txt := portEntry.Text()
+		if txt == "" {
+			portEntry.SetText("5029")
+			runner.Multiplayer.Port = 5029
+			return
+		}
+		for i, l := range txt {
+			_, err := strconv.Atoi(string(l))
+			if err != nil {
+				portEntry.SetText(txt[:i])
 			}
-			return false
-		}(),
-		OnChanged: func(b bool) {
-			if b {
-				Runner.Multiplayer.NetMode = 1
-				return
-			}
-			Runner.Multiplayer.NetMode = 0
-		},
-	}
-
-	portLabel := &widget.Label{Text: po.Get("Port:")}
-	portEntry := &widget.Entry{Text: strconv.Itoa(Runner.Multiplayer.Port)}
-	portEntry.OnChanged = func(s string) {
-		p, err := strconv.Atoi(s)
+		}
+		port, err := strconv.Atoi(txt)
 		if err != nil {
 			portEntry.SetText("5029")
+			runner.Multiplayer.Port = 5029
 			return
 		}
-		Runner.Multiplayer.Port = p
+		runner.Multiplayer.Port = port
+	})
+
+	connectToLb := newLabel("Connect to")
+	connectToEntry := gtk.NewEntry()
+	connectToEntry.SetHExpand(true)
+	connectToEntry.SetText(runner.Multiplayer.IP)
+	connectToEntry.ConnectChanged(func() {
+		runner.Multiplayer.IP = connectToEntry.Text()
+	})
+
+	toggleMultiplayer := func(mode bool) {
+		widgets := []SetSensitiver{
+			hostEntry,
+			deathmatchCheck,
+			packetServerCheck,
+			portEntry,
+			connectToEntry,
+		}
+		for _, w := range widgets {
+			w.SetSensitive(mode)
+		}
+	}
+	multiplayerEnabledCheck := newCheck("Enabled")
+	multiplayerEnabledCheck.ConnectToggled(func() {
+		runner.Multiplayer.Enabled = multiplayerEnabledCheck.Active()
+		toggleMultiplayer(multiplayerEnabledCheck.Active())
+	})
+
+	closeOnStartCheck.SetActive(settings.CloseOnStart)
+	if runtime.GOOS != "windows" {
+		noStartupCheck.Hide()
+	}
+	noStartupCheck.SetActive(runner.NoStartup)
+	showOutputOnCloseCheck.SetActive(settings.ShowOutOnClose)
+	noMonstersCheck.SetActive(runner.NoMusic)
+	noSoundCheck.SetActive(runner.NoSound)
+	noSFXCheck.SetActive(runner.NoSFX)
+
+	switch {
+	case !runner.Skill.Enabled:
+		skillDropDown.SetSelected(0)
+	default:
+		skillDropDown.SetSelected(uint(runner.Skill.Level + 1))
 	}
 
-	connectToLb := &widget.Label{Text: po.Get("Connect to")}
-	connectToEntry := &widget.Entry{Text: Runner.Multiplayer.IP}
-	connectToEntry.OnChanged = func(s string) {
-		Runner.Multiplayer.IP = s
+	fastMonstersCheck.SetActive(runner.FastMonsters)
+	noMonstersCheck.SetActive(runner.NoMonsters)
+	respawnMonstersCheck.SetActive(runner.RespawnMonsters)
+
+	multiplayerEnabledCheck.SetActive(runner.Multiplayer.Enabled)
+	toggleMultiplayer(runner.Multiplayer.Enabled)
+	deathmatchCheck.SetActive(runner.Multiplayer.Deathmatch)
+
+	if runner.Multiplayer.NetMode == 1 {
+		packetServerCheck.SetActive(true)
 	}
 
-	disableMultiplayer := func() {
-		hostEntry.Disable()
-		connectToEntry.Disable()
-		portEntry.Disable()
-		deathMatch.Disable()
-		packetServer.Disable()
-		Runner.Multiplayer.Enabled = false
-	}
-	enableMultiplayer := func() {
-		hostEntry.Enable()
-		connectToEntry.Enable()
-		portEntry.Enable()
-		deathMatch.Enable()
-		packetServer.Enable()
-		Runner.Multiplayer.Enabled = true
-	}
-	enabledMultiplayer := &widget.Check{
-		Text:    po.Get("Enabled"),
-		Checked: Runner.Multiplayer.Enabled,
-		OnChanged: func(b bool) {
-			if !b {
-				disableMultiplayer()
-				return
-			}
-			enableMultiplayer()
-		},
-	}
-	if !Runner.Multiplayer.Enabled {
-		disableMultiplayer()
-	}
-
-	// Containers
-
-	launchBox := boxes.NewAdaptiveGrid(2,
-		closeOnStart,
-		nostartup,
-		showOutOnClose,
+	launchBox := boxes.NewVbox(
+		launchLb,
+		boxes.NewAdaptativeGrid(2,
+			closeOnStartCheck,
+			noStartupCheck,
+			showOutputOnCloseCheck,
+		),
+	)
+	launchLb.SetHAlign(gtk.AlignCenter)
+	audioBox := boxes.NewVbox(
+		audioLb,
+		boxes.NewAdaptativeGrid(2,
+			noMusicCheck,
+			noSoundCheck,
+			noSFXCheck,
+		),
+	)
+	audioBox.SetHAlign(gtk.AlignCenter)
+	gameplayBox := boxes.NewVbox(
+		gameplayLb,
+		boxes.NewHbox(
+			skillLb,
+			skillDropDown,
+		),
+		boxes.NewHbox(
+			warpLb,
+			warpEntry,
+		),
+		boxes.NewAdaptativeGrid(2,
+			fastMonstersCheck,
+			noMonstersCheck,
+			respawnMonstersCheck,
+		),
+	)
+	multiplayerBox := boxes.NewVbox(
+		multiplayerLb,
+		multiplayerEnabledCheck,
+		boxes.NewHbox(hostLb, hostEntry),
+		boxes.NewAdaptativeGrid(2,
+			deathmatchCheck,
+			packetServerCheck,
+		),
+		boxes.NewHbox(portLb, portEntry),
+		boxes.NewHbox(connectToLb, connectToEntry),
 	)
 
-	audioBox := boxes.NewAdaptiveGrid(2,
-		nomusic,
-		nosound,
-		nosfx,
-	)
-
-	skillBox := boxes.NewBorder(nil, nil, skillLabel, nil, selectSkill)
-	warpBox := boxes.NewBorder(nil, nil, warpLabel, nil, warpEntry)
-	gameplayCheckBox := boxes.NewAdaptiveGrid(2,
-		fastMonsters,
-		noMonsters,
-		respawnMonsters,
-	)
-	gameplayBox := boxes.NewVBox(
-		gameplayLabel,
-		skillBox,
-		warpBox,
-		gameplayCheckBox,
-	)
-
-	multiplayerBox := boxes.NewVBox(
-		multiplayerLabel,
-		enabledMultiplayer,
-		boxes.NewBorder(nil, nil, hostLabel, nil, hostEntry),
-		deathMatch,
-		packetServer,
-		boxes.NewBorder(nil, nil, portLabel, nil, portEntry),
-		connectToLb,
-		connectToEntry,
-	)
-
-	mainBox := boxes.NewVBox(
-		launchLabel,
+	mainBox := boxes.NewScrolledVbox(
 		launchBox,
-		audioLabel,
 		audioBox,
 		gameplayBox,
 		multiplayerBox,

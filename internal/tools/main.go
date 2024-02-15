@@ -1,19 +1,19 @@
 package tools
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
-	"fyne.io/fyne/v2"
-	boxes "fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 	msg "github.com/Tom5521/GoNotes/pkg/messages"
+	"github.com/diamondburned/gotk4/pkg/gtk/v4"
+	"github.com/diamondburned/gotkit/components/errpopup"
 	"github.com/leonelquinteros/gotext"
 	"github.com/ncruces/zenity"
 )
 
 var (
+	ParentWin        *gtk.Window
 	po               *gotext.Po
 	FatalErrExitCode int
 )
@@ -31,36 +31,18 @@ func ZenityErrWin(txt ...any) {
 }
 
 func ErrWin(txt ...any) {
-	msg.Error(txt...)
-	app := fyne.CurrentApp()
-	if app == nil || po == nil {
+	if ParentWin == nil {
 		ZenityErrWin(txt...)
+		msg.Error(txt...)
 		return
 	}
-	text := fmt.Sprint(txt...)
-	w := app.NewWindow(po.Get("Error"))
-	w.Resize(fyne.NewSize(300, 150))
-	w.SetIcon(theme.ErrorIcon())
-	label := &widget.Label{
-		Alignment: fyne.TextAlignCenter,
-		Text:      text,
-		TextStyle: fyne.TextStyle{
-			Bold: true,
-		},
+	var errs []error
+	for _, t := range txt {
+		errs = append(errs, errors.New(fmt.Sprint(t)))
 	}
-	button := &widget.Button{
-		Text: po.Get("Accept"),
-		OnTapped: func() {
-			w.Close()
-		},
-		Importance: widget.DangerImportance,
-	}
-
-	buttonBox := boxes.NewCenter(button)
-	content := boxes.NewBorder(nil, buttonBox, nil, nil, label)
-	w.SetContent(content)
-	w.Show()
-	w.RequestFocus()
+	errpopup.Show(ParentWin, errs, func() {
+		msg.Error(txt...)
+	})
 }
 
 func FatalErrWin(txt ...any) {

@@ -3,9 +3,10 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"time"
 
-	t "github.com/Tom5521/GZGoLauncher/internal/tools"
-	v "github.com/Tom5521/GZGoLauncher/pkg/values"
+	t "github.com/Tom5521/GZLauncher-gtk/internal/tools"
+	v "github.com/Tom5521/GZLauncher-gtk/pkg/values"
 )
 
 var (
@@ -29,10 +30,8 @@ type Mod struct {
 	Enabled bool
 }
 
-type Wad string
-
-func (w Wad) IsValid() bool {
-	stat, err := os.Stat(string(w))
+func WadIsValid(w string) bool {
+	stat, err := os.Stat(w)
 	if os.IsNotExist(err) {
 		return false
 	}
@@ -43,16 +42,16 @@ func (w Wad) IsValid() bool {
 }
 
 type Config struct {
-	ThemeMode      bool   `json:"theme-mode"` // 1 = light, 0 = dark
-	ShowOutOnClose bool   `json:"show-out-on-close"`
-	CloseOnStart   bool   `json:"close-on-start"`
-	CustomArgs     string `json:"custom-args"`
-	Lang           string `json:"lang"`
-	GZDoomDir      string `json:"gzdoom-dir"`
-	ZDoomDir       string `json:"zdoom-dir"`
-	ExecDir        string `json:"runner-dir"`
-	Mods           []Mod  `json:"mods"`
-	Wads           []Wad  `json:"wads"`
+	AutoSaverTimeout time.Time `json:"auto-saver-timeout"`
+	ShowOutOnClose   bool      `json:"show-out-on-close"`
+	CloseOnStart     bool      `json:"close-on-start"`
+	CustomArgs       string    `json:"custom-args"`
+	Lang             string    `json:"lang"`
+	GZDoomDir        string    `json:"gzdoom-dir"`
+	ZDoomDir         string    `json:"zdoom-dir"`
+	ExecDir          string    `json:"runner-dir"`
+	Mods             []Mod     `json:"mods"`
+	Wads             []string  `json:"wads"`
 }
 
 func (c *Config) Write() error {

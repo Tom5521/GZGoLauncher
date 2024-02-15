@@ -319,3 +319,21 @@ msgstr ""
 msgid "ar executable is not in path"
 msgstr ""
 
+
+
+#: internal/gui/right.go
+msgid "None."
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select wad"
+msgstr ""
+
+
+
+#: internal/gui/right.go
+msgid "Select mods to use"
+msgstr ""
+

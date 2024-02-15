@@ -262,3 +262,21 @@ msgstr "O zdoom não está disponível no mac"
 #: internal/gui/right.go
 msgid "ar executable is not in path"
 msgstr "ar executável não está no caminho"
+
+
+#: internal/gui/right.go
+msgid "None."
+msgstr "Nenhum."
+
+
+
+#: internal/gui/right.go
+msgid "Select wad"
+msgstr "Selecionar WAD"
+
+
+
+#: internal/gui/right.go
+msgid "Select mods to use"
+msgstr "Selecionar mods a serem usados"
+
