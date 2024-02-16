@@ -272,7 +272,7 @@ msgstr "Ninguno."
 
 #: internal/gui/right.go
 msgid "Select wad"
-msgstr ""
+msgstr "Selecciona el WAD"
 
 
 
