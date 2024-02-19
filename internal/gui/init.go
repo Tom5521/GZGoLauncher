@@ -36,7 +36,7 @@ func autoSaver() {
 	for {
 		oldSettings := config.Settings
 		oldRunner := runner
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 		if !reflect.DeepEqual(config.Settings, oldSettings) {
 			err := settings.Write()
 			if err != nil {

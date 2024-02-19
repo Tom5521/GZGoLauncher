@@ -4,10 +4,13 @@ go 1.22.0
 
 require (
 	github.com/Tom5521/GoNotes v1.3.0
+	github.com/Tom5521/gtk4tools v1.2.1
 	github.com/artdarek/go-unzip v1.0.0
+	github.com/bitfield/script v0.22.0
 	github.com/diamondburned/gotk4/pkg v0.2.2
 	github.com/diamondburned/gotkit v0.0.0-20240214122856-34324269516c
 	github.com/leonelquinteros/gotext v1.5.3-0.20230829162019-37f474cfb069
+	github.com/magefile/mage v1.15.0
 	github.com/ncruces/zenity v0.10.11
 	github.com/yi-ge/unxz v1.0.3
 	gopkg.in/yaml.v3 v3.0.1
@@ -18,6 +21,8 @@ require (
 	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect
 	github.com/gookit/color v1.5.4 // indirect
+	github.com/itchyny/gojq v0.12.12 // indirect
+	github.com/itchyny/timefmt-go v0.1.5 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
 	github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
@@ -28,4 +33,5 @@ require (
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	mvdan.cc/sh/v3 v3.6.0 // indirect
 )

@@ -8,7 +8,7 @@ import (
 	"github.com/Tom5521/GZLauncher-gtk/internal/filepicker"
 	"github.com/Tom5521/GZLauncher-gtk/internal/tools"
 	t "github.com/Tom5521/GZLauncher-gtk/internal/tools"
-	"github.com/Tom5521/GZLauncher-gtk/pkg/gtk/boxes"
+	"github.com/Tom5521/gtk4tools/pkg/boxes"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
