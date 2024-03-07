@@ -51,7 +51,7 @@ func Download(url, file string) error {
 }
 
 func GZDoom() error {
-	if v.IsMac {
+	if v.IsDarwin {
 		return macGZDoom()
 	}
 	if v.IsLinux {
@@ -65,7 +65,7 @@ func GZDoom() error {
 
 // Only with windows.
 func ZDoom() error {
-	if v.IsMac {
+	if v.IsDarwin {
 		return macZDoom()
 	}
 	if v.IsLinux {
