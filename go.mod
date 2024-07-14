@@ -1,9 +1,9 @@
 module github.com/Tom5521/GZGoLauncher
 
-go 1.21.6
+go 1.22.4
 
 require (
-	fyne.io/fyne/v2 v2.4.5
+	fyne.io/fyne/v2 v2.5.0
 	github.com/Tom5521/GoNotes v1.3.0
 	github.com/artdarek/go-unzip v1.0.0
 	github.com/bitfield/script v0.22.1
@@ -16,6 +16,7 @@ require (
 
 require (
 	fyne.io/systray v1.11.0 // indirect
+	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect
@@ -33,10 +34,13 @@ require (
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/itchyny/gojq v0.12.16 // indirect
 	github.com/itchyny/timefmt-go v0.1.6 // indirect
+	github.com/jeandeaual/go-locale v0.0.0-20240223122105-ce5225dcaa49 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
 	github.com/jsummers/gobmp v0.0.0-20230614200233-a9de23ed2e25 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/randall77/makefat v0.0.0-20210315173500-7ddd0e42c844 // indirect
+	github.com/rymdport/portal v0.2.2 // indirect
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
@@ -48,6 +52,5 @@ require (
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
-	honnef.co/go/js/dom v0.0.0-20231112215516-51f43a291193 // indirect
 	mvdan.cc/sh/v3 v3.8.0 // indirect
 )
