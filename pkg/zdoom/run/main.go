@@ -1,6 +1,7 @@
 package run
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -18,6 +19,8 @@ var (
 )
 
 type Pars struct {
+	Output bytes.Buffer `json:"-"`
+
 	Error  error  `json:"-"`
 	ErrOut string `json:"-"`
 	IWad   string
@@ -57,16 +60,14 @@ type Pars struct {
 	NoStartup bool
 }
 
-var (
-	GZDir string
-)
+var GZDir string
 
 func ExistsGZInPath() bool {
 	_, err := exec.LookPath(GZDir)
 	return err == nil
 }
 
-func (p Pars) MakeCmd() *exec.Cmd {
+func (p *Pars) MakeCmd() *exec.Cmd {
 	cmd := exec.Command(GZDir, "-iwad", p.IWad)
 	if p.Mods.Enabled {
 		cmd.Args = append(cmd.Args, "-file")
@@ -115,9 +116,10 @@ func (p Pars) MakeCmd() *exec.Cmd {
 	if p.CustomArgs.Enabled {
 		cmd.Args = append(cmd.Args, p.CustomArgs.Args...)
 	}
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+
+	cmd.Stderr = &p.Output
+	cmd.Stdout = &p.Output
+
 	return cmd
 }
 
@@ -144,9 +146,8 @@ func (p *Pars) Run() error {
 	}
 	cmd := p.MakeCmd()
 	err = cmd.Run()
-	if err != nil {
-		p.Error = err
-	}
+	p.Error = err
+
 	return err
 }
 
@@ -157,24 +158,7 @@ func (p *Pars) Start() error {
 	}
 	cmd := p.MakeCmd()
 	err = cmd.Start()
-	if err != nil {
-		p.Error = err
-	}
-	return err
-}
+	p.Error = err
 
-func (p *Pars) Out() (string, error) {
-	err := p.check()
-	if err != nil {
-		return "", err
-	}
-	cmd := p.MakeCmd()
-	cmd.Stdout = nil
-	cmd.Stderr = nil
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		p.Error = err
-		p.ErrOut = string(out)
-	}
-	return string(out), err
+	return err
 }

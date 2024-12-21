@@ -1,11 +1,9 @@
 package gui
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
-	"github.com/Tom5521/GoNotes/pkg/messages"
 )
 
 func (ui *ui) RunDoom() {
@@ -25,29 +23,26 @@ func (ui *ui) RunDoom() {
 	Runner.CustomArgs.Enabled = len(settings.CustomArgs) > 0
 	Runner.CustomArgs.Args = strings.Fields(settings.CustomArgs)
 
-	if settings.CloseOnStart {
-		ui.MainWindow.Hide()
+	showWindow := make(chan struct{}, 1)
+	defer close(showWindow)
+
+	go func() {
+		if settings.CloseOnStart {
+			ui.MainWindow.Hide()
+		}
 		err := Runner.Run()
-		if err != nil {
-			ErrWin(err)
+
+		if settings.ShowOutOnClose || err != nil {
+			ui.ShowOutWin(Runner.Output.String())
 		}
+
+		if settings.CloseOnStart {
+			showWindow <- struct{}{}
+		}
+	}()
+
+	if settings.CloseOnStart {
+		<-showWindow
 		ui.MainWindow.Show()
-		return
-	}
-	run.GZDir = settings.ExecDir
-	fmt.Println(Runner.MakeCmd())
-	// return // NOTE: Uncomment this to view the cmd without starting *zdoom.
-	if settings.ShowOutOnClose {
-		out, err := Runner.Out()
-		if err != nil {
-			messages.Error(err)
-		}
-		ui.ShowOutWin(out)
-		return
-	}
-	err := Runner.Start()
-	if err != nil {
-		ErrWin(err)
-		return
 	}
 }

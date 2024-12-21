@@ -34,6 +34,8 @@ var (
 		}
 		if v.IsWindows {
 			p.Filters = []string{"*.exe"}
+		} else {
+			p.Filters = []string{"*"}
 		}
 		return p
 	}()
