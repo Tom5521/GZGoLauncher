@@ -18,8 +18,6 @@ proyect_name := "GZGoLauncher"
 
 build os arch:  
   #!/bin/bash
-  mkdir -p builds
-
   cp {{main_dir}}/* .
  
   build_cmd="fyne-cross {{os}} -arch {{arch}} -icon {{icon_path}}"
