@@ -18,7 +18,7 @@ func (ui *ui) SelectBox() *boxes.Split {
 }
 
 func (ui *ui) IwadsCont() *fyne.Container {
-	var selected = -1
+	selected := -1
 	selectLabel := widget.NewRichTextFromMarkdown(po.Get("**Select wad**"))
 	ui.WadList = widget.NewList(
 		func() int {
@@ -28,7 +28,7 @@ func (ui *ui) IwadsCont() *fyne.Container {
 			return &widget.Label{}
 		},
 		func(lii widget.ListItemID, co fyne.CanvasObject) {
-			co.(*widget.Label).SetText(string(settings.Wads[lii]))
+			cast[*widget.Label](co).SetText(string(settings.Wads[lii]))
 		},
 	)
 	ui.WadList.OnSelected = func(id widget.ListItemID) {
@@ -97,8 +97,8 @@ func (ui *ui) ModsCont() *fyne.Container {
 		func(i widget.ListItemID, o fyne.CanvasObject) {
 			mod := &settings.Mods[i]
 			ctr := o.(*fyne.Container)
-			l := ctr.Objects[0].(*widget.Label)
-			c := ctr.Objects[1].(*widget.Check)
+			l := cast[*widget.Label](ctr.Objects[0])
+			c := cast[*widget.Check](ctr.Objects[1])
 			l.SetText(mod.Path)
 			c.SetChecked(mod.Enabled)
 			c.OnChanged = func(b bool) {

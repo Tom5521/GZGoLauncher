@@ -31,6 +31,11 @@ type Mod struct {
 
 type Wad string
 
+type SourcePort struct {
+	ExecutablePath string `json:"executable"`
+	Name           string
+}
+
 func (w Wad) IsValid() bool {
 	stat, err := os.Stat(string(w))
 	if os.IsNotExist(err) {
@@ -43,16 +48,17 @@ func (w Wad) IsValid() bool {
 }
 
 type Config struct {
-	ThemeMode      bool   `json:"theme-mode"` // 1 = light, 0 = dark
-	ShowOutOnClose bool   `json:"show-out-on-close"`
-	CloseOnStart   bool   `json:"close-on-start"`
-	CustomArgs     string `json:"custom-args"`
-	Lang           string `json:"lang"`
-	GZDoomDir      string `json:"gzdoom-dir"`
-	ZDoomDir       string `json:"zdoom-dir"`
-	ExecDir        string `json:"runner-dir"`
-	Mods           []Mod  `json:"mods"`
-	Wads           []Wad  `json:"wads"`
+	ThemeMode      bool         `json:"theme-mode"` // 1 = light, 0 = dark
+	ShowOutOnClose bool         `json:"show-out-on-close"`
+	CloseOnStart   bool         `json:"close-on-start"`
+	CustomArgs     string       `json:"custom-args"`
+	Lang           string       `json:"lang"`
+	GZDoomDir      string       `json:"gzdoom-dir"`
+	ZDoomDir       string       `json:"zdoom-dir"`
+	ExecDir        string       `json:"runner-dir"`
+	Mods           []Mod        `json:"mods"`
+	Wads           []Wad        `json:"wads"`
+	SourcePorts    []SourcePort `json:"source-ports"`
 }
 
 func (c *Config) Write() error {

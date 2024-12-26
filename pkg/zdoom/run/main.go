@@ -21,10 +21,9 @@ var (
 type Pars struct {
 	Output bytes.Buffer `json:"-"`
 
-	Error  error  `json:"-"`
-	ErrOut string `json:"-"`
-	IWad   string
-	Skill  struct {
+	Error error `json:"-"`
+	IWad  string
+	Skill struct {
 		Enabled bool
 		Level   int
 	}
