@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"slices"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -8,7 +9,9 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
+	"github.com/Tom5521/GZGoLauncher/internal/filepicker"
 	"github.com/Tom5521/GZGoLauncher/internal/gui/credits"
 	"github.com/Tom5521/GZGoLauncher/locales"
 )
@@ -115,33 +118,147 @@ func (ui *configUI) themeBox() *fyne.Container {
 
 func (ui *configUI) sourcePortsBox() *fyne.Container {
 	sp := &ui.sourcePorts
+
+	var curLii widget.ListItemID = -1
+
 	sp.list = widget.NewList(
 		func() int { return len(settings.SourcePorts) },
 		func() fyne.CanvasObject {
-			return boxes.NewBorder(nil, nil, nil, &widget.Label{}, &widget.Label{})
+			return boxes.NewBorder(nil, nil, &widget.Label{
+				TextStyle: fyne.TextStyle{
+					Bold: true,
+				},
+			}, nil, boxes.NewScroll(&widget.Label{}))
+			// return boxes.NewAdaptiveGrid(2, &widget.Label{}, boxes.NewScroll(&widget.Label{}))
 		},
 		func(lii widget.ListItemID, co fyne.CanvasObject) {
 			container := co.(*fyne.Container)
-			nameLb := cast[*widget.Label](container.Objects[0])
-			pathLb := cast[*widget.Label](container.Objects[1])
+			pathLb := cast[*widget.Label](cast[*boxes.Scroll](container.Objects[0]).Content)
+			nameLb := cast[*widget.Label](container.Objects[1])
 
 			nameLb.SetText(settings.SourcePorts[lii].Name)
 			pathLb.SetText(settings.SourcePorts[lii].ExecutablePath)
 		},
 	)
+	sp.list.OnSelected = func(id widget.ListItemID) {
+		curLii = id
+	}
+	sp.list.OnUnselected = func(id widget.ListItemID) {
+		curLii = -1
+	}
 
-	addButton := &widget.Button{Text: po.Get("Add")}
-	removeButton := &widget.Button{Text: po.Get("Remove")}
+	addButton := &widget.Button{
+		Text: po.Get("Add"),
+		OnTapped: func() {
+			nameEntry := widget.NewEntry()
+			pathEntry := widget.NewEntry()
+
+			dialog.NewForm(
+				po.Get("Add"),
+				po.Get("Add"),
+				po.Get("Cancel"),
+				[]*widget.FormItem{
+					widget.NewFormItem(po.Get("Name:"), nameEntry),
+					widget.NewFormItem(
+						po.Get("Path"),
+						boxes.NewVBox(
+							pathEntry,
+							widget.NewButton(po.Get("Select path"), func() {
+								pathEntry.SetText(filepicker.Executable.Start())
+							}),
+						),
+					),
+				},
+				func(b bool) {
+					if b {
+						settings.SourcePorts = append(
+							settings.SourcePorts,
+							config.SourcePort{Name: nameEntry.Text, ExecutablePath: pathEntry.Text},
+						)
+						sp.list.Refresh()
+					}
+				},
+				ui.mainUI.MainWindow,
+			).Show()
+		},
+	}
+	removeButton := &widget.Button{
+		Text: po.Get("Remove"),
+		OnTapped: func() {
+			if curLii == -1 {
+				return
+			}
+			settings.SourcePorts = slices.Delete(settings.SourcePorts, curLii, curLii+1)
+			sp.list.UnselectAll()
+		},
+	}
+	editButton := &widget.Button{
+		Text: po.Get("Edit"),
+		OnTapped: func() {
+			if curLii == -1 {
+				return
+			}
+
+			nameEntry := &widget.Entry{Text: settings.SourcePorts[curLii].Name}
+			pathEntry := &widget.Entry{Text: settings.SourcePorts[curLii].ExecutablePath}
+
+			dialog.NewForm(
+				po.Get("Edit"),
+				po.Get("Confirm"),
+				po.Get("Cancel"),
+				[]*widget.FormItem{
+					widget.NewFormItem(po.Get("Name:"), nameEntry),
+					widget.NewFormItem(
+						po.Get("Path"),
+						boxes.NewVBox(
+							pathEntry,
+							widget.NewButton(po.Get("Select path"), func() {
+								pathEntry.SetText(filepicker.Executable.Start())
+							}),
+						),
+					),
+				},
+				func(b bool) {
+					if b {
+						settings.SourcePorts[curLii] = config.SourcePort{
+							Name:           nameEntry.Text,
+							ExecutablePath: pathEntry.Text,
+						}
+						sp.list.RefreshItem(curLii)
+					}
+				},
+				ui.mainUI.MainWindow,
+			).Show()
+		},
+	}
 
 	container := boxes.NewBorder(
-		&widget.Label{
-			Text:      po.Get("Source Ports"),
-			Alignment: fyne.TextAlignCenter,
-			TextStyle: fyne.TextStyle{
-				Bold: true,
+		boxes.NewVBox(
+			&widget.Label{
+				Text:      po.Get("Source Ports"),
+				Alignment: fyne.TextAlignCenter,
+				TextStyle: fyne.TextStyle{
+					Bold: true,
+				},
 			},
-		},
-		boxes.NewAdaptiveGrid(2, addButton, removeButton),
+			boxes.NewAdaptiveGrid(2,
+				&widget.Label{
+					Text:      po.Get("Name"),
+					Alignment: fyne.TextAlignLeading,
+					TextStyle: fyne.TextStyle{
+						Bold: true,
+					},
+				},
+				&widget.Label{
+					Text:      po.Get("Path"),
+					Alignment: fyne.TextAlignCenter,
+					TextStyle: fyne.TextStyle{
+						Bold: true,
+					},
+				},
+			),
+		),
+		boxes.NewAdaptiveGrid(3, addButton, removeButton, editButton),
 		nil,
 		nil,
 		sp.list,

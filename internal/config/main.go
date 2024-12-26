@@ -38,13 +38,7 @@ type SourcePort struct {
 
 func (w Wad) IsValid() bool {
 	stat, err := os.Stat(string(w))
-	if os.IsNotExist(err) {
-		return false
-	}
-	if stat.IsDir() {
-		return false
-	}
-	return true
+	return !os.IsNotExist(err) || !stat.IsDir()
 }
 
 type Config struct {
