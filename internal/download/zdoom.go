@@ -22,7 +22,7 @@ func windowsZdoom() error {
 	if err != nil {
 		return err
 	}
-	settings.ZDoomDir = config.Path + `\zdoom\zdoom.exe`
+	// settings.ZDoomDir = config.Path + `\zdoom\zdoom.exe`
 	return nil
 }
 
@@ -82,7 +82,7 @@ func linuxZdoom() error {
 			return err
 		}
 	}
-	settings.ZDoomDir = config.Path + "/zdoom/zdoom"
+	// settings.ZDoomDir = config.Path + "/zdoom/zdoom"
 	return nil
 }
 

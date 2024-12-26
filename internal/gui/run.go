@@ -2,8 +2,6 @@ package gui
 
 import (
 	"strings"
-
-	"github.com/Tom5521/GZGoLauncher/pkg/zdoom/run"
 )
 
 func (ui *ui) RunDoom() {
@@ -15,7 +13,6 @@ func (ui *ui) RunDoom() {
 		ErrWin(po.Get("Select a runner first!"))
 		return
 	}
-	run.GZDir = settings.ExecDir
 	mods := enabledPaths()
 
 	Runner.Mods.Enabled = len(mods) > 0

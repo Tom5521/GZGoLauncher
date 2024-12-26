@@ -38,7 +38,7 @@ func linuxGZDoom() error {
 	if err != nil {
 		return err
 	}
-	settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
+	// settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
 	err = os.RemoveAll(pkgpath)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func windowsGZDoom() error {
 	if err != nil {
 		return err
 	}
-	settings.GZDoomDir = config.Path + `\gzdoom\gzdoom.exe`
+	// settings.GZDoomDir = config.Path + `\gzdoom\gzdoom.exe`
 	err = os.RemoveAll(pkgpath)
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func macGZDoom() error {
 	if err != nil {
 		return err
 	}
-	settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
+	// settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
 
 	toRemove := []string{tmpDir, pkgpath}
 	for _, f := range toRemove {

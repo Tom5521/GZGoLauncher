@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"errors"
 	"slices"
 	"time"
 
@@ -24,16 +25,6 @@ type configUI struct {
 	}
 	sourcePorts struct {
 		list *widget.List
-	}
-	gzdoom struct {
-		Label  *widget.Label
-		Entry  *widget.Entry
-		Button *widget.Button
-	}
-	zdoom struct {
-		Label  *widget.Label
-		Entry  *widget.Entry
-		Button *widget.Button
 	}
 	download struct {
 		gzdoom *widget.Button
@@ -147,6 +138,12 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 		curLii = -1
 	}
 
+	nameExists := func(name string) bool {
+		return slices.ContainsFunc(settings.SourcePorts, func(i config.SourcePort) bool {
+			return i.Name == name
+		})
+	}
+
 	addButton := &widget.Button{
 		Text: po.Get("Add"),
 		OnTapped: func() {
@@ -171,11 +168,20 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 				},
 				func(b bool) {
 					if b {
+						if nameExists(nameEntry.Text) {
+							dialog.ShowError(
+								errors.New(po.Get("Name already exists!")),
+								ui.mainUI.MainWindow,
+							)
+							return
+						}
 						settings.SourcePorts = append(
 							settings.SourcePorts,
 							config.SourcePort{Name: nameEntry.Text, ExecutablePath: pathEntry.Text},
 						)
 						sp.list.Refresh()
+						ui.mainUI.refreshZRunnerSelection()
+
 					}
 				},
 				ui.mainUI.MainWindow,
@@ -189,6 +195,8 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 				return
 			}
 			settings.SourcePorts = slices.Delete(settings.SourcePorts, curLii, curLii+1)
+			settings.CurrentSourcePort = -1
+			ui.mainUI.refreshZRunnerSelection()
 			sp.list.UnselectAll()
 		},
 	}
@@ -225,6 +233,8 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 							ExecutablePath: pathEntry.Text,
 						}
 						sp.list.RefreshItem(curLii)
+						settings.CurrentSourcePort = -1
+						ui.mainUI.refreshZRunnerSelection()
 					}
 				},
 				ui.mainUI.MainWindow,
@@ -267,65 +277,6 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 	return container
 }
 
-// func (ui *configUI) gzBox() *fyne.Container {
-// 	gzdoom := &ui.gzdoom
-// 	gzdoom.Label = &widget.Label{
-// 		Text:      po.Get("GZDoom Path"),
-// 		Alignment: fyne.TextAlignCenter,
-// 		TextStyle: fyne.TextStyle{
-// 			Bold: true,
-// 		},
-// 	}
-// 	gzdoom.Entry = &widget.Entry{Text: settings.GZDoomDir}
-// 	gzdoom.Entry.OnChanged = func(s string) {
-// 		settings.GZDoomDir = s
-// 		ui.mainUI.ZRunnerSelect.ClearSelected()
-// 	}
-// 	gzdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-// 		newDir := filepicker.Executable.Start()
-// 		if newDir == "" {
-// 			return
-// 		}
-// 		settings.GZDoomDir = newDir
-// 		gzdoom.Entry.SetText(newDir)
-// 	})
-// 	gzdirCont := boxes.NewBorder(nil, nil, gzdoom.Button, nil, gzdoom.Entry)
-// 	content := boxes.NewVBox(
-// 		gzdoom.Label,
-// 		gzdirCont,
-// 	)
-// 	return content
-// }
-//
-// func (ui *configUI) zBox() *fyne.Container {
-// 	zdoom := &ui.zdoom
-// 	zdoom.Label = &widget.Label{
-// 		Text:      po.Get("ZDoom path"),
-// 		Alignment: fyne.TextAlignCenter,
-// 		TextStyle: fyne.TextStyle{
-// 			Bold: true,
-// 		},
-// 	}
-// 	zdoom.Entry = &widget.Entry{Text: settings.ZDoomDir}
-// 	zdoom.Entry.OnChanged = func(s string) {
-// 		settings.ZDoomDir = s
-// 		ui.mainUI.ZRunnerSelect.ClearSelected()
-// 	}
-// 	zdoom.Button = widget.NewButton(po.Get("Select path"), func() {
-// 		newDir := filepicker.Executable.Start()
-// 		if newDir == "" {
-// 			return
-// 		}
-// 		settings.ZDoomDir = newDir
-// 	})
-// 	zdirCont := boxes.NewBorder(nil, nil, zdoom.Button, nil, zdoom.Entry)
-// 	content := boxes.NewVBox(
-// 		zdoom.Label,
-// 		zdirCont,
-// 	)
-// 	return content
-// }
-
 func (ui *configUI) downloadBox() *fyne.Container {
 	mainUI := ui.mainUI
 	down := &ui.download
@@ -337,7 +288,7 @@ func (ui *configUI) downloadBox() *fyne.Container {
 			ErrWin(err)
 			return
 		}
-		ui.gzdoom.Entry.SetText(settings.GZDoomDir)
+		// ui.gzdoom.Entry.SetText(settings.GZDoomDir)
 		mainUI.ZRunnerSelect.ClearSelected()
 		down.gzdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
@@ -362,7 +313,7 @@ func (ui *configUI) downloadBox() *fyne.Container {
 			down.zdoom.SetText(po.Get("Retry"))
 			return
 		}
-		ui.zdoom.Entry.SetText(settings.ZDoomDir)
+		// ui.zdoom.Entry.SetText(settings.ZDoomDir)
 		mainUI.ZRunnerSelect.ClearSelected()
 		down.zdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)

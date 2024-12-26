@@ -42,17 +42,15 @@ func (w Wad) IsValid() bool {
 }
 
 type Config struct {
-	ThemeMode      bool         `json:"theme-mode"` // 1 = light, 0 = dark
-	ShowOutOnClose bool         `json:"show-out-on-close"`
-	CloseOnStart   bool         `json:"close-on-start"`
-	CustomArgs     string       `json:"custom-args"`
-	Lang           string       `json:"lang"`
-	GZDoomDir      string       `json:"gzdoom-dir"`
-	ZDoomDir       string       `json:"zdoom-dir"`
-	ExecDir        string       `json:"runner-dir"`
-	Mods           []Mod        `json:"mods"`
-	Wads           []Wad        `json:"wads"`
-	SourcePorts    []SourcePort `json:"source-ports"`
+	ThemeMode         bool         `json:"theme-mode"` // 1 = light, 0 = dark
+	ShowOutOnClose    bool         `json:"show-out-on-close"`
+	CloseOnStart      bool         `json:"close-on-start"`
+	CustomArgs        string       `json:"custom-args"`
+	Lang              string       `json:"lang"`
+	Mods              []Mod        `json:"mods"`
+	Wads              []Wad        `json:"wads"`
+	CurrentSourcePort int          `json:"current-source-port"`
+	SourcePorts       []SourcePort `json:"source-ports"`
 }
 
 func (c *Config) Write() error {
@@ -76,14 +74,7 @@ func Read() Config {
 		}
 	}
 	if _, err = os.Stat(FilePath); os.IsNotExist(err) {
-		zdoom, gzdoom := func() (string, string) {
-			const z, g string = "zdoom", "gzdoom"
-			if v.IsWindows {
-				return z + ".exe", g + ".exe"
-			}
-			return z, g
-		}()
-		s := Config{Lang: "en", GZDoomDir: gzdoom, ZDoomDir: zdoom}
+		s := Config{Lang: "en"}
 		var bytedata []byte
 		bytedata, err = json.Marshal(s)
 		if err != nil {

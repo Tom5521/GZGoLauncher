@@ -19,9 +19,10 @@ var (
 )
 
 type Pars struct {
-	Output bytes.Buffer `json:"-"`
+	Output     bytes.Buffer `json:"-"`
+	Error      error        `json:"-"`
+	RunnerPath string       `json:"-"`
 
-	Error error `json:"-"`
 	IWad  string
 	Skill struct {
 		Enabled bool
@@ -59,15 +60,13 @@ type Pars struct {
 	NoStartup bool
 }
 
-var GZDir string
-
-func ExistsGZInPath() bool {
-	_, err := exec.LookPath(GZDir)
+func ExistsGZInPath(p Pars) bool {
+	_, err := exec.LookPath(p.RunnerPath)
 	return err == nil
 }
 
 func (p *Pars) MakeCmd() *exec.Cmd {
-	cmd := exec.Command(GZDir, "-iwad", p.IWad)
+	cmd := exec.Command(p.RunnerPath, "-iwad", p.IWad)
 	if p.Mods.Enabled {
 		cmd.Args = append(cmd.Args, "-file")
 		cmd.Args = append(cmd.Args, p.Mods.List...)
@@ -131,7 +130,7 @@ func (p *Pars) check() error {
 		p.Error = ErrBadIwad
 		return ErrBadIwad
 	}
-	if !ExistsGZInPath() {
+	if !ExistsGZInPath(*p) {
 		p.Error = ErrMissingGZDoom
 		return ErrMissingGZDoom
 	}

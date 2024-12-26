@@ -2,11 +2,24 @@ package gui
 
 import (
 	"fmt"
+	"slices"
 
 	"fyne.io/fyne/v2"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
+
+func runnerNames() (runners []string) {
+	for _, sp := range settings.SourcePorts {
+		runners = append(runners, sp.Name)
+	}
+	return
+}
+
+func (ui *ui) refreshZRunnerSelection() {
+	ui.ZRunnerSelect.SetOptions(runnerNames())
+	ui.ZRunnerSelect.ClearSelected()
+}
 
 func (ui *ui) BottomBox() *fyne.Container {
 	runButton := &widget.Button{
@@ -14,31 +27,24 @@ func (ui *ui) BottomBox() *fyne.Container {
 		Importance: widget.HighImportance,
 		OnTapped: func() {
 			ui.RunDoom()
-		}}
+		},
+	}
+
 	ui.ZRunnerSelect = &widget.Select{
-		Options: []string{"GZDoom", "ZDoom"},
+		Options: runnerNames(),
 		OnChanged: func(s string) {
-			switch s {
-			case "GZDoom":
-				settings.ExecDir = settings.GZDoomDir
-			case "ZDoom":
-				settings.ExecDir = settings.ZDoomDir
-			default:
+			index := slices.Index(runnerNames(), s)
+			settings.CurrentSourcePort = index
+			if index == -1 {
 				return
 			}
+			sp := settings.SourcePorts[index]
+			Runner.RunnerPath = sp.ExecutablePath
 		},
 		PlaceHolder: po.Get("Select a Runner"),
 	}
-	switch settings.ExecDir {
-	case "":
-		ui.ZRunnerSelect.ClearSelected()
-	case settings.GZDoomDir:
-		ui.ZRunnerSelect.SetSelected("GZDoom")
-	case settings.ZDoomDir:
-		ui.ZRunnerSelect.SetSelected("GZDoom")
-	default:
-		ui.ZRunnerSelect.ClearSelected()
-	}
+	ui.ZRunnerSelect.SetSelectedIndex(settings.CurrentSourcePort)
+
 	cArgsLabel := widget.NewRichTextFromMarkdown(fmt.Sprintf(
 		"[%s](https://zdoom.org/wiki/Command_line_parameters)",
 		po.Get("Custom arguments:"),
