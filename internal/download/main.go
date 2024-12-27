@@ -2,9 +2,11 @@ package download
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/locales"
@@ -23,13 +25,13 @@ var (
 var settings = &config.Settings
 
 const (
-	WinGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-4-11-3.a.-Windows-64bit.zip"
+	WinGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.14.0/gzdoom-4-14-0a-windows.zip"
 	WinZDoomURL  = "https://zdoom.org/files/zdoom/2.8/zdoom-2.8.1.zip"
 
 	LinuxGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-g4.11.3-linux-portable.tar.xz"
 	LinuxZDoomURL  = "https://zdoom.org/files/zdoom/2.8/zdoom_2.8.1_amd64.deb"
 
-	MacGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.11.3/gzdoom-4-11-3-macOS.zip"
+	MacGZDoomURL = "https://github.com/ZDoom/gzdoom/releases/download/g4.14.0/gzdoom-4-14-0-macos.zip"
 	MacZDoomURL  = "https://zdoom.org/files/zdoom/2.8/zdoom-2.8.1.dmg"
 )
 
@@ -51,28 +53,72 @@ func Download(url, file string) error {
 }
 
 func GZDoom() error {
-	if v.IsDarwin {
-		return macGZDoom()
+	var (
+		path string
+		err  error
+	)
+	switch {
+	case v.IsDarwin:
+		path, err = macGZDoom()
+	case v.IsLinux:
+		path, err = linuxGZDoom()
+	case v.IsWindows:
+		path, err = windowsGZDoom()
+	default:
+		return ErrIncompatiblePlattaform
 	}
-	if v.IsLinux {
-		return linuxGZDoom()
+
+	if err != nil {
+		return err
 	}
-	if v.IsWindows {
-		return windowsGZDoom()
-	}
-	return ErrIncompatiblePlattaform
+
+	settings.SourcePorts = append(config.Settings.SourcePorts,
+		config.SourcePort{
+			Name:           genName("GZDoom"),
+			ExecutablePath: path,
+		},
+	)
+
+	return settings.Write()
 }
 
 // Only with windows.
 func ZDoom() error {
-	if v.IsDarwin {
-		return macZDoom()
+	var (
+		err  error
+		path string
+	)
+	switch {
+	case v.IsDarwin:
+		path, err = macZDoom()
+	case v.IsLinux:
+		path, err = linuxZdoom()
+	case v.IsWindows:
+		path, err = windowsZdoom()
+	default:
+		return ErrIncompatiblePlattaform
 	}
-	if v.IsLinux {
-		return linuxZdoom()
+	if err != nil {
+		return err
 	}
-	if v.IsWindows {
-		return windowsZdoom()
+
+	settings.SourcePorts = append(settings.SourcePorts,
+		config.SourcePort{
+			Name:           genName("ZDoom"),
+			ExecutablePath: path,
+		},
+	)
+
+	return err
+}
+
+func genName(prefix string) (name string) {
+	var diff int
+	name = prefix
+	for slices.ContainsFunc(settings.SourcePorts, func(i config.SourcePort) bool { return i.Name == name }) {
+		diff++
+		name = fmt.Sprintf("%s-%d", prefix, diff)
 	}
-	return ErrIncompatiblePlattaform
+
+	return
 }

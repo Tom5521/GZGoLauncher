@@ -116,11 +116,14 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 		func() int { return len(settings.SourcePorts) },
 		func() fyne.CanvasObject {
 			return boxes.NewBorder(nil, nil, &widget.Label{
+				Alignment: fyne.TextAlignLeading,
 				TextStyle: fyne.TextStyle{
 					Bold: true,
 				},
-			}, nil, boxes.NewScroll(&widget.Label{}))
-			// return boxes.NewAdaptiveGrid(2, &widget.Label{}, boxes.NewScroll(&widget.Label{}))
+			},
+				nil,
+				boxes.NewScroll(&widget.Label{Alignment: fyne.TextAlignTrailing}),
+			)
 		},
 		func(lii widget.ListItemID, co fyne.CanvasObject) {
 			container := co.(*fyne.Container)
@@ -131,6 +134,7 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 			pathLb.SetText(settings.SourcePorts[lii].ExecutablePath)
 		},
 	)
+
 	sp.list.OnSelected = func(id widget.ListItemID) {
 		curLii = id
 	}
@@ -288,8 +292,8 @@ func (ui *configUI) downloadBox() *fyne.Container {
 			ErrWin(err)
 			return
 		}
-		// ui.gzdoom.Entry.SetText(settings.GZDoomDir)
-		mainUI.ZRunnerSelect.ClearSelected()
+		ui.sourcePorts.list.Refresh()
+		mainUI.refreshZRunnerSelection()
 		down.gzdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
 		down.gzdoom.SetText(po.Get("Download GZDoom"))
@@ -313,8 +317,8 @@ func (ui *configUI) downloadBox() *fyne.Container {
 			down.zdoom.SetText(po.Get("Retry"))
 			return
 		}
-		// ui.zdoom.Entry.SetText(settings.ZDoomDir)
-		mainUI.ZRunnerSelect.ClearSelected()
+		ui.sourcePorts.list.Refresh()
+		mainUI.refreshZRunnerSelection()
 		down.zdoom.SetText(po.Get("Downloaded!"))
 		time.Sleep(time.Second * 2)
 		down.zdoom.SetText(po.Get("Download ZDoom"))

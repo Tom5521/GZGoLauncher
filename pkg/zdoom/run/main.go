@@ -115,6 +115,8 @@ func (p *Pars) MakeCmd() *exec.Cmd {
 		cmd.Args = append(cmd.Args, p.CustomArgs.Args...)
 	}
 
+	p.Output.Reset()
+
 	cmd.Stderr = &p.Output
 	cmd.Stdout = &p.Output
 

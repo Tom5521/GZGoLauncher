@@ -18,91 +18,93 @@ func checkGZDoomDir() error {
 	return nil
 }
 
-func linuxGZDoom() error {
+func linuxGZDoom() (path string, err error) {
 	pkgpath := config.Path + "/gzdoom.tar.xz"
 	url := LinuxGZDoomURL
-	err := Download(url, pkgpath)
+	path = config.Path + "/gzdoom/gzdoom"
+	err = Download(url, pkgpath)
 	if err != nil {
-		return err
+		return
 	}
 	err = os.Chdir(config.Path)
 	if err != nil {
-		return err
+		return
 	}
 	err = checkGZDoomDir()
 	if err != nil {
-		return err
+		return
 	}
 	cmd := exec.Command("tar", "-xf", "gzdoom.tar.xz", "--strip-components=1", "-C", "gzdoom")
 	err = cmd.Run()
 	if err != nil {
-		return err
+		return
 	}
-	// settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
+
 	err = os.RemoveAll(pkgpath)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }
 
-func windowsGZDoom() error {
+func windowsGZDoom() (path string, err error) {
 	pkgpath := config.Path + `\gzdoom.zip`
 	url := WinGZDoomURL
-	err := Download(url, pkgpath)
+	path = config.Path + `\gzdoom\gzdoom.exe`
+	err = Download(url, pkgpath)
 	if err != nil {
-		return err
+		return
 	}
 	err = os.Chdir(config.Path)
 	if err != nil {
-		return err
+		return
 	}
 	err = Unzip(pkgpath, "gzdoom")
 	if err != nil {
-		return err
+		return
 	}
-	// settings.GZDoomDir = config.Path + `\gzdoom\gzdoom.exe`
+
 	err = os.RemoveAll(pkgpath)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }
 
-func macGZDoom() error {
+func macGZDoom() (path string, err error) {
 	pkgpath := config.Path + "/gzdoom.zip"
 	tmpDir := "tmp-gzdoom"
+	path = config.Path + "/gzdoom/gzdoom"
 	url := MacGZDoomURL
-	err := Download(url, pkgpath)
+	err = Download(url, pkgpath)
 	if err != nil {
-		return err
+		return
 	}
 	err = os.Chdir(config.Path)
 	if err != nil {
-		return err
+		return
 	}
 	err = checkGZDoomDir()
 	if err != nil {
-		return err
+		return
 	}
 	err = Unzip(pkgpath, tmpDir)
 	if err != nil {
-		return err
+		return
 	}
 	command := fmt.Sprintf("cp -rf %s/GZDoom.app/Contents/MacOS/* gzdoom/", tmpDir)
 	cmd := exec.Command("sh", "-c", command)
 	err = cmd.Run()
 	if err != nil {
-		return err
+		return
 	}
-	// settings.GZDoomDir = config.Path + "/gzdoom/gzdoom"
 
 	toRemove := []string{tmpDir, pkgpath}
 	for _, f := range toRemove {
 		err = os.RemoveAll(f)
 		if err != nil {
-			return err
+			return
 		}
 	}
-	return nil
+	return
 }
