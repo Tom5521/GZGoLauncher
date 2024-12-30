@@ -8,7 +8,6 @@ import (
 	"fyne.io/fyne/v2"
 	boxes "fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/GZGoLauncher/internal/config"
 	"github.com/Tom5521/GZGoLauncher/internal/download"
@@ -50,7 +49,6 @@ func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	objs = append(
 		objs,
 		ui.creditsBox(),
-		ui.themeBox(),
 		ui.langBox(),
 		ui.downloadBox(),
 	)
@@ -74,39 +72,7 @@ func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	return content
 }
 
-func (ui *configUI) themeBox() *fyne.Container {
-	themes := []string{
-		po.Get("Dark"),
-		po.Get("Light"),
-	}
-	ui.theme.label = widget.NewLabel(po.Get("Select theme:"))
-	ui.theme.mode = widget.NewSelect(themes, func(s string) {
-		var t fyne.Theme
-		var mode bool
-		if s == themes[0] {
-			t = theme.DarkTheme()
-			mode = false
-		} else {
-			t = theme.LightTheme()
-			mode = true
-		}
-		ui.mainUI.App.Settings().SetTheme(t)
-		settings.ThemeMode = mode
-	})
-
-	// Themes
-	// 1 = Light
-	// 0 = Dark
-	if settings.ThemeMode {
-		ui.theme.mode.SetSelected(themes[1])
-	} else {
-		ui.theme.mode.SetSelected(themes[0])
-	}
-
-	content := boxes.NewBorder(nil, nil, ui.theme.label, nil, ui.theme.mode)
-	return content
-}
-
+// TODO: Refactorize this.
 func (ui *configUI) sourcePortsBox() *fyne.Container {
 	sp := &ui.sourcePorts
 
