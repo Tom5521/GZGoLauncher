@@ -296,37 +296,17 @@ func (ui *configUI) downloadBox() *fyne.Container {
 
 func (ui *configUI) langBox() *fyne.Container {
 	lang := &ui.lang
-	disponibleLangs := []string{
-		"Spanish",
-		"English",
-		"Portuguese",
-	}
-	currentLang := func() string {
-		switch settings.Lang {
-		case "es":
-			return "Spanish"
-		case "en":
-			return "English"
-		case "pt":
-			return "Portuguese"
-		default:
-			return "English"
-		}
-	}
 	lang.currentLabel = &widget.Label{Text: po.Get("Current language:")}
-	lang.selecter = widget.NewSelect(disponibleLangs, func(s string) {
-		switch s {
-		case currentLang():
-			return
-		case "Spanish":
-			settings.Lang = "es"
-		case "English":
-			settings.Lang = "en"
-		case "Portuguese":
-			settings.Lang = "pt"
-		default:
+	lang.selecter = widget.NewSelect(locales.LocaleNames(), func(s string) {
+		short := locales.LocaleShort(s)
+		if settings.Lang == short {
 			return
 		}
+		if !locales.ShortLocaleExists(short) {
+			return
+		}
+
+		settings.Lang = short
 		po.Parse(locales.Parser(settings.Lang))
 		dialog.ShowInformation(
 			po.Get("Info"),
@@ -334,7 +314,7 @@ func (ui *configUI) langBox() *fyne.Container {
 			ui.mainUI.MainWindow,
 		)
 	})
-	lang.selecter.SetSelected(currentLang())
+	lang.selecter.SetSelected(locales.LocaleLong(settings.Lang))
 	content := boxes.NewBorder(nil, nil, lang.currentLabel, nil, lang.selecter)
 	return content
 }

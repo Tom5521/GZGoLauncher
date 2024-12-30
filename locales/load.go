@@ -20,6 +20,48 @@ The available ones are:
 - Portuguese
 `
 
+var locales = map[string]string{
+	"es": "Español",
+	"en": "English",
+	"pt": "Português",
+}
+
+func LocaleShort(long string) string {
+	for k, v := range locales {
+		if v == long {
+			return k
+		}
+	}
+	return ""
+}
+
+func LocaleLong(short string) string {
+	return locales[short]
+}
+
+func LocaleNames() (names []string) {
+	for _, v := range locales {
+		names = append(names, v)
+	}
+
+	return
+}
+
+func ShortLocaleExists(short string) bool {
+	_, ok := locales[short]
+	return ok
+}
+
+func LongLocaleExists(long string) bool {
+	for _, v := range locales {
+		if v == long {
+			return true
+		}
+	}
+
+	return false
+}
+
 func read(file string) []byte {
 	data, err := PoFiles.ReadFile(file)
 	if err != nil {
