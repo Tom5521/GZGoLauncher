@@ -72,7 +72,6 @@ func (ui *configUI) MainBox(mainUI *ui) *fyne.Container {
 	return content
 }
 
-// TODO: Refactorize this.
 func (ui *configUI) sourcePortsBox() *fyne.Container {
 	sp := &ui.sourcePorts
 
@@ -114,31 +113,46 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 		})
 	}
 
+	displayForm := func(
+		title, confirm, dimiss string,
+		nameText, pathText string,
+		callback func(b bool, name, path *widget.Entry),
+	) {
+		nameEntry := widget.NewEntry()
+		nameEntry.SetText(nameText)
+		pathEntry := widget.NewEntry()
+		pathEntry.SetText(pathText)
+
+		dialog.ShowForm(
+			po.Get(title),
+			po.Get(confirm),
+			po.Get(dimiss),
+			[]*widget.FormItem{
+				widget.NewFormItem(po.Get("Name:"), nameEntry),
+				widget.NewFormItem(
+					po.Get("Path"),
+					boxes.NewVBox(
+						pathEntry,
+						widget.NewButton(po.Get("Select path"), func() {
+							pathEntry.SetText(filepicker.Executable.Start())
+						}),
+					),
+				),
+			},
+			func(b bool) {
+				callback(b, nameEntry, pathEntry)
+			},
+			ui.mainUI.MainWindow,
+		)
+	}
+
 	addButton := &widget.Button{
 		Text: po.Get("Add"),
 		OnTapped: func() {
-			nameEntry := widget.NewEntry()
-			pathEntry := widget.NewEntry()
-
-			dialog.NewForm(
-				po.Get("Add"),
-				po.Get("Add"),
-				po.Get("Cancel"),
-				[]*widget.FormItem{
-					widget.NewFormItem(po.Get("Name:"), nameEntry),
-					widget.NewFormItem(
-						po.Get("Path"),
-						boxes.NewVBox(
-							pathEntry,
-							widget.NewButton(po.Get("Select path"), func() {
-								pathEntry.SetText(filepicker.Executable.Start())
-							}),
-						),
-					),
-				},
-				func(b bool) {
+			displayForm("Add", "Add", "Cancel", "", "",
+				func(b bool, name, path *widget.Entry) {
 					if b {
-						if nameExists(nameEntry.Text) {
+						if nameExists(name.Text) {
 							dialog.ShowError(
 								errors.New(po.Get("Name already exists!")),
 								ui.mainUI.MainWindow,
@@ -147,15 +161,14 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 						}
 						settings.SourcePorts = append(
 							settings.SourcePorts,
-							config.SourcePort{Name: nameEntry.Text, ExecutablePath: pathEntry.Text},
+							config.SourcePort{Name: name.Text, ExecutablePath: path.Text},
 						)
 						sp.list.Refresh()
 						ui.mainUI.refreshZRunnerSelection()
 
 					}
 				},
-				ui.mainUI.MainWindow,
-			).Show()
+			)
 		},
 	}
 	removeButton := &widget.Button{
@@ -177,38 +190,21 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 				return
 			}
 
-			nameEntry := &widget.Entry{Text: settings.SourcePorts[curLii].Name}
-			pathEntry := &widget.Entry{Text: settings.SourcePorts[curLii].ExecutablePath}
-
-			dialog.NewForm(
-				po.Get("Edit"),
-				po.Get("Confirm"),
-				po.Get("Cancel"),
-				[]*widget.FormItem{
-					widget.NewFormItem(po.Get("Name:"), nameEntry),
-					widget.NewFormItem(
-						po.Get("Path"),
-						boxes.NewVBox(
-							pathEntry,
-							widget.NewButton(po.Get("Select path"), func() {
-								pathEntry.SetText(filepicker.Executable.Start())
-							}),
-						),
-					),
-				},
-				func(b bool) {
+			displayForm("Edit", "Confirm", "Cancel",
+				settings.SourcePorts[curLii].Name,
+				settings.SourcePorts[curLii].ExecutablePath,
+				func(b bool, name, path *widget.Entry) {
 					if b {
 						settings.SourcePorts[curLii] = config.SourcePort{
-							Name:           nameEntry.Text,
-							ExecutablePath: pathEntry.Text,
+							Name:           name.Text,
+							ExecutablePath: path.Text,
 						}
 						sp.list.RefreshItem(curLii)
 						settings.CurrentSourcePort = -1
 						ui.mainUI.refreshZRunnerSelection()
 					}
 				},
-				ui.mainUI.MainWindow,
-			).Show()
+			)
 		},
 	}
 
