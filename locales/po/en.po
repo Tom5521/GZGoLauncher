@@ -313,9 +313,34 @@ msgstr ""
 msgid "zdoom is not available on mac"
 msgstr ""
 
-
-
 #: internal/gui/right.go
 msgid "ar executable is not in path"
 msgstr ""
 
+#: internal/gui/configuration.go
+msgid "Source Ports"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Name"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Path"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Add"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Remove"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Edit"
+msgstr ""
+
+#: internal/gui/configuration.go
+msgid "Confirm"
+msgstr ""

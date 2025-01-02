@@ -128,9 +128,9 @@ func (ui *configUI) sourcePortsBox() *fyne.Container {
 			po.Get(confirm),
 			po.Get(dimiss),
 			[]*widget.FormItem{
-				widget.NewFormItem(po.Get("Name:"), nameEntry),
+				widget.NewFormItem(po.Get("Name")+":", nameEntry),
 				widget.NewFormItem(
-					po.Get("Path"),
+					po.Get("Path")+":",
 					boxes.NewVBox(
 						pathEntry,
 						widget.NewButton(po.Get("Select path"), func() {
